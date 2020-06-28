@@ -132,5 +132,6 @@ dmypy.json
 # Temporary files
 _repository
 guides/_templates.txt
+outputs
 
 
