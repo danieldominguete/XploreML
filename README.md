@@ -7,31 +7,38 @@ Problems to handle in this project. Each problem has a Main Script Template to w
 
 ### Data collection problems
 
+-  Web2Txt
+
 ### Pre processing data problems
 
+- Static2Dataset: Pre processing static data values for dataset building.
+- Series2Dataset: Pre processing data values series for dataset building. 
+- Txt2Dataset: Pre processing text data for dataset building.
+
 ### Feature selection problems
+
+- Data2Components: 
 
 ### Encoding problems
 
 - Char2Encode
 - Word2Encode
+- Doc2Encode
 - Auto2Encode
 
 ### Unsupervised problems
+
+- Cluster2Class
 
 ### Supervised problems
 
 - Static2Class: Problems involving static input feature vector to estimate the most likelihood class 
 - Img2Class: Problems involving input images to estimate the most likelihood class
 - Seq2Class: Problems involving input sequences of feature vectors to estimate the most likelihood class 
-- Static2Regress: Problems involving static input feature vector to estimate the most likelihood value estimation 
-- Img2Regress: Problems involving input images to estimate the most likelihood value estimation
-- Seq2Regress: Problems involving input sequences of feature vectors to estimate the most likelihood value estimation 
+- Static2Value: Problems involving static input feature vector to estimate the most likelihood value estimation 
+- Seq2Value: Problems involving input sequences of feature vectors to estimate the most likelihood value estimation 
 - Static2Forecast: Problems involving static input feature vector to estimate the most likelihood forecast estimation from time series
 - Seq2Forecast: Problems involving input sequences of feature vectors to estimate the most likelihood forecast estimation from time series
-
-### Reinforcement problems
-
 
 ## Setup and execution pipeline
 
@@ -39,6 +46,8 @@ Problems to handle in this project. Each problem has a Main Script Template to w
 - Install packages
 
 ```pip install -r requirements```
+
+- Set environment variables
 
 - Configuration parameters and execution
 
@@ -80,8 +89,7 @@ Access website: http://localhost:PORTNUMBER
 - docs: links for tutorials and reciples used 
 - guides: instructions for working with this project 
 - lab: experimental scripts for discovery and initial testing
-- lib: XploreML official library
-- main: main template scripts
+- src: source code with libraries, labs and main scripts
 - outputs: folder for outputs produced by scripts experiments 
 - static: static files for experiments 
 - test: test template scripts   
