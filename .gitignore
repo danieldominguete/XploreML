@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Temporary files
+_repository
+guides/_templates.txt
+
+
