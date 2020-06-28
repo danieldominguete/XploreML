@@ -1,6 +1,8 @@
 # XploreML
 Machine Learning Tools with Best Practices and Frameworks
 
+Version for Python 3.8
+
 ## Overview 
 
 Problems to handle in this project. Each problem has a Main Script Template to work with.
@@ -8,6 +10,10 @@ Problems to handle in this project. Each problem has a Main Script Template to w
 ### Data collection problems
 
 -  Web2Txt
+
+### Data visualization
+
+- All2View: Visualization data from numerical, categorical and textual sources
 
 ### Pre processing data problems
 
@@ -49,6 +55,8 @@ Problems to handle in this project. Each problem has a Main Script Template to w
 
 - Set environment variables
 
+PYTHON_WARNINGS="ignore"
+
 - Configuration parameters and execution
 
 Set parameters on json config file for selected main scripts applicable for your ML pipeline 
@@ -67,6 +75,11 @@ Set parameters on json config file for selected main scripts applicable for your
 ### Collect raw data  
 
 ### Analyse raw data
+
+Run de main script to visualize data in webview application:
+
+``` streamlit run --server.port 80  src/main/all2view/all2view_main.py -- -f config/all2view_main_template.json
+ ```
 
 ### Build dataset
 
@@ -98,7 +111,8 @@ Access website: http://localhost:PORTNUMBER
 
 ### ML Lifecycle Management
 
-- Mlflow
+- Mlflow (https://mlflow.org/)
+- Streamlit (https://www.streamlit.io/)
 
 ### ML Modelling
 
