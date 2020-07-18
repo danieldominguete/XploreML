@@ -1,0 +1,29 @@
+{
+  "environment_parameters": {
+    "app_name" : "example",
+    "environment_id" : "console_localhost",
+    "output_folder": "outputs",
+    "logging_level" : "debug",
+    "view_plots" : false,
+    "save_plots" : false,
+    "tracking": false
+  },
+
+  "static2value_parameters": {
+    "data_source":"localhost_datafile",
+    "data_train_file_path":"static/working/example_20-07-18-19-02-01_train.tsv",
+    "data_test_file_path":"static/working/example_20-07-18-19-02-01_test.tsv",
+    "separator":"\t",
+    "perc_load":1.0,
+    "mode_load":"sequential",
+    "numerical_inputs":["x_1_num", "y_1_value"],
+    "categorical_inputs":[],
+    "txt_inputs":[],
+    "output_target":["y_3_forecast"],
+    "model_type": "linear_regression"
+    },
+
+  "linear_regression_parameters": {
+    "test": "daniel"
+  }
+}

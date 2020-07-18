@@ -74,6 +74,64 @@ class DataProcessing:
 
         return data
 
+    def load_train_data(self)->pd:
+        logging.info("======================================================================")
+        logging.info("Loading training data ...")
+
+        # flatting txt columns
+        if len(self.param.txt_inputs)>0:
+            txt_variables_flat = Util.flat_lists(sublist=self.param.txt_variables)
+        else:
+            txt_variables_flat = []
+
+        # checking other variables
+        features = 0
+        if len(self.param.numerical_inputs) > 0:
+            features = features + 1
+        if len(self.param.categorical_inputs) > 0:
+            features = features + 1
+
+        if features > 0:
+            columns = Util.join_lists(
+                l1=self.param.numerical_inputs,
+                l2=self.param.categorical_inputs,
+                l3=txt_variables_flat,
+                l4=self.param.output_target
+            )
+
+            columns_input = Util.join_lists(
+                l1=self.param.numerical_inputs,
+                l2=self.param.categorical_inputs,
+                l3=txt_variables_flat
+            )
+        else:
+            columns = txt_variables_flat
+
+        # exclude duplicate variables
+        columns = Util.get_unique_list(columns)
+        columns_input = Util.get_unique_list(columns_input)
+
+        # loading input data
+        if self.param.data_source == "localhost_datafile":
+            try:
+                data = self.load_csv_database(
+                    filepath=self.param.data_train_file_path,
+                    separator=self.param.separator,
+                    selected_columns=columns,
+                    perc_sample=self.param.perc_load,
+                    select_sample=self.param.mode_load,
+                    order="asc",
+                )
+
+            except:
+                logging.error("Ops " + str(sys.exc_info()[0]) + " occured!")
+                raise
+
+        data_input = data[columns_input]
+        data_target = data[self.param.output_target]
+
+        return data_input, data_target
+
     def prep_rawdata(self, data: pd) -> pd:
 
         logging.info("======================================================================")
