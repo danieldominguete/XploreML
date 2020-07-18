@@ -27,12 +27,15 @@ class DataProcessing:
         # registering params
         self.include_param_history(dict=self.param)
 
-    def load_data(self):
+    def load_data(self)->pd:
         logging.info("======================================================================")
         logging.info("Loading data ...")
 
         # flatting txt columns
-        txt_variables_flat = Util.flat_lists(sublist=self.param.txt_variables)
+        if len(self.param.txt_variables)>0:
+            txt_variables_flat = Util.flat_lists(sublist=self.param.txt_variables)
+        else:
+            txt_variables_flat = []
 
         # checking other variables
         features = 0
@@ -236,6 +239,16 @@ class DataProcessing:
 
         return True
 
+    def save_datasets(self, data_train: pd = None, data_test: pd = None, folder_path: str = None, prefix: str = None) -> bool:
+
+        data_train.to_csv(folder_path + prefix + "train.tsv", index=False, sep="\t", encoding="utf-8")
+        logging.info("File saved in: " + folder_path + prefix + "train.tsv")
+
+        data_test.to_csv(folder_path + prefix + "test.tsv", index=False, sep="\t", encoding="utf-8")
+        logging.info("File saved in: " + folder_path + prefix + "test.tsv")
+
+        return True
+
     def delete_repeated_rows(self, data: pd) -> pd:
         data.drop_duplicates(inplace=True)
         return data
@@ -260,7 +273,7 @@ class DataProcessing:
         save_analysis: bool = False,
         folder_path: str = None,
         prefix: str = None,
-    ):
+    )->bool:
 
         # ----------------------------------------------------------
         # numerical features analysis
@@ -457,3 +470,32 @@ class DataProcessing:
         logging.info("Variables list: {a:s}".format(a=str(df.columns.values.tolist())))
 
         return df
+
+    def build_dataset(self, data: pd) -> pd:
+
+        # spliting subsets for model building
+        data_train, data_test = self.split_data_subsets(data=data)
+
+        return data_train, data_test
+
+
+    def split_data_subsets(self, data: pd) -> pd:
+
+        logging.info('Processing subset selection...')
+
+        # Splitting the dataset into the Training set and Test set
+        data_train, data_test = train_test_split(data,
+                                                 test_size=self.param.test_subset,
+                                                 shuffle=self.param.test_shuffle,
+                                                 random_state=None)
+
+        logging.info('Train and test subsets with shuffle = ' + str(self.param.test_shuffle))
+        logging.info('Train samples: ' + str(data_train.shape))
+        logging.info('Test samples: ' + str(data_test.shape))
+
+        # Registering tracking
+        self.include_metric_history(dict={'samples_lifecycle': self.samples_lifecycle})
+        self.include_param_history(
+            dict={'train_samples_dim': data_train.shape, 'test_samples_dim': data_test.shape})
+
+        return data_train, data_test

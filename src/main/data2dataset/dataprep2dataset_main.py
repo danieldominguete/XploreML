@@ -1,8 +1,8 @@
-'''
+"""
 ===========================================================================================
-Data2Dataprep : Data essential preprocessing
+Dataprep2Dataset : Dataset for model building
 ===========================================================================================
-'''
+"""
 # =========================================================================================
 # Importing the libraries
 import logging
@@ -13,20 +13,19 @@ import argparse
 # Include root folder to path
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(os.path.dirname(os.path.dirname(currentdir)))
-sys.path.insert(0,parentdir)
+sys.path.insert(0, parentdir)
 
 from src.lib.utils.util import Util
-from src.lib.data_schemas.data2dataprep_parameters import Data2DataprepParameters
+from src.lib.data_schemas.dataprep2dataset_parameters import Dataprep2DatasetParameters
 from src.lib.data_schemas.environment_parameters import EnvironmentParameters
 from src.lib.data_processing.data_processing import DataProcessing
 from src.lib.environment.environment import Environment
 
 
-class BuildDataprepMain:
-
+class BuildDatasetMain:
     def __init__(self, parameters_file):
 
-        '''Constructor for this class'''
+        """Constructor for this class"""
         self.parameters_file = parameters_file
 
     def run(self):
@@ -47,7 +46,7 @@ class BuildDataprepMain:
         env = Environment(param=env_param)
 
         # Validade parameters and load data processing class
-        data_param = Data2DataprepParameters(**data_config.get("prep_data_parameters"))
+        data_param = Dataprep2DatasetParameters(**data_config.get("dataset_parameters"))
         ds = DataProcessing(param=data_param)
 
         # ===========================================================================================
@@ -57,32 +56,49 @@ class BuildDataprepMain:
         # ===========================================================================================
         # Loading data
         logging.info("======================================================================")
-        logging.info('Loading Raw Data:')
+        logging.info("Loading Raw Data:")
         data = ds.load_data()
 
         logging.info("======================================================================")
-        logging.info('Preprocessing Raw Data:')
-        data = ds.prep_rawdata(data=data)
+        logging.info("Split train and test data subsets:")
+        data_train, data_test = ds.build_dataset(data=data)
 
         # ===========================================================================================
-        # Analysis of dataprep
+        # Analysis of data subsets
 
         logging.info("======================================================================")
-        logging.info('Descritive Analysis:')
-        ds.descriptive_analysis(data=data,
-                                view_plots=env.param.view_plots,
-                                save_plots=env.param.save_plots,
-                                save_analysis=True,
-                                folder_path=env.run_folder,
-                                prefix=env.prefix_name)
+        logging.info("Descritive Analysis - Training Data:")
+        ds.descriptive_analysis(
+            data=data_train,
+            view_plots=env.param.view_plots,
+            save_plots=env.param.save_plots,
+            save_analysis=False,
+            folder_path=env.run_folder,
+            prefix=env.prefix_name,
+        )
+
+        logging.info("======================================================================")
+        logging.info("Descritive Analysis - Test Data:")
+        ds.descriptive_analysis(
+            data=data_test,
+            view_plots=env.param.view_plots,
+            save_plots=env.param.save_plots,
+            save_analysis=False,
+            folder_path=env.run_folder,
+            prefix=env.prefix_name,
+        )
 
         # ===========================================================================================
         # Saving dataset
         logging.info("======================================================================")
-        logging.info('Saving Datasets:')
-        ds.save_dataframe(data=data,
-                          folder_path=env.run_folder,
-                          prefix=env.prefix_name)
+        logging.info("Saving Datasets:")
+
+        ds.save_datasets(
+            data_train=data_train,
+            data_test=data_test,
+            folder_path=env.run_folder,
+            prefix=env.prefix_name,
+        )
 
         # ===========================================================================================
         # Register tracking info
@@ -94,29 +110,31 @@ class BuildDataprepMain:
         env.close_script()
         # ===========================================================================================
 
+
 # ===========================================================================================
 # ===========================================================================================
 # Main call from terminal
 if __name__ == "__main__":
-    '''
+    """
     Call from terminal command
-    '''
+    """
 
     # getting script arguments
     parser = argparse.ArgumentParser(
-        description='XploreML - Script Main for Dataset Vizualization'
+        description="XploreML - Script Main for Dataset Vizualization"
     )
-    parser.add_argument('-f', '--config_file_json',
-                        help='Json config file for script execution', required=True)
+    parser.add_argument(
+        "-f", "--config_file_json", help="Json config file for script execution", required=True
+    )
 
     args = parser.parse_args()
 
     # Running script main
     try:
-        processor = BuildDataprepMain(parameters_file=args.config_file_json)
+        processor = BuildDatasetMain(parameters_file=args.config_file_json)
         processor.run()
     except:
-        logging.error('Ops ' + str(sys.exc_info()[0]) + ' occured!')
+        logging.error("Ops " + str(sys.exc_info()[0]) + " occured!")
         raise
 # ===========================================================================================
 # ===========================================================================================
