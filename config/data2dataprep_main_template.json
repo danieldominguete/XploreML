@@ -1,24 +1,23 @@
 {
   "environment_parameters": {
-    "app_name" : "example-view-rawdata",
-    "problem_type" : "seq2class",
+    "app_name" : "example-build-dataset",
+    "problem_type" : "regression",
     "environment_id" : "console_localhost",
     "output_folder": "outputs",
-    "logging_level" : "info",
+    "logging_level" : "debug",
     "view_plots" : false,
     "save_plots" : true,
-    "register_mlflow": false
+    "register_mlflow": true
   },
 
-  "raw_data_parameters": {
-    "dataset_goal":"supervised_learning",
+  "prep_data_parameters": {
     "data_source":"localhost_datafile",
-    "data_file_path":"static/raw_data/xploreML_sample/xploreML_rawdata_sample.txt",
+    "data_file_path":"static/raw_data_sample/xploreML_rawdata_sample.txt",
     "separator":"\t",
     "perc_load":1.0,
     "mode_load":"random",
-    "input_numerical_features":["x_1_num", "y_1_value", "y_3_forecast"],
-    "input_categorical_features":["x_2_cat", "y_2_class"],
+    "input_numerical_features":["x_1_num"],
+    "input_categorical_features":["x_2_cat"],
     "input_txt_features":[["x_3_txt"],["x_2_cat","x_3_txt"]],
     "missing_number_inputs":"delete",
     "missing_categorical_inputs":"delete",
@@ -27,8 +26,8 @@
     "delete_repeated_samples": true,
     "remove_outliers": true,
     "k_numerical_outlier_factor": 3.5,
-    "output_target":["y_2_class"],
-    "output_type":"multi_category_unilabel",
+    "output_target":["y_1_value"],
+    "output_type":"number",
     "test_subset":0.1,
     "test_shuffle":true
     }

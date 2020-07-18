@@ -15,7 +15,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -134,4 +133,5 @@ _repository
 guides/_templates.txt
 outputs
 
-
+# Datasets
+static/raw_data
