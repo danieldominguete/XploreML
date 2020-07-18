@@ -1,0 +1,22 @@
+{
+  "environment_parameters": {
+    "app_name" : "example",
+    "environment_id" : "console_localhost",
+    "output_folder": "outputs",
+    "logging_level" : "info",
+    "view_plots" : false,
+    "save_plots" : false,
+    "tracking": false
+  },
+
+  "view_data_parameters": {
+    "data_source":"localhost_datafile",
+    "data_file_path":"static/raw_data_sample/xploreML_rawdata_sample.txt",
+    "separator":"\t",
+    "perc_load":0.5,
+    "mode_load":"sequential",
+    "numerical_variables":["x_1_num", "y_1_value", "y_3_forecast"],
+    "categorical_variables":["x_2_cat", "y_2_class"],
+    "txt_variables":[["x_3_txt"],["x_2_cat","x_3_txt"]]
+    }
+}

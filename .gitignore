@@ -134,4 +134,5 @@ _repository
 guides/_templates.txt
 outputs
 
-
+# Datasets
+static/raw_data

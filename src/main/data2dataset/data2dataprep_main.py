@@ -1,8 +1,6 @@
 '''
 ===========================================================================================
-All2View : Data Visualization for Raw Data
-===========================================================================================
-Description: Data visualization from data sources
+Data2Dataset : Data preprocessing for Dataset Building
 ===========================================================================================
 '''
 # =========================================================================================
@@ -18,13 +16,13 @@ parentdir = os.path.dirname(os.path.dirname(os.path.dirname(currentdir)))
 sys.path.insert(0,parentdir)
 
 from src.lib.utils.util import Util
-from src.lib.data_schemas.raw_data_parameters import RawDataParameters
-from src.lib.data_processing.raw_data_processing import RawDataProcessing
+from src.lib.data_schemas.data2dataprep_parameters import Data2DataprepParameters
 from src.lib.data_schemas.environment_parameters import EnvironmentParameters
+from src.lib.data_processing.data_processing import DataProcessing
 from src.lib.environment.environment import Environment
-from src.lib.data_visualization.data_visualization import DataVisualization
 
-class ViewDatasetMain:
+
+class BuildDatasetMain:
 
     def __init__(self, parameters_file):
 
@@ -49,8 +47,8 @@ class ViewDatasetMain:
         env = Environment(param=env_param)
 
         # Validade parameters and load data processing class
-        data_param = RawDataParameters(**data_config.get("raw_data_parameters"))
-        ds = RawDataProcessing(param=data_param)
+        data_param = Data2DataprepParameters(**data_config.get("prep_data_parameters"))
+        ds = DataProcessing(param=data_param)
 
         # ===========================================================================================
         # Setup environment
@@ -63,12 +61,29 @@ class ViewDatasetMain:
         data = ds.load_data()
 
         logging.info("======================================================================")
-        logging.info('Update visualization of data:')
-        dv = DataVisualization(title=env.param.app_name, data_param=data_param)
-        dv.update_page(data=data)
+        logging.info('Processing Raw Data:')
+        data_train, data_test = ds.prepare_dataset(data=data)
+
+        # ===========================================================================================
+        # Vizualization dataset
 
         logging.info("======================================================================")
-        logging.info('Update visualization of data:')
+        logging.info('Descritive Analysis for Data Train:')
+        ds.descriptive_analysis(data=data_train, view_plots=env.param.view_plots, save_plots=env.param.save_plots,
+                                save_analysis=True,
+                                folder_path=env.working_folder, prefix=env.prefix_name)
+
+        # ===========================================================================================
+        # Saving dataset
+        logging.info("======================================================================")
+        logging.info('Saving Datasets:')
+        ds.save_dataframes(data_train=data_train, data_test=data_test, folder_path=env.working_folder,
+                           prefix=env.prefix_name)
+
+        # ===========================================================================================
+        # Register tracking info
+        if env.param.register_mlflow:
+            env.publish_results(history=ds.history)
 
         # ===========================================================================================
         # Script Performance
@@ -94,7 +109,7 @@ if __name__ == "__main__":
 
     # Running script main
     try:
-        processor = ViewDatasetMain(parameters_file=args.config_file_json)
+        processor = BuildDatasetMain(parameters_file=args.config_file_json)
         processor.run()
     except:
         logging.error('Ops ' + str(sys.exc_info()[0]) + ' occured!')

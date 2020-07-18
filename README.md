@@ -65,21 +65,24 @@ Set parameters on json config file for selected main scripts applicable for your
 
 ## ML General Pipeline and Main Scripts
 
-- Collect raw data
-- Analyse raw data
-- Build dataset
+- Collect raw data 
+    - Scrape (web2data)
+- Build dataset (data2dataset)
+    - View raw data (data2view)
+    - Preprocessing raw data (data2dataprep)
+
 - Build model
 - Analyse model
 - Deploy model
 
 ### Collect raw data  
 
-### Analyse raw data
+### View Raw Data
 
-Run de main script to visualize data in webview application:
+Run script to visualize data in webview application and analyse quality of data.
 
-``` streamlit run --server.port 80  src/main/all2view/all2view_main.py -- -f config/all2view_main_template.json
- ```
+``` streamlit run --server.port 80  src/main/data2dataset/all2view_main.py -- -f config/all2view_main_template.json```
+
 
 ### Build dataset
 
