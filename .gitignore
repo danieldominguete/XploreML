@@ -132,6 +132,7 @@ dmypy.json
 _repository
 guides/_templates.txt
 outputs
+static/working
 
 # Datasets
 static/raw_data
