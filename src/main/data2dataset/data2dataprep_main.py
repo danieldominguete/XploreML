@@ -1,6 +1,6 @@
 '''
 ===========================================================================================
-Data2Dataset : Data preprocessing for Dataset Building
+Data2Dataprep : Data essential preprocessing
 ===========================================================================================
 '''
 # =========================================================================================
@@ -61,28 +61,32 @@ class BuildDatasetMain:
         data = ds.load_data()
 
         logging.info("======================================================================")
-        logging.info('Processing Raw Data:')
-        data_train, data_test = ds.prepare_dataset(data=data)
+        logging.info('Preprocessing Raw Data:')
+        data = ds.prep_rawdata(data=data)
 
         # ===========================================================================================
-        # Vizualization dataset
+        # Analysis of dataprep
 
         logging.info("======================================================================")
-        logging.info('Descritive Analysis for Data Train:')
-        ds.descriptive_analysis(data=data_train, view_plots=env.param.view_plots, save_plots=env.param.save_plots,
+        logging.info('Descritive Analysis:')
+        ds.descriptive_analysis(data=data,
+                                view_plots=env.param.view_plots,
+                                save_plots=env.param.save_plots,
                                 save_analysis=True,
-                                folder_path=env.working_folder, prefix=env.prefix_name)
+                                folder_path=env.run_folder,
+                                prefix=env.prefix_name)
 
         # ===========================================================================================
         # Saving dataset
         logging.info("======================================================================")
         logging.info('Saving Datasets:')
-        ds.save_dataframes(data_train=data_train, data_test=data_test, folder_path=env.working_folder,
-                           prefix=env.prefix_name)
+        ds.save_dataframe(data=data,
+                          folder_path=env.run_folder,
+                          prefix=env.prefix_name)
 
         # ===========================================================================================
         # Register tracking info
-        if env.param.register_mlflow:
+        if env.param.tracking:
             env.publish_results(history=ds.history)
 
         # ===========================================================================================

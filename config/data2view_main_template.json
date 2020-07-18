@@ -3,7 +3,7 @@
     "app_name" : "example",
     "environment_id" : "console_localhost",
     "output_folder": "outputs",
-    "logging_level" : "info",
+    "logging_level" : "debug",
     "view_plots" : false,
     "save_plots" : false,
     "tracking": false

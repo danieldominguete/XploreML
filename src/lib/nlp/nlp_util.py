@@ -8,52 +8,58 @@ Script Reviewed by COGNAS
 from bs4 import BeautifulSoup
 import unidecode
 import numpy as np
+import pandas as pd
 import logging
-
-#install previously >> nltk.download('punkt')
 
 TXT_TOKENIZATION_COLUMN = 'TXT_TOKENS'
 
-class NLPProcessing:
+class NLPUtils:
 
     def __init__(self):
         '''Constructor for this class'''
         self.word2int_dict = None
 
-    def clean_html(self, dataframe=None, columns=None):
+    @staticmethod
+    def clean_html(dataframe:pd =None, columns:list =None) -> pd:
         for col in columns:
-            dataframe[col] = dataframe[col].swifter.apply(self.clean_html_pandas_apply)
+            dataframe[col] = dataframe[col].apply(NLPUtils.clean_html_pandas_apply)
         return dataframe
 
-    def clean_html_pandas_apply(self, txt):
+    @staticmethod
+    def clean_html_pandas_apply(txt:str) -> str:
         txt = BeautifulSoup(txt,'lxml')
         return txt.text
 
-    def convert_to_unicode(self, dataframe=None, columns=None):
+    @staticmethod
+    def convert_to_unicode(dataframe: pd =None, columns: list =None) -> pd:
         for col in columns:
-            dataframe[col] = dataframe[col].swifter.apply(self.convert_to_unicode_pandas_apply)
-
+            dataframe[col] = dataframe[col].apply(NLPUtils.convert_to_unicode_pandas_apply)
         return dataframe
 
-    def convert_to_unicode_pandas_apply(self, txt):
+    @staticmethod
+    def convert_to_unicode_pandas_apply(txt) -> str:
         txt = unidecode.unidecode(txt)
         return txt
 
-    def convert_to_lower(self, dataframe=None, columns=None):
+    @staticmethod
+    def convert_to_lower(dataframe:pd=None, columns:list=None) -> pd:
         for col in columns:
-            dataframe[col] = dataframe[col].swifter.apply(self.convert_to_lower_pandas_apply)
+            dataframe[col] = dataframe[col].apply(NLPUtils.convert_to_lower_pandas_apply)
         return dataframe
 
-    def convert_to_lower_pandas_apply(self, txt):
+    @staticmethod
+    def convert_to_lower_pandas_apply(txt:str) -> str:
         txt = txt.lower()
         return txt
 
-    def clean_special_char(self, dataframe=None, columns=None):
+    @staticmethod
+    def clean_special_char(dataframe:pd =None, columns:list =None) -> pd:
         for col in columns:
-            dataframe[col] = dataframe[col].swifter.apply(self.clean_special_char_pandas_apply)
+            dataframe[col] = dataframe[col].apply(NLPUtils.clean_special_char_pandas_apply)
         return dataframe
 
-    def clean_special_char_pandas_apply(self, txt):
+    @staticmethod
+    def clean_special_char_pandas_apply(txt:str) -> str:
         char_from = '!"#$&()*/:;<=>?@[\\]^`{|}~\''
         char_to = ' ' * len(char_from)
 
