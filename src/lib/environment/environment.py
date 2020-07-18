@@ -75,7 +75,7 @@ class Environment:
 
         return True
 
-    def close_script(self):
+    def close_script(self)-> bool:
         time_ref_end = datetime.datetime.now()
         time_end = time.time()
         exec_time = (((time_end - self.time_init) / 60) / 60)
@@ -100,8 +100,8 @@ class Environment:
         self.prefix_name = self.param.app_name + "_" + tag + "_"
         return True
 
-    def publish_results(self, history):
+    def publish_results(self, history:dict)->bool:
 
-        #mlflow tracking
         self.tracking.publish_history(history)
+
         return True

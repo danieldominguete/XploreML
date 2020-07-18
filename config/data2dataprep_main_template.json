@@ -1,34 +1,31 @@
 {
   "environment_parameters": {
-    "app_name" : "example-build-dataset",
-    "problem_type" : "regression",
+    "app_name" : "example",
     "environment_id" : "console_localhost",
     "output_folder": "outputs",
     "logging_level" : "debug",
     "view_plots" : false,
-    "save_plots" : true,
-    "register_mlflow": true
+    "save_plots" : false,
+    "tracking": false
   },
 
   "prep_data_parameters": {
     "data_source":"localhost_datafile",
     "data_file_path":"static/raw_data_sample/xploreML_rawdata_sample.txt",
     "separator":"\t",
-    "perc_load":1.0,
-    "mode_load":"random",
-    "input_numerical_features":["x_1_num"],
-    "input_categorical_features":["x_2_cat"],
-    "input_txt_features":[["x_3_txt"],["x_2_cat","x_3_txt"]],
+    "perc_load":0.5,
+    "mode_load":"sequential",
+    "numerical_variables":["x_1_num", "y_1_value", "y_3_forecast"],
+    "categorical_variables":["x_2_cat", "y_2_class"],
+    "txt_variables":[["x_3_txt"],["x_2_cat","x_3_txt"]],
+    "output_target":["y_1_value"],
     "missing_number_inputs":"delete",
     "missing_categorical_inputs":"delete",
     "missing_txt_inputs":"delete",
     "missing_outputs":"delete",
     "delete_repeated_samples": true,
     "remove_outliers": true,
-    "k_numerical_outlier_factor": 3.5,
-    "output_target":["y_1_value"],
-    "output_type":"number",
-    "test_subset":0.1,
-    "test_shuffle":true
+    "outliers_method": "k_std",
+    "k_numerical_outlier_factor": 3.5
     }
 }

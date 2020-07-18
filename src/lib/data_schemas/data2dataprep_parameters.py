@@ -1,6 +1,6 @@
 '''
 ===========================================================================================
-Dataset Parameters Class
+Dataprep Parameters Class
 ===========================================================================================
 Script by COGNAS
 ===========================================================================================
@@ -8,14 +8,6 @@ Script by COGNAS
 from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
-
-
-class DatasetGoal(str, Enum):
-    '''
-        'supervised-learning':
-    '''
-    supervised_learning = 'supervised_learning'
-
 
 class DataSource(str, Enum):
     '''
@@ -32,52 +24,17 @@ class ModeLoad(str, Enum):
     random = 'random'
     sequential = 'sequential'
 
-
-class OutputType(str, Enum):
+class MissingFeaturesValues(str, Enum):
     '''
-        "number":
-        "binary_category":
-        "multi_category_unilabel":
-        "multi_category_multilabel":
+        "delete":
     '''
-    number = "number"
-    binary_category = "binary_category"
-    multi_category_unilabel = "multi_category_unilabel"
-    multi_category_multilabel = "multi_category_multilabel"
+    delete = "delete"
 
-
-class InputTxtFeaturesEmbedding(str, Enum):
+class OutliersMethods(str, Enum):
     '''
-        "":
-        "word2int":
-        "word2vec":
+        "k_std":
     '''
-    none = ""
-    word2int = "word2int"
-    word2vec = "word2vec"
-
-
-class ScalingNumberVariables(str, Enum):
-    '''
-        "":
-        "min_max":
-        "normal":
-    '''
-    none = ""
-    min_max = "min_max"
-    normal = "normal"
-
-
-class EncodingCategoricalVariables(str, Enum):
-    '''
-        "":
-        "one_hot":
-        "int":
-    '''
-    none = ""
-    one_hot = "one_hot"
-    int = "int"
-
+    k_std = "k_std"
 
 class Data2DataprepParameters(BaseModel):
 
@@ -96,25 +53,35 @@ class Data2DataprepParameters(BaseModel):
     # mode of loading data
     mode_load: ModeLoad = ModeLoad.random
 
-    # list of numerical variables - support only numbers
-    input_numerical_features: list
+    # list of numerical variables
+    numerical_variables: list
 
-    # list of categorical variables - to categorical encode
-    input_categorical_features: list
+    # list of categorical variables
+    categorical_variables: list
 
-    # list of txt variables - to NLP embedding
-    input_txt_features: list
+    # list of txt variables
+    txt_variables: list
 
     # output target (categorical ou number) - support only one column
     output_target: list
 
-    # output target value type
-    output_type: OutputType
+    # missing features values : "delete"
+    missing_number_inputs: MissingFeaturesValues = MissingFeaturesValues.delete
+    missing_categorical_inputs: MissingFeaturesValues = MissingFeaturesValues.delete
+    missing_txt_inputs: MissingFeaturesValues = MissingFeaturesValues.delete
+    missing_outputs: MissingFeaturesValues = MissingFeaturesValues.delete
 
-    # scaling number variables:  None, "min-max" or "normal"
-    scale_number_inputs: ScalingNumberVariables
-    scale_number_outputs: ScalingNumberVariables
+    # delete samples repeated (all columns)
+    delete_repeated_samples: bool
 
-    # encoding categorical variables: "one-hot", "int"
-    encode_categorical_inputs: EncodingCategoricalVariables
-    encode_categorical_output: EncodingCategoricalVariables
+    # ==================================
+    # numerical specific preprocessing parameters
+    # ==================================
+    # remove outliers from numerical features
+    remove_outliers: bool
+
+    # outliers detection method
+    outliers_method: OutliersMethods = OutliersMethods.k_std
+
+    # Remove rows with column value is +/- k * std value
+    k_numerical_outlier_factor: float
