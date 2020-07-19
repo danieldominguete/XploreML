@@ -6,6 +6,7 @@ Script Reviewed by COGNAS
 ===========================================================================================
 '''
 
+import pandas as pd
 from src.lib.model.model import XModel
 from sklearn.linear_model import LinearRegression
 
@@ -18,9 +19,12 @@ class XLinearRegression(XModel):
 
         return model
 
-    def eval_predict(self, data_input):
+    def eval_predict(self, data_input:pd)->pd:
 
         data_predict = self.model.predict(data_input)
 
-        return data_predict
+        #convert ndarray to pandas dataframe
+        data = pd.DataFrame(data=data_predict)
+
+        return data
 

@@ -5,8 +5,8 @@
     "output_folder": "outputs",
     "logging_level" : "debug",
     "view_plots" : false,
-    "save_plots" : false,
-    "tracking": false
+    "save_plots" : true,
+    "tracking": true
   },
 
   "static2value_parameters": {

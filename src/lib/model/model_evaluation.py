@@ -53,14 +53,14 @@ class RegressionModelEvaluation:
         logging.info("Explained Variance: {a:.3f}".format(a=self.get_explained_variance_score()))
         logging.info("Max Absolute Error: {a:.3f}".format(a=self.get_max_error_score()))
 
-    def plot_evaluation_scores(self):
+    def plot_evaluation_scores(self, view:bool=False, save:bool=False, path:str=None, prefix:str=None)->bool:
 
         result_train = pd.DataFrame(columns=['Output_Target', 'Output_Pred'])
-        result_train['Output_Target'] = self.Y_target[:,0]
-        result_train['Output_Pred'] = self.Y_predict[:,0]
+        result_train['Output_Target'] = self.Y_target.iloc[:,0]
+        result_train['Output_Pred'] = self.Y_predict.iloc[:,0]
 
         title = self.subset_label + " Dataset"
-        dv = DataPlotting(dataframe=result_train)
+        dv = DataPlotting(dataframe=result_train,view_plots=view, save_plots=save, folder_path=path, prefix=prefix)
 
         # Scatter plot with target x predicted
         dv.plot_scatter_2d(X_name='Output_Target', Y_name='Output_Pred', title=title,
@@ -68,6 +68,8 @@ class RegressionModelEvaluation:
 
         # Sort regression
         dv.plot_chart_sort_regression(pred='Output_Pred', y='Output_Target')
+
+        return True
 
 class ClassificationModelEvaluation:
 

@@ -133,6 +133,7 @@ _repository
 guides/_templates.txt
 outputs
 static/working
+mlruns
 
 # Datasets
 static/raw_data

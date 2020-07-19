@@ -104,7 +104,15 @@ class BuildStatic2ValueMain:
         )
 
         model_eval_train.print_evaluation_scores()
-        #mlf.publish_classification_eval(model_eval=model_eval_train, mode="train")
+        env.tracking.publish_regression_eval(model_eval=model_eval_train, mode='train')
+
+        if env_param.view_plots or env_param.save_plots:
+            logging.info('Plotting training result graphs')
+            model_eval_train.plot_evaluation_scores(view=env_param.view_plots,
+                                                    save=env_param.save_plots,
+                                                    path=env.run_folder,
+                                                    prefix=env.prefix_name + 'train_')
+
 
         logging.info("======================================================================")
         logging.info("Test Results")
@@ -118,7 +126,15 @@ class BuildStatic2ValueMain:
         )
 
         model_eval_test.print_evaluation_scores()
-        # mlf.publish_classification_eval(model_eval=model_eval_train, mode="train")
+        env.tracking.publish_regression_eval(model_eval=model_eval_test, mode='test')
+
+        if env_param.view_plots or env_param.save_plots:
+            logging.info('Plotting test result graphs')
+            model_eval_test.plot_evaluation_scores(view=env_param.view_plots,
+                                                   save=env_param.save_plots,
+                                                    path = env.run_folder,
+                                                    prefix = env.prefix_name + 'test_')
+
         # ===========================================================================================
         # Saving model
         logging.info("======================================================================")
@@ -128,6 +144,7 @@ class BuildStatic2ValueMain:
         # Register tracking info
         if env.param.tracking:
             env.publish_results(history=ds.history)
+            env.tracking.log_artifacts_folder(local_dir=env.run_folder)
 
         # ===========================================================================================
         # Script Performance

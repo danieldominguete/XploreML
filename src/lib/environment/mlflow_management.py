@@ -8,6 +8,7 @@ Script by COGNAS
 ===========================================================================================
 '''
 import logging
+import os
 import mlflow
 from mlflow.tracking import MlflowClient, get_tracking_uri, set_tracking_uri, is_tracking_uri_set
 
@@ -69,16 +70,25 @@ class MLFlowManagement:
             self.client.log_artifact(local_path=files_dict[key], run_id=self.run_id)
 
     def log_artifacts_folder(self, local_dir):
-        self.client.log_artifact(local_dir=local_dir, run_id=self.run_id)
 
-    # def publish_classification_eval(self, model_eval=None, mode=None):
-    #
-    #     if mode == 'train':
-    #         log_param("train_acc", model_eval.get_accuracy_score())
-    #
-    #     if mode == 'test':
-    #         log_param("test_acc", model_eval.get_accuracy_score())
-    #
+        files_dict = {}
+        files = [i for i in os.listdir(local_dir)]
+
+        for item in files:
+            files_dict[item]= local_dir + item
+
+        self.log_artifacts(files_dict=files_dict)
+
+    def publish_regression_eval(self, model_eval=None, mode=None):
+
+        if mode == 'train':
+            self.log_metric("train_mae", model_eval.get_mean_absolute_error())
+            self.log_metric("train_mdae", model_eval.get_mean_absolute_error())
+            self.log_metric("train_mse", model_eval.get_mse_error_score())
+            self.log_metric("train_r2", model_eval.get_r2_score())
+            self.log_metric("train_explained_var", model_eval.get_explained_variance_score())
+            self.log_metric("train_max_error", model_eval.get_max_error_score())
+
     def publish_history(self, history):
 
         self.log_params(params=history["params"])

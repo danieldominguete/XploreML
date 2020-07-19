@@ -94,14 +94,30 @@ class DataPlotting:
 
     def plot_scatter_2d(self, X_name=None, Y_name=None, title=None, marginal_distribution=False):
 
-        # Visualising
-        if marginal_distribution:
-            sns.jointplot(x=X_name, y=Y_name, data=self.data, kind="reg")
-        else:
-            sns.lmplot(x=X_name, y=Y_name, data=self.data)
+        if self.save_plots:
+            # Visualising
+            if marginal_distribution:
+                sns.jointplot(x=X_name, y=Y_name, data=self.data, kind="reg")
+            else:
+                sns.lmplot(x=X_name, y=Y_name, data=self.data)
 
-        plt.title(title)
-        plt.show()
+            plt.title(title)
+
+            filename = self.folder_path + self.prefix + "scatter.png"
+            plt.savefig(filename)
+            plt.close()
+
+        if self.view_plots:
+
+            # Visualising
+            if marginal_distribution:
+                sns.jointplot(x=X_name, y=Y_name, data=self.data, kind="reg")
+            else:
+                sns.lmplot(x=X_name, y=Y_name, data=self.data)
+
+            plt.title(title)
+
+            plt.show()
 
         return True
 
@@ -204,15 +220,32 @@ class DataPlotting:
 
     def plot_chart_sort_regression(self, pred, y, sort=True):
 
-        #t = pd.DataFrame({'pred': pred, 'y': y.flatten()})
-        if sort:
-            self.data.sort_values(by=[y], inplace=True)
+        if self.save_plots:
 
-        b = plt.plot(self.data[pred].tolist(), label='prediction')
-        a = plt.plot(self.data[y].tolist(), label='expected')
-        plt.ylabel('output')
-        plt.legend()
-        plt.show()
+            # t = pd.DataFrame({'pred': pred, 'y': y.flatten()})
+            if sort:
+                self.data.sort_values(by=[y], inplace=True)
+
+            b = plt.plot(self.data[pred].tolist(), label='prediction')
+            a = plt.plot(self.data[y].tolist(), label='expected')
+            plt.ylabel('output')
+            plt.legend()
+
+            filename = self.folder_path + self.prefix + "sort_reg.png"
+            plt.savefig(filename)
+            plt.close()
+
+        if self.view_plots:
+
+            # t = pd.DataFrame({'pred': pred, 'y': y.flatten()})
+            if sort:
+                self.data.sort_values(by=[y], inplace=True)
+
+            b = plt.plot(self.data[pred].tolist(), label='prediction')
+            a = plt.plot(self.data[y].tolist(), label='expected')
+            plt.ylabel('output')
+            plt.legend()
+            plt.show()
 
         return True
 
