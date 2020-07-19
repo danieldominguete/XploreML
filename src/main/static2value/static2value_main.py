@@ -1,8 +1,8 @@
-'''
+"""
 ===========================================================================================
 Static2Value : Model building from static data to value prediction
 ===========================================================================================
-'''
+"""
 # =========================================================================================
 # Importing the libraries
 import logging
@@ -13,7 +13,7 @@ import argparse
 # Include root folder to path
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(os.path.dirname(os.path.dirname(currentdir)))
-sys.path.insert(0,parentdir)
+sys.path.insert(0, parentdir)
 
 from src.lib.utils.util import Util
 from src.lib.data_schemas.static2value_parameters import Static2ValueParameters
@@ -21,14 +21,14 @@ from src.lib.data_schemas.environment_parameters import EnvironmentParameters
 from src.lib.data_processing.data_processing import DataProcessing
 from src.lib.environment.environment import Environment
 from src.lib.data_schemas.linear_regression_parameters import LinearRegressionParameters
-from src.lib.model.linear_regression import LinearRegression
+from src.lib.model.linear_regression import XLinearRegression
+from src.lib.model.model_evaluation import RegressionModelEvaluation
 
 
 class BuildStatic2ValueMain:
-
     def __init__(self, parameters_file):
 
-        '''Constructor for this class'''
+        """Constructor for this class"""
         self.parameters_file = parameters_file
 
     def run(self):
@@ -53,9 +53,11 @@ class BuildStatic2ValueMain:
         ds = DataProcessing(param=data_param)
 
         # Validade and load model hyperparameters
-        if data_param.model_type == 'linear_regression':
-            model_param = LinearRegressionParameters(**data_config.get("linear_regression_parameters"))
-            model = LinearRegression(model_param)
+        if data_param.model_type == "linear_regression":
+            model_param = LinearRegressionParameters(
+                **data_config.get("linear_regression_parameters")
+            )
+            model = XLinearRegression(model_param)
 
         # ===========================================================================================
         # Setup environment
@@ -64,20 +66,63 @@ class BuildStatic2ValueMain:
         # ===========================================================================================
         # Loading data
         logging.info("======================================================================")
-        logging.info('Loading Training Data:')
+        logging.info("Loading Training and Test Data:")
         data_train_input, data_train_target = ds.load_train_data()
+        data_test_input, data_test_target = ds.load_test_data()
 
         logging.info("======================================================================")
-        logging.info('Preprocessing Training Data:')
+        logging.info("Preprocessing Training Data:")
+        (
+            data_train_input,
+            data_train_target,
+            data_test_input,
+            data_test_target,
+            variables_input,
+            variables_target,
+        ) = ds.prepare_train_test_data(data_train_input=data_train_input, data_train_target=data_train_target, data_test_input=data_test_input, data_test_target=data_test_target)
 
         logging.info("======================================================================")
-        logging.info('Building Model:')
-        model.fit(data_input=data_train_input, data_target=data_train_target)
+        logging.info("Building Model:")
+        model.fit(
+            data_input=data_train_input[variables_input],
+            data_target=data_train_target[variables_target],
+        )
 
+        logging.info("======================================================================")
+        logging.info("Building predictions:")
+
+        data_train_predict = model.eval_predict(data_input=data_train_input[variables_input])
+
+        logging.info("======================================================================")
+        logging.info("Training Results")
+
+        model_eval_train = RegressionModelEvaluation(
+            Y_target=data_train_target[variables_target],
+            Y_predict=data_train_predict,
+            subset_label="Train",
+            history=None,
+        )
+
+        model_eval_train.print_evaluation_scores()
+        #mlf.publish_classification_eval(model_eval=model_eval_train, mode="train")
+
+        logging.info("======================================================================")
+        logging.info("Test Results")
+        data_test_predict = model.eval_predict(data_input=data_test_input[variables_input])
+
+        model_eval_test = RegressionModelEvaluation(
+            Y_target=data_test_target[variables_target],
+            Y_predict=data_test_predict,
+            subset_label="Test",
+            history=None,
+        )
+
+        model_eval_test.print_evaluation_scores()
+        # mlf.publish_classification_eval(model_eval=model_eval_train, mode="train")
         # ===========================================================================================
         # Saving model
         logging.info("======================================================================")
-        logging.info('Saving Datasets:')
+        logging.info("Saving Datasets:")
 
         # ===========================================================================================
         # Register tracking info
@@ -89,20 +134,22 @@ class BuildStatic2ValueMain:
         env.close_script()
         # ===========================================================================================
 
+
 # ===========================================================================================
 # ===========================================================================================
 # Main call from terminal
 if __name__ == "__main__":
-    '''
+    """
     Call from terminal command
-    '''
+    """
 
     # getting script arguments
     parser = argparse.ArgumentParser(
-        description='XploreML - Script Main for Dataset Vizualization'
+        description="XploreML - Script Main for Dataset Vizualization"
     )
-    parser.add_argument('-f', '--config_file_json',
-                        help='Json config file for script execution', required=True)
+    parser.add_argument(
+        "-f", "--config_file_json", help="Json config file for script execution", required=True
+    )
 
     args = parser.parse_args()
 
@@ -111,7 +158,7 @@ if __name__ == "__main__":
         processor = BuildStatic2ValueMain(parameters_file=args.config_file_json)
         processor.run()
     except:
-        logging.error('Ops ' + str(sys.exc_info()[0]) + ' occured!')
+        logging.error("Ops " + str(sys.exc_info()[0]) + " occured!")
         raise
 # ===========================================================================================
 # ===========================================================================================

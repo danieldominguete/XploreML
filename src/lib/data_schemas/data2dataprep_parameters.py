@@ -1,40 +1,56 @@
-'''
+"""
 ===========================================================================================
 Dataprep Parameters Class
 ===========================================================================================
 Script by COGNAS
 ===========================================================================================
-'''
+"""
 from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
 
+
 class DataSource(str, Enum):
-    '''
+    """
         'localhost_datafile': local file
-    '''
-    localhost_datafile = 'localhost_datafile'
+    """
+
+    localhost_datafile = "localhost_datafile"
 
 
 class ModeLoad(str, Enum):
-    '''
+    """
         'random':
         'sequential':
-    '''
-    random = 'random'
-    sequential = 'sequential'
+    """
+
+    random = "random"
+    sequential = "sequential"
+
 
 class MissingFeaturesValues(str, Enum):
-    '''
-        "delete":
-    '''
+    """
+        "delete": delete the sample
+        “mean”, then replace missing values using the mean along each column. Can only be used with numeric data.
+        “median”, then replace missing values using the median along each column. Can only be used with numeric data.
+        “most_frequent”, then replace missing using the most frequent value along each column. Can be used with strings or numeric data.
+        “constant”, then replace missing values with fill_value. Can be used with strings or numeric data
+    """
+
     delete = "delete"
+    mean = "mean"
+    median = "median"
+    most_frequent = "most_frequent"
+    constant = "constant"
+
 
 class OutliersMethods(str, Enum):
-    '''
+    """
         "k_std":
-    '''
+    """
+
     k_std = "k_std"
+
 
 class Data2DataprepParameters(BaseModel):
 

@@ -24,17 +24,6 @@ class ModeLoad(str, Enum):
     random = 'random'
     sequential = 'sequential'
 
-class EncodingCategoricalVariables(str, Enum):
-    '''
-        "":
-        "one_hot":
-        "int":
-    '''
-    none = ""
-    one_hot = "one_hot"
-    int = "int"
-
-
 class Dataprep2DatasetParameters(BaseModel):
 
     # data source
@@ -69,7 +58,3 @@ class Dataprep2DatasetParameters(BaseModel):
 
     # shuffle test data selection
     test_shuffle: bool
-
-    # encoding categorical variables: "one-hot", "int"
-    encode_categorical_inputs: EncodingCategoricalVariables
-    encode_categorical_output: EncodingCategoricalVariables

@@ -8,6 +8,8 @@ import csv
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, OneHotEncoder, LabelEncoder
 import logging
 import sys
 from src.lib.nlp.nlp_util import NLPUtils
@@ -27,12 +29,12 @@ class DataProcessing:
         # registering params
         self.include_param_history(dict=self.param)
 
-    def load_data(self)->pd:
+    def load_data(self) -> pd:
         logging.info("======================================================================")
         logging.info("Loading data ...")
 
         # flatting txt columns
-        if len(self.param.txt_variables)>0:
+        if len(self.param.txt_variables) > 0:
             txt_variables_flat = Util.flat_lists(sublist=self.param.txt_variables)
         else:
             txt_variables_flat = []
@@ -74,12 +76,12 @@ class DataProcessing:
 
         return data
 
-    def load_train_data(self)->pd:
+    def load_train_data(self) -> pd:
         logging.info("======================================================================")
         logging.info("Loading training data ...")
 
         # flatting txt columns
-        if len(self.param.txt_inputs)>0:
+        if len(self.param.txt_inputs) > 0:
             txt_variables_flat = Util.flat_lists(sublist=self.param.txt_variables)
         else:
             txt_variables_flat = []
@@ -96,13 +98,13 @@ class DataProcessing:
                 l1=self.param.numerical_inputs,
                 l2=self.param.categorical_inputs,
                 l3=txt_variables_flat,
-                l4=self.param.output_target
+                l4=self.param.output_target,
             )
 
             columns_input = Util.join_lists(
                 l1=self.param.numerical_inputs,
                 l2=self.param.categorical_inputs,
-                l3=txt_variables_flat
+                l3=txt_variables_flat,
             )
         else:
             columns = txt_variables_flat
@@ -131,6 +133,79 @@ class DataProcessing:
         data_target = data[self.param.output_target]
 
         return data_input, data_target
+
+    def load_test_data(self) -> pd:
+        logging.info("======================================================================")
+        logging.info("Loading test data ...")
+
+        # flatting txt columns
+        if len(self.param.txt_inputs) > 0:
+            txt_variables_flat = Util.flat_lists(sublist=self.param.txt_variables)
+        else:
+            txt_variables_flat = []
+
+        # checking other variables
+        features = 0
+        if len(self.param.numerical_inputs) > 0:
+            features = features + 1
+        if len(self.param.categorical_inputs) > 0:
+            features = features + 1
+
+        if features > 0:
+            columns = Util.join_lists(
+                l1=self.param.numerical_inputs,
+                l2=self.param.categorical_inputs,
+                l3=txt_variables_flat,
+                l4=self.param.output_target,
+            )
+
+            columns_input = Util.join_lists(
+                l1=self.param.numerical_inputs,
+                l2=self.param.categorical_inputs,
+                l3=txt_variables_flat,
+            )
+        else:
+            columns = txt_variables_flat
+
+        # exclude duplicate variables
+        columns = Util.get_unique_list(columns)
+        columns_input = Util.get_unique_list(columns_input)
+
+        # loading input data
+        if self.param.data_source == "localhost_datafile":
+            try:
+                data = self.load_csv_database(
+                    filepath=self.param.data_test_file_path,
+                    separator=self.param.separator,
+                    selected_columns=columns,
+                    perc_sample=self.param.perc_load,
+                    select_sample=self.param.mode_load,
+                    order="asc",
+                )
+
+            except:
+                logging.error("Ops " + str(sys.exc_info()[0]) + " occured!")
+                raise
+
+        data_input = data[columns_input]
+        data_target = data[self.param.output_target]
+
+        return data_input, data_target
+
+    def substitute_missing_values(
+        self, data: pd, columns: list, strategy: str = "mean", constant=0
+    ) -> pd:
+
+        if strategy == "constant":
+            transform = SimpleImputer(
+                missing_values=np.nan, strategy=strategy, fill_value=constant
+            )
+        else:
+            transform = SimpleImputer(missing_values=np.nan, strategy=strategy)
+
+        data[columns] = transform.fit_transform(data[columns])
+
+        return data
 
     def prep_rawdata(self, data: pd) -> pd:
 
@@ -161,6 +236,12 @@ class DataProcessing:
 
             if self.param.missing_number_inputs == "delete":
                 data = self.missing_delete(data=data, columns=self.param.numerical_variables)
+            else:
+                data = self.substitute_missing_values(
+                    data=data,
+                    columns=self.param.numerical_variables,
+                    strategy=self.param.missing_number_inputs,
+                )
 
             logging.info("Dataframe shape = " + str(data.shape))
             self.samples_lifecycle.append(data.shape[0])
@@ -297,12 +378,22 @@ class DataProcessing:
 
         return True
 
-    def save_datasets(self, data_train: pd = None, data_test: pd = None, folder_path: str = None, prefix: str = None) -> bool:
+    def save_datasets(
+        self,
+        data_train: pd = None,
+        data_test: pd = None,
+        folder_path: str = None,
+        prefix: str = None,
+    ) -> bool:
 
-        data_train.to_csv(folder_path + prefix + "train.tsv", index=False, sep="\t", encoding="utf-8")
+        data_train.to_csv(
+            folder_path + prefix + "train.tsv", index=False, sep="\t", encoding="utf-8"
+        )
         logging.info("File saved in: " + folder_path + prefix + "train.tsv")
 
-        data_test.to_csv(folder_path + prefix + "test.tsv", index=False, sep="\t", encoding="utf-8")
+        data_test.to_csv(
+            folder_path + prefix + "test.tsv", index=False, sep="\t", encoding="utf-8"
+        )
         logging.info("File saved in: " + folder_path + prefix + "test.tsv")
 
         return True
@@ -331,7 +422,7 @@ class DataProcessing:
         save_analysis: bool = False,
         folder_path: str = None,
         prefix: str = None,
-    )->bool:
+    ) -> bool:
 
         # ----------------------------------------------------------
         # numerical features analysis
@@ -536,24 +627,247 @@ class DataProcessing:
 
         return data_train, data_test
 
-
     def split_data_subsets(self, data: pd) -> pd:
 
-        logging.info('Processing subset selection...')
+        logging.info("Processing subset selection...")
 
         # Splitting the dataset into the Training set and Test set
-        data_train, data_test = train_test_split(data,
-                                                 test_size=self.param.test_subset,
-                                                 shuffle=self.param.test_shuffle,
-                                                 random_state=None)
+        # random_state: integer number maintain reproducible output
+        # shuffle: mix samples before split
+        data_train, data_test = train_test_split(
+            data,
+            test_size=self.param.test_subset,
+            shuffle=self.param.test_shuffle,
+            random_state=None,
+        )
 
-        logging.info('Train and test subsets with shuffle = ' + str(self.param.test_shuffle))
-        logging.info('Train samples: ' + str(data_train.shape))
-        logging.info('Test samples: ' + str(data_test.shape))
+        logging.info("Train and test subsets with shuffle = " + str(self.param.test_shuffle))
+        logging.info("Train samples: " + str(data_train.shape))
+        logging.info("Test samples: " + str(data_test.shape))
 
         # Registering tracking
-        self.include_metric_history(dict={'samples_lifecycle': self.samples_lifecycle})
+        self.include_metric_history(dict={"samples_lifecycle": self.samples_lifecycle})
         self.include_param_history(
-            dict={'train_samples_dim': data_train.shape, 'test_samples_dim': data_test.shape})
+            dict={"train_samples_dim": data_train.shape, "test_samples_dim": data_test.shape}
+        )
 
         return data_train, data_test
+
+    def fit_scale_numerical_variables(self, data: pd = None, scaler: str = None):
+
+        if scaler == "min_max":
+            filter = MinMaxScaler()
+        elif scaler == "mean_std":
+            filter = StandardScaler()
+
+        data = filter.fit_transform(data)
+
+        return data, filter
+
+    def scale_numerical_variables(self, data: pd = None, filter=None):
+
+        data = filter.transform(data)
+
+        return data
+
+    def fit_encode_categorical_variable(self, data: pd, columns: list, type: str) -> pd:
+
+        col = []
+        encoders = []
+        for var in columns:
+
+            if type == "one_hot":
+
+                encoder = OneHotEncoder(
+                    categories="auto", sparse=False, dtype=np.int, handle_unknown="ignore"
+                )
+                transformed = encoder.fit_transform(data[var].to_numpy().reshape(-1, 1))
+                col_temp = []
+                for item in encoder.get_feature_names():
+                    col.append(var + "_" + item)
+                    col_temp.append(var + "_" + item)
+
+                ohe_df = pd.DataFrame(transformed, columns=col_temp)
+                # data = pd.concat([data, ohe_df], axis=1).drop([var], axis=1)
+                data = pd.concat([data, ohe_df], axis=1)
+                encoders.append(encoder)
+
+            else:
+                logging.error("Categorical encoder not valid")
+
+        return data, col, encoders
+
+    def encode_categorical_variable(self, data: pd, columns: list, encoder) -> pd:
+
+        for i in range(len(columns)):
+
+            transformed = encoder[i].transform(data[columns[i]].to_numpy().reshape(-1, 1))
+            col_temp = []
+            for item in encoder[i].get_feature_names():
+                col_temp.append(columns[i] + "_" + item)
+
+            ohe_df = pd.DataFrame(transformed, columns=col_temp)
+            data = pd.concat([data, ohe_df], axis=1)
+
+        return data
+
+    def prepare_train_test_data(
+        self,
+        data_train_input: pd,
+        data_train_target: pd,
+        data_test_input: pd,
+        data_test_target: pd,
+    ) -> pd:
+
+        logging.info("======================================================================")
+        logging.info("Starting data training processing ...")
+        input_var_list = []
+        target_var_list = []
+
+        # ========================================
+        # Scale data processing
+        # ========================================
+        # Processing scale for input number features
+        if len(self.param.numerical_inputs) > 0:
+            logging.info("======================================================================")
+            logging.info("Processing scaling data for numerical inputs")
+            # X_number = data[self.param.numerical_inputs].to_numpy()
+
+            if self.param.scale_numerical_inputs is not None:
+                (
+                    data_train_input[self.param.numerical_inputs],
+                    num_scaler,
+                ) = self.fit_scale_numerical_variables(
+                    data=data_train_input[self.param.numerical_inputs],
+                    scaler=self.param.scale_numerical_inputs,
+                )
+
+                logging.info("Scale input features with " + self.param.scale_numerical_inputs)
+
+                data_test_input[self.param.numerical_inputs] = self.scale_numerical_variables(
+                    data=data_test_input[self.param.numerical_inputs], filter=num_scaler
+                )
+            else:
+                num_scaler = None
+                logging.info("No scale for number inputs")
+
+            for var in self.param.numerical_inputs:
+                input_var_list.append(var)
+
+        # ========================================
+        # Encoding categorical inputs
+        if len(self.param.categorical_inputs) > 0:
+            logging.info("======================================================================")
+            logging.info(
+                "Encoding input categorical features with: " + self.param.encode_categorical_inputs
+            )
+            if self.param.encode_categorical_inputs is not None:
+                data_train_input, var_inputs, encoders = self.fit_encode_categorical_variable(
+                    data=data_train_input,
+                    columns=self.param.categorical_inputs,
+                    type=self.param.encode_categorical_inputs,
+                )
+
+                data_test_input = self.encode_categorical_variable(
+                    data=data_test_input, columns=self.param.categorical_inputs, encoder=encoders
+                )
+
+            for var in var_inputs:
+                input_var_list.append(var)
+
+        # ========================================
+        # Processing txt features
+        # if len(self.param.input_txt_features) > 0:
+        #     logging.info(
+        #         "======================================================================"
+        #     )
+        #     logging.info("Processing vectorization txt features...")
+        #     nlp = NLPProcessing()
+        #
+        #     # convert tokens to embedding random int values
+        #     if self.param.input_txt_features_embedding == "word2int":
+        #         X_text = nlp.encode_word2int(
+        #             dataframe=self.data_train,
+        #             column=self.param.input_txt_features[0],
+        #             max_length=self.param.input_txt_max_seq,
+        #         )
+        #
+        #     if self.param.input_txt_features_embedding == "word2vec":
+        #         # load word dictionary
+        #         with open(self.param.embedding_word_map_file) as json_file:
+        #             self.embedding_word_map = json.load(json_file)
+        #
+        #         X_text = self.encode_txt2int_sequences_from_pandas(
+        #             dataframe=self.data_train,
+        #             column=self.param.input_txt_features[0],
+        #             max_seq_length=self.param.input_txt_max_seq,
+        #         )
+
+        # "https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html"
+        # "https://www.depends-on-the-definition.com/guide-to-word-vectors-with-gensim-and-keras/"
+
+        # ========================================
+        # Processing output target
+        # if len(self.param.output_target) > 0:
+        #     logging.info("Processing output features...")
+        #
+        #     if self.param.output_type == "binary_category":
+        #         if len(self.param.output_target) > 0:
+        #             Y_categ = (
+        #                 self.data_train[self.param.output_target[0]].to_numpy().reshape(-1, 1)
+        #             )
+        #             Y, self.Y_encoder = self.encode_onehot_dataset(Y_categ)
+        #             self.Y_labels = np.unique(Y_categ)
+        #
+        #     elif self.param.output_type == "multi_category_unilabel":
+        #         if len(self.param.output_target) > 0:
+        #             if self.param.encode_categorical_output == "one_hot":
+        #                 Y_categ = (
+        #                     self.data_train[self.param.output_target[0]]
+        #                     .to_numpy()
+        #                     .reshape(-1, 1)
+        #                 )
+        #                 Y, self.Y_encoder = self.encode_onehot_dataset(Y_categ)
+        #                 self.Y_labels = np.unique(Y_categ)
+        #             elif self.param.encode_categorical_output == "int":
+        #                 Y_categ = (
+        #                     self.data_train[self.param.output_target[0]]
+        #                     .to_numpy()
+        #                     .reshape(-1, 1)
+        #                 )
+        #                 self.Y_labels = np.unique(Y_categ)
+        #                 Y, self.Y_encoder = self.encode_class_to_int_np(data_labels=Y_categ)
+        #
+        #     elif self.param.output_type == "number":
+        #         if len(self.param.output_target) > 0:
+        #             Y_number = (
+        #                 self.data_train[self.param.output_target[0]].to_numpy().reshape(-1, 1)
+        #             )
+        #             if self.param.scale_number_outputs is not None:
+        #                 Y, self.Y_scaler = self.scale_numerical_variables(
+        #                     data=Y_number, scaler=self.param.scale_number_outputs
+        #                 )
+        #                 logging.info(
+        #                     "Scale output features with " + self.param.scale_number_outputs
+        #                 )
+        #             else:
+        #                 Y = self.data_train[self.param.output_target].to_numpy()
+        #                 self.Y_scaler = None
+        #                 logging.info("No scale output features")
+        #     else:
+        #         logging.error("TODO: processing output multilabel multiclasse")
+        #
+        # # ========================================
+        # # Processing windows steps
+        # if self.param.input_look_back_steps > 0:
+        #     logging.info("Processing window steps...")
+        #     X, Y = self.create_window_input(
+        #         X=X, Y=Y, look_back=self.param.input_look_back_steps
+        #     )
+        #
+        # # ========================================
+
+        for var in self.param.output_target:
+            target_var_list.append(var)
+
+        return data_train_input, data_train_target, data_test_input, data_test_target, input_var_list, target_var_list

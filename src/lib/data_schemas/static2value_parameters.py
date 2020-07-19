@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
 
+
 class DataSource(str, Enum):
     '''
         'localhost_datafile': local file
@@ -24,6 +25,7 @@ class ModeLoad(str, Enum):
     random = 'random'
     sequential = 'sequential'
 
+
 class ModeType(str, Enum):
     '''
         'linear regression':
@@ -31,8 +33,30 @@ class ModeType(str, Enum):
     '''
     linear_regression = 'linear_regression'
 
-class Static2ValueParameters(BaseModel):
 
+class ScaleNumericalVariables(str, Enum):
+    '''
+        "":
+        "min_max":
+        "mean_std":
+    '''
+    none = ""
+    min_max = "min_max"
+    mean_std = "mean_std"
+
+
+class EncodingCategoricalVariables(str, Enum):
+    '''
+        "":
+        "one_hot":
+        "int":
+    '''
+    none = ""
+    one_hot = "one_hot"
+    int = "int"
+
+
+class Static2ValueParameters(BaseModel):
     # data source
     data_source: DataSource
 
@@ -65,3 +89,9 @@ class Static2ValueParameters(BaseModel):
 
     # type of modeling technique
     model_type: ModeType
+
+    # scaling numerical inputs
+    scale_numerical_inputs: ScaleNumericalVariables = ''
+
+    # encoding categorical variables: "one_hot", "int"
+    encode_categorical_inputs: EncodingCategoricalVariables = ''

@@ -19,7 +19,7 @@
     "categorical_variables":["x_2_cat", "y_2_class"],
     "txt_variables":[["x_3_txt"],["x_2_cat","x_3_txt"]],
     "output_target":["y_1_value"],
-    "missing_number_inputs":"delete",
+    "missing_number_inputs":"mean",
     "missing_categorical_inputs":"delete",
     "missing_txt_inputs":"delete",
     "missing_outputs":"delete",

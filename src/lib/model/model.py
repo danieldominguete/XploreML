@@ -12,6 +12,7 @@ class XModel(ABC):
 
     def __init__(self, param:dict):
         self.param = param
+        self.model = None
         super().__init__()
 
     @abstractmethod

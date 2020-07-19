@@ -15,18 +15,16 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 import logging
 import pandas as pd
-import numpy as np
-from lib_xplore.data_handle.data_plotting import DataPlotting
+from src.lib.data_visualization.data_plotting import DataPlotting
 
 class RegressionModelEvaluation:
 
-    def __init__(self, Y_target=None, Y_predict=None, subset_label=None, output_type=None, history=None):
+    def __init__(self, Y_target=None, Y_predict=None, subset_label=None, history=None):
         '''Constructor for this class'''
 
         self.Y_target = Y_target
         self.Y_predict = Y_predict
         self.subset_label = subset_label
-        self.output_type = output_type
         self.history = history
 
     def get_mean_absolute_error(self):
