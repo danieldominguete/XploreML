@@ -3,9 +3,9 @@
     "app_name" : "example",
     "environment_id" : "console_localhost",
     "output_folder": "outputs",
-    "logging_level" : "debug",
+    "logging_level" : "info",
     "view_plots" : false,
-    "save_plots" : true,
+    "save_plots" : false,
     "tracking": true
   },
 
@@ -26,6 +26,6 @@
     },
 
   "linear_regression_parameters": {
-    "test": "daniel"
+    "fit_intersection": true
   }
 }

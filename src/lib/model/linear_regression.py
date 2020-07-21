@@ -7,15 +7,22 @@ Script Reviewed by COGNAS
 '''
 
 import pandas as pd
-from src.lib.model.model import XModel
+import logging
+from src.lib.model.xmodel import XModel
 from sklearn.linear_model import LinearRegression
 
 class XLinearRegression(XModel):
 
     def fit(self, data_input, data_target):
 
-        model = LinearRegression()
+        # init model
+        model = LinearRegression(fit_intercept=self.param.fit_intersection)
+        
+        # fit model
         self.model = model.fit(data_input, data_target)
+
+        # report results
+        self.report_modeling()
 
         return model
 
@@ -27,4 +34,11 @@ class XLinearRegression(XModel):
         data = pd.DataFrame(data=data_predict)
 
         return data
+    
+    def report_modeling(self):
+
+        logging.info("======================================================================")
+        logging.info('Hyperparameters:')
+        logging.info('fit_intersection : ' + str(self.param.fit_intersection))
+        #logging.info('fit_intersection : {a:.3f}'.format(a=self.param.fit_intersection))
 

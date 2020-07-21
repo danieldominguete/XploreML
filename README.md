@@ -3,27 +3,34 @@ Machine Learning Tools with Best Practices and Frameworks
 
 Version for Python 3.8
 
-## Overview 
+## Pipeline Overview 
 
-Problems to handle in this project. Each problem has a Main Script Template to work with.
+Step problems for Machine Learning projects. Each problem has a Main Script Template to work with.
 
-### Data collection problems
-
--  Web2Txt
+### Data collection 
 
 ### Data visualization
 
-- All2View: Visualization data from numerical, categorical and textual sources
+#### data2view: Visualization data from numerical, categorical and textual sources
 
-### Pre processing data problems
+Features:
+- dddd
 
-- Static2Dataset: Pre processing static data values for dataset building.
-- Series2Dataset: Pre processing data values series for dataset building. 
-- Txt2Dataset: Pre processing text data for dataset building.
+### Pre processing raw data 
 
+#### data2dataprep: Pre processing filters for numerical, categorical and textual variables
+
+Features:
+- dddd
+    
+### Building dataset
+
+#### dataprep2dataset: Prepare dataset for model building.  
+
+Features:
+- Split training and test subsets
+    
 ### Feature selection problems
-
-- Data2Components: 
 
 ### Encoding problems
 
@@ -38,10 +45,17 @@ Problems to handle in this project. Each problem has a Main Script Template to w
 
 ### Supervised problems
 
+#### Static2Value: Problems involving static input feature vector to estimate the most likelihood value estimation
+
+Features:
+- Scaling numerical variables
+- Encoding categorical variables
+- Linear regression model building
+
+
 - Static2Class: Problems involving static input feature vector to estimate the most likelihood class 
 - Img2Class: Problems involving input images to estimate the most likelihood class
-- Seq2Class: Problems involving input sequences of feature vectors to estimate the most likelihood class 
-- Static2Value: Problems involving static input feature vector to estimate the most likelihood value estimation 
+- Seq2Class: Problems involving input sequences of feature vectors to estimate the most likelihood class  
 - Seq2Value: Problems involving input sequences of feature vectors to estimate the most likelihood value estimation 
 - Static2Forecast: Problems involving static input feature vector to estimate the most likelihood forecast estimation from time series
 - Seq2Forecast: Problems involving input sequences of feature vectors to estimate the most likelihood forecast estimation from time series
@@ -132,6 +146,10 @@ Access website: http://localhost:PORTNUMBER
 - Matplotlib (https://matplotlib.org/)
 - Seaborn (https://seaborn.pydata.org/)
 
+## Technical references
+
+- [Machine Learning A-Z: Hands-On Python & R in Data Science](https://www.udemy.com/course/machinelearning/)
+
 # Changelog
 All notable changes to this project will be documented here.
 
@@ -148,5 +166,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Linear regression for static2value taks
+- Result tracking for data dataprep2dataset with mlflow
+- Split training and test datasets for model building (dataprep2dataset)
+- Essencial preprocessing tasks for numerical, categorical and textual data (data2dataprep)
+- Simple application for data visualization with streamlit webserver (data2view)
+- Script management: logging, working folder, time spent
 - Project conception by [@danieldominguete](https://github.com/danieldominguete).
 

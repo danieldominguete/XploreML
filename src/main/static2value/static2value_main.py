@@ -79,7 +79,12 @@ class BuildStatic2ValueMain:
             data_test_target,
             variables_input,
             variables_target,
-        ) = ds.prepare_train_test_data(data_train_input=data_train_input, data_train_target=data_train_target, data_test_input=data_test_input, data_test_target=data_test_target)
+        ) = ds.prepare_train_test_data(
+            data_train_input=data_train_input,
+            data_train_target=data_train_target,
+            data_test_input=data_test_input,
+            data_test_target=data_test_target,
+        )
 
         logging.info("======================================================================")
         logging.info("Building Model:")
@@ -104,15 +109,16 @@ class BuildStatic2ValueMain:
         )
 
         model_eval_train.print_evaluation_scores()
-        env.tracking.publish_regression_eval(model_eval=model_eval_train, mode='train')
+        env.tracking.publish_regression_eval(model_eval=model_eval_train, mode="train")
 
         if env_param.view_plots or env_param.save_plots:
-            logging.info('Plotting training result graphs')
-            model_eval_train.plot_evaluation_scores(view=env_param.view_plots,
-                                                    save=env_param.save_plots,
-                                                    path=env.run_folder,
-                                                    prefix=env.prefix_name + 'train_')
-
+            logging.info("Plotting training result graphs")
+            model_eval_train.plot_evaluation_scores(
+                view=env_param.view_plots,
+                save=env_param.save_plots,
+                path=env.run_folder,
+                prefix=env.prefix_name + "train_",
+            )
 
         logging.info("======================================================================")
         logging.info("Test Results")
@@ -126,14 +132,16 @@ class BuildStatic2ValueMain:
         )
 
         model_eval_test.print_evaluation_scores()
-        env.tracking.publish_regression_eval(model_eval=model_eval_test, mode='test')
+        env.tracking.publish_regression_eval(model_eval=model_eval_test, mode="test")
 
         if env_param.view_plots or env_param.save_plots:
-            logging.info('Plotting test result graphs')
-            model_eval_test.plot_evaluation_scores(view=env_param.view_plots,
-                                                   save=env_param.save_plots,
-                                                    path = env.run_folder,
-                                                    prefix = env.prefix_name + 'test_')
+            logging.info("Plotting test result graphs")
+            model_eval_test.plot_evaluation_scores(
+                view=env_param.view_plots,
+                save=env_param.save_plots,
+                path=env.run_folder,
+                prefix=env.prefix_name + "test_",
+            )
 
         # ===========================================================================================
         # Saving model
