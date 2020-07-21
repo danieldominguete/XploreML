@@ -1,46 +1,49 @@
-'''
+"""
 ===========================================================================================
-Linear Regression Model Building Class
+Polynomial Regression Model Building Class
 ===========================================================================================
 Script Reviewed by COGNAS
 ===========================================================================================
-'''
+"""
 
 import pandas as pd
 import logging
 from src.lib.model.xmodel import XModel
 from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
 
-class XLinearRegression(XModel):
 
+class XPolynomialRegression(XModel):
     def fit(self, data_input, data_target):
 
         # init model
-        model = LinearRegression(fit_intercept=self.param.fit_intersection)
-        
+        poly_features = PolynomialFeatures(degree=self.param.degree)
+        X_poly = poly_features.fit_transform(data_input)
+        self.model = LinearRegression()
+
         # fit model
-        self.model = model.fit(data_input, data_target)
+        self.model.fit(X_poly, data_target)
 
         # report results
         self.report_modeling()
 
-        return model
+        return self.model
 
-    def eval_predict(self, data_input:pd)->pd:
+    def eval_predict(self, data_input: pd) -> pd:
 
-        data_predict = self.model.predict(data_input)
+        poly_features = PolynomialFeatures(degree=self.param.degree)
+        X_poly = poly_features.fit_transform(data_input)
+        data_predict = self.model.predict(X_poly)
 
-        #convert ndarray to pandas dataframe
+        # convert ndarray to pandas dataframe
         data = pd.DataFrame(data=data_predict)
 
         return data
-    
+
     def report_modeling(self) -> bool:
 
         logging.info("======================================================================")
-        logging.info('Hyperparameters:')
-        logging.info('fit_intersection : ' + str(self.param.fit_intersection))
-        #logging.info('fit_intersection : {a:.3f}'.format(a=self.param.fit_intersection))
+        logging.info("Hyperparameters:")
+        logging.info('degree : {a:.3f}'.format(a=self.param.degree))
 
         return True
-

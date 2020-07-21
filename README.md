@@ -109,6 +109,7 @@ Features:
 - Scaling numerical variables
 - Encoding categorical variables
 - Linear regression model building
+- Polynomial regression model building
 
 
 #### Static2Class: Problems involving static input feature vector to estimate the most likelihood class
@@ -140,8 +141,9 @@ _In progress._
 - test: test scripts   
 
 # Technical References
+List of inspiring technical references! =)  
 
-## Frameworks Applied
+## Frameworks
 
 ### ML Lifecycle Management
 

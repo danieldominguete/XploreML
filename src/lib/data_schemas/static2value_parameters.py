@@ -32,6 +32,7 @@ class ModeType(str, Enum):
         'sequential':
     '''
     linear_regression = 'linear_regression'
+    polynomial_regression = 'polynomial_regression'
 
 
 class ScaleNumericalVariables(str, Enum):

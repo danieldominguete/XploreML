@@ -22,6 +22,8 @@ from src.lib.data_processing.data_processing import DataProcessing
 from src.lib.environment.environment import Environment
 from src.lib.data_schemas.linear_regression_parameters import LinearRegressionParameters
 from src.lib.model.linear_regression import XLinearRegression
+from src.lib.data_schemas.polynomial_regression_parameters import PolynomialRegressionParameters
+from src.lib.model.polynomial_regression import XPolynomialRegression
 from src.lib.model.model_evaluation import RegressionModelEvaluation
 
 
@@ -58,6 +60,13 @@ class BuildStatic2ValueMain:
                 **data_config.get("linear_regression_parameters")
             )
             model = XLinearRegression(model_param)
+        elif data_param.model_type == "polynomial_regression":
+            model_param = PolynomialRegressionParameters(
+                **data_config.get("polynomial_regression_parameters")
+            )
+            model = XPolynomialRegression(model_param)
+        else:
+            logging.error('Model type not valid.')
 
         # ===========================================================================================
         # Setup environment
