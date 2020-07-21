@@ -1,7 +1,5 @@
 # XploreML
-Machine Learning Tools with Best Practices and Frameworks
-
-Version for Python 3.8
+Machine Learning Tools with Best Practices and Frameworks (Python 3.8)
 
 ## Setup and execution pipeline
 
@@ -11,7 +9,13 @@ Install virtual environment package
 
 Create the virtual environment
 
-`virtualenv mypython`
+`virtualenv XploreML`
+
+Acivate the virtual environment
+
+Mac OS/Linux: `source XploreML/bin/activate`
+
+Windows: `XploreML\Scripts\activate`
 
 Install requirement packages
 
@@ -31,6 +35,7 @@ in ```src/lib/data_schemas``` folder. Each json object has a python class data s
 View results on ML tracking portal
 
 Start server: `mlflow ui --port PORTNUMBER`
+
 Access website: `http://localhost:PORTNUMBER`
 
 
