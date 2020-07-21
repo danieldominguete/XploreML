@@ -1,38 +1,38 @@
 # XploreML
 Machine Learning Tools with Best Practices and Frameworks (Python 3.8)
 
-## Setup and execution pipeline
+## Setup and Execution 
 
-Install virtual environment package
+1 - Install virtual environment package
 
 `pip install virtualenv`
 
-Create the virtual environment
+2 - Create the virtual environment
 
 `virtualenv XploreML`
 
-Acivate the virtual environment
+3 - Activate the virtual environment
 
 Mac OS/Linux: `source XploreML/bin/activate`
 
 Windows: `XploreML\Scripts\activate`
 
-Install requirement packages
+4 - Install requirement packages
 
 `pip install -r requirements`
 
-Create .env file and set environment variables
+5 - Create .env file and/or set environment variables
 
 `PYTHON_WARNINGS="ignore"`
 
-Select the main task and set parameters on json config file for selected main scripts applicable for your ML pipeline 
+6 - Select the main task and set parameters on json config file for selected main scripts applicable for your ML pipeline 
 
 ```python SCRIPT_MAIN -f CONFIG_FILE.json```
 
 Each routine has a command example to run with a simple example database. The config parameters are explained
 in ```src/lib/data_schemas``` folder. Each json object has a python class data schema with comments. 
 
-View results on ML tracking portal
+7 - View results on ML tracking portal
 
 Start server: `mlflow ui --port PORTNUMBER`
 
@@ -129,15 +129,17 @@ _In progress._
 
 ## Repository Organization
 
-- docs: links for tutorials and reciples used 
-- guides: instructions for working with this project 
-- lab: experimental scripts for discovery and initial testing
+- config: json files with main script parameters
+- deploy: TBD
+- docs: most relevant technical documents
+- guides: instructions for coding  
+- mlruns: mlflow directory for tracking records
+- outputs: folder for outputs produced by scripts experiments (folders of application name and runs)
 - src: source code with libraries, labs and main scripts
-- outputs: folder for outputs produced by scripts experiments 
 - static: static files for experiments 
-- test: test template scripts   
+- test: test scripts   
 
-# Technical references
+# Technical References
 
 ## Frameworks Applied
 
@@ -165,6 +167,19 @@ _In progress._
 - [Machine Learning A-Z: Hands-On Python & R in Data Science](https://www.udemy.com/course/machinelearning/)
 
 ## Articles
+ 
+### ML Lifecycle Management
+
+- [Tracking ML Experiments using MLflow](https://towardsdatascience.com/tracking-ml-experiments-using-mlflow-7910197091bb)
+
+### ML Modelling
+
+### Math 
+
+### Visualization
+
+- [Python Seaborn Tutorial For Beginners](https://www.datacamp.com/community/tutorials/seaborn-python-tutorial)
+
 
 # Changelog
 All notable changes to this project will be documented here.
@@ -182,11 +197,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Linear regression for static2value taks
-- Result tracking for data dataprep2dataset with mlflow
+- Linear regression for static2value problems
 - Split training and test datasets for model building (dataprep2dataset)
-- Essencial preprocessing tasks for numerical, categorical and textual data (data2dataprep)
+- Essential preprocessing tasks for numerical, categorical and textual data (data2dataprep)
 - Simple application for data visualization with streamlit webserver (data2view)
+- MLflow tracking record
 - Script management: logging, working folder, time spent
 - Project conception by [@danieldominguete](https://github.com/danieldominguete).
 
