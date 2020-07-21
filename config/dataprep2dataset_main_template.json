@@ -20,8 +20,6 @@
     "txt_variables":[["x_3_txt"],["x_2_cat","x_3_txt"]],
     "output_target":["y_3_forecast"],
     "test_subset": 0.1,
-    "test_shuffle": true,
-    "encode_categorical_inputs": "",
-    "encode_categorical_output": ""
+    "test_shuffle": true
     }
 }
