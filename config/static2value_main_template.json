@@ -22,7 +22,7 @@
     "output_target":["y_3_forecast"],
     "scale_numerical_inputs": "min_max",
     "encode_categorical_inputs": "one_hot",
-    "model_type": "polynomial_regression"
+    "model_type": "random_forest_regression"
   },
 
   "linear_regression_parameters": {
@@ -31,5 +31,18 @@
 
   "polynomial_regression_parameters": {
     "degree": 2
+  },
+
+  "svm_regression_parameters": {
+    "kernel": "rbf"
+  },
+
+  "decision_tree_regression_parameters": {
+    "random_state": 0
+  },
+
+  "random_forest_regression_parameters": {
+    "random_state": 0,
+    "n_estimators": 5
   }
 }

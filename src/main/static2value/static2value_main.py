@@ -24,6 +24,12 @@ from src.lib.data_schemas.linear_regression_parameters import LinearRegressionPa
 from src.lib.model.linear_regression import XLinearRegression
 from src.lib.data_schemas.polynomial_regression_parameters import PolynomialRegressionParameters
 from src.lib.model.polynomial_regression import XPolynomialRegression
+from src.lib.data_schemas.svm_regression_parameters import SVMRegressionParameters
+from src.lib.model.svm_regression import XSVMRegression
+from src.lib.data_schemas.decision_tree_regression_parameters import DecisionTreeRegressionParameters
+from src.lib.model.decision_tree_regression import XDecisionTreeRegression
+from src.lib.data_schemas.random_forest_regression_parameters import RandomForestRegressionParameters
+from src.lib.model.random_forest_regression import XRandomForesteRegression
 from src.lib.model.model_evaluation import RegressionModelEvaluation
 
 
@@ -32,6 +38,39 @@ class BuildStatic2ValueMain:
 
         """Constructor for this class"""
         self.parameters_file = parameters_file
+
+    def model_selection(self, data_config, data_param):
+
+        # Validade and load model hyperparameters
+        if data_param.model_type == "linear_regression":
+            model_param = LinearRegressionParameters(
+                **data_config.get("linear_regression_parameters")
+            )
+            model = XLinearRegression(model_param)
+        elif data_param.model_type == "polynomial_regression":
+            model_param = PolynomialRegressionParameters(
+                **data_config.get("polynomial_regression_parameters")
+            )
+            model = XPolynomialRegression(model_param)
+        elif data_param.model_type == "svm_regression":
+            model_param = SVMRegressionParameters(
+                **data_config.get("svm_regression_parameters")
+            )
+            model = XSVMRegression(model_param)
+        elif data_param.model_type == "decision_tree_regression":
+            model_param = DecisionTreeRegressionParameters(
+                **data_config.get("decision_tree_regression_parameters")
+            )
+            model = XDecisionTreeRegression(model_param)
+        elif data_param.model_type == "random_forest_regression":
+            model_param = RandomForestRegressionParameters(
+                **data_config.get("random_forest_regression_parameters")
+            )
+            model = XRandomForesteRegression(model_param)
+        else:
+            logging.error('Model type not valid.')
+
+        return model
 
     def run(self):
 
@@ -53,20 +92,6 @@ class BuildStatic2ValueMain:
         # Validade parameters and load data processing class
         data_param = Static2ValueParameters(**data_config.get("static2value_parameters"))
         ds = DataProcessing(param=data_param)
-
-        # Validade and load model hyperparameters
-        if data_param.model_type == "linear_regression":
-            model_param = LinearRegressionParameters(
-                **data_config.get("linear_regression_parameters")
-            )
-            model = XLinearRegression(model_param)
-        elif data_param.model_type == "polynomial_regression":
-            model_param = PolynomialRegressionParameters(
-                **data_config.get("polynomial_regression_parameters")
-            )
-            model = XPolynomialRegression(model_param)
-        else:
-            logging.error('Model type not valid.')
 
         # ===========================================================================================
         # Setup environment
@@ -97,6 +122,9 @@ class BuildStatic2ValueMain:
 
         logging.info("======================================================================")
         logging.info("Building Model:")
+
+        model = self.model_selection(data_config=data_config, data_param=data_param)
+
         model.fit(
             data_input=data_train_input[variables_input],
             data_target=data_train_target[variables_target],
@@ -121,6 +149,7 @@ class BuildStatic2ValueMain:
         env.tracking.publish_regression_eval(model_eval=model_eval_train, mode="train")
 
         if env_param.view_plots or env_param.save_plots:
+            logging.info("======================================================================")
             logging.info("Plotting training result graphs")
             model_eval_train.plot_evaluation_scores(
                 view=env_param.view_plots,
@@ -144,6 +173,7 @@ class BuildStatic2ValueMain:
         env.tracking.publish_regression_eval(model_eval=model_eval_test, mode="test")
 
         if env_param.view_plots or env_param.save_plots:
+            logging.info("======================================================================")
             logging.info("Plotting test result graphs")
             model_eval_test.plot_evaluation_scores(
                 view=env_param.view_plots,
@@ -155,7 +185,7 @@ class BuildStatic2ValueMain:
         # ===========================================================================================
         # Saving model
         logging.info("======================================================================")
-        logging.info("Saving Datasets:")
+        logging.info("Saving Results:")
 
         # ===========================================================================================
         # Register tracking info

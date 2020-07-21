@@ -33,6 +33,9 @@ class ModeType(str, Enum):
     '''
     linear_regression = 'linear_regression'
     polynomial_regression = 'polynomial_regression'
+    svm_regression = 'svm_regression'
+    decision_tree_regression = 'decision_tree_regression'
+    random_forest_regression = 'random_forest_regression'
 
 
 class ScaleNumericalVariables(str, Enum):
@@ -88,11 +91,11 @@ class Static2ValueParameters(BaseModel):
     # output target number - support only one column
     output_target: list
 
-    # type of modeling technique
-    model_type: ModeType
-
     # scaling numerical inputs
     scale_numerical_inputs: ScaleNumericalVariables = ''
 
-    # encoding categorical variables: "one_hot", "int"
+    # encoding categorical variables
     encode_categorical_inputs: EncodingCategoricalVariables = ''
+
+    # type of modeling technique
+    model_type: ModeType

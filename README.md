@@ -110,6 +110,9 @@ Features:
 - Encoding categorical variables
 - Linear regression model building
 - Polynomial regression model building
+- SVM regression model building
+- Decision Trees regression model building
+- Random Forest regression model building
 
 
 #### Static2Class: Problems involving static input feature vector to estimate the most likelihood class
