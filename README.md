@@ -1,119 +1,185 @@
 # XploreML
-Machine Learning Tools with Best Practices and Frameworks
+Machine Learning Tools with Best Practices and Frameworks (Python 3.8)
 
-## Overview 
+## Setup and Execution 
 
-Problems to handle in this project. Each problem has a Main Script Template to work with.
+1 - Install virtual environment package
 
-### Data collection problems
+`pip install virtualenv`
 
--  Web2Txt
+2 - Create the virtual environment
 
-### Pre processing data problems
+`virtualenv XploreML`
 
-- Static2Dataset: Pre processing static data values for dataset building.
-- Series2Dataset: Pre processing data values series for dataset building. 
-- Txt2Dataset: Pre processing text data for dataset building.
+3 - Activate the virtual environment
 
-### Feature selection problems
+Mac OS/Linux: `source XploreML/bin/activate`
 
-- Data2Components: 
+Windows: `XploreML\Scripts\activate`
 
-### Encoding problems
+4 - Install requirement packages
 
-- Char2Encode
-- Word2Encode
-- Doc2Encode
-- Auto2Encode
+`pip install -r requirements`
 
-### Unsupervised problems
+5 - Create .env file and/or set environment variables
 
-- Cluster2Class
+`PYTHON_WARNINGS="ignore"`
 
-### Supervised problems
-
-- Static2Class: Problems involving static input feature vector to estimate the most likelihood class 
-- Img2Class: Problems involving input images to estimate the most likelihood class
-- Seq2Class: Problems involving input sequences of feature vectors to estimate the most likelihood class 
-- Static2Value: Problems involving static input feature vector to estimate the most likelihood value estimation 
-- Seq2Value: Problems involving input sequences of feature vectors to estimate the most likelihood value estimation 
-- Static2Forecast: Problems involving static input feature vector to estimate the most likelihood forecast estimation from time series
-- Seq2Forecast: Problems involving input sequences of feature vectors to estimate the most likelihood forecast estimation from time series
-
-## Setup and execution pipeline
-
-- Create virtual environment
-- Install packages
-
-```pip install -r requirements```
-
-- Set environment variables
-
-- Configuration parameters and execution
-
-Set parameters on json config file for selected main scripts applicable for your ML pipeline 
+6 - Select the main task and set parameters on json config file for selected main scripts applicable for your ML pipeline 
 
 ```python SCRIPT_MAIN -f CONFIG_FILE.json```
 
-## ML General Pipeline and Main Scripts
+Each routine has a command example to run with a simple example database. The config parameters are explained
+in ```src/lib/data_schemas``` folder. Each json object has a python class data schema with comments. 
 
-- Collect raw data
-- Analyse raw data
-- Build dataset
-- Build model
-- Analyse model
-- Deploy model
+7 - View results on ML tracking portal
 
-### Collect raw data  
+Start server: `mlflow ui --port PORTNUMBER`
 
-### Analyse raw data
-
-### Build dataset
-
-### Build model
-
-### Analyse model
-
-View results on MLOps tracking portal
-
-Terminal command: $ mlflow ui
-
-Start server: $ mlflow ui --port PORTNUMBER
-Access website: http://localhost:PORTNUMBER 
-
-### Deploy model
+Access website: `http://localhost:PORTNUMBER`
 
 
-## Project Organization
+## Pipeline Overview and Project Tools 
 
-- docs: links for tutorials and reciples used 
-- guides: instructions for working with this project 
-- lab: experimental scripts for discovery and initial testing
+Step problems for Machine Learning projects. Each problem has a main script + json config file to work with.
+
+### Step 1 - Data collection
+
+_In progress._ 
+
+### Step 2 - Data visualization
+
+#### data2view: Visualization data from numerical, categorical and textual sources
+
+Run script to visualize data in webview application.
+
+``` streamlit run --server.port 80  src/main/data2dataset/data2view_main.py -- -f config/data2view_main_template.json```
+
+Features:
+- Load data criteria
+- Variables selection
+- Streamlit application with visualization filters
+
+### Step 3 - Pre processing raw data 
+
+#### data2dataprep: Pre processing filters for numerical, categorical and textual variables
+
+Features:
+- Missing data processing
+- Duplicate samples processing
+- Outliers detection
+- 
+    
+### Step 4 - Building dataset
+
+#### dataprep2dataset: Prepare dataset for model building.  
+
+Features:
+- Split training and test subsets
+
+### Step 5 - Encoding problems
+
+#### Char2Encode
+_In progress._
+
+#### Word2Encode
+_In progress._
+
+#### Doc2Encode
+_In progress._
+
+#### Auto2Encode
+_In progress._
+    
+### Step 6 - Feature selection problems
+_In progress._
+
+### Step 7 - Model building
+
+### Unsupervised problems
+
+#### Cluster2Class
+_In progress._
+
+### Supervised problems
+
+#### Static2Value: Problems involving static input feature vector to estimate the most likelihood value estimation
+
+Features:
+- Scaling numerical variables
+- Encoding categorical variables
+- Linear regression model building
+
+
+#### Static2Class: Problems involving static input feature vector to estimate the most likelihood class
+_In progress._ 
+#### Img2Class: Problems involving input images to estimate the most likelihood class
+_In progress._
+#### Seq2Class: Problems involving input sequences of feature vectors to estimate the most likelihood class
+_In progress._  
+#### Seq2Value: Problems involving input sequences of feature vectors to estimate the most likelihood value estimation
+_In progress._ 
+#### Static2Forecast: Problems involving static input feature vector to estimate the most likelihood forecast estimation from time series
+_In progress._
+#### Seq2Forecast: Problems involving input sequences of feature vectors to estimate the most likelihood forecast estimation from time series
+_In progress._
+
+### Step 8 - Model deploy
+_In progress._
+
+## Repository Organization
+
+- config: json files with main script parameters
+- deploy: TBD
+- docs: most relevant technical documents
+- guides: instructions for coding  
+- mlruns: mlflow directory for tracking records
+- outputs: folder for outputs produced by scripts experiments (folders of application name and runs)
 - src: source code with libraries, labs and main scripts
-- outputs: folder for outputs produced by scripts experiments 
 - static: static files for experiments 
-- test: test template scripts   
+- test: test scripts   
+
+# Technical References
 
 ## Frameworks Applied
 
 ### ML Lifecycle Management
 
-- Mlflow
+- [Mlflow](https://mlflow.org/)
+- [Streamlit](https://www.streamlit.io/)
 
 ### ML Modelling
 
-- Scikit-learn (https://scikit-learn.org/)
-- Tensorflow (https://www.tensorflow.org/) 
+- [Scikit-learn](https://scikit-learn.org/)
+- [Tensorflow](https://www.tensorflow.org/) 
 
 ### Math 
 
-- Numpy (https://numpy.org/)
-- Pandas (https://pandas.pydata.org/)
+- [Numpy](https://numpy.org/)
+- [Pandas](https://pandas.pydata.org/)
 
 ### Visualization
 
-- Matplotlib (https://matplotlib.org/)
-- Seaborn (https://seaborn.pydata.org/)
+- [Matplotlib](https://matplotlib.org/)
+- [Seaborn](https://seaborn.pydata.org/)
+
+## Courses 
+- [Machine Learning A-Z: Hands-On Python & R in Data Science](https://www.udemy.com/course/machinelearning/)
+
+## Articles
+ 
+### ML Lifecycle Management
+
+- [Tracking ML Experiments using MLflow](https://towardsdatascience.com/tracking-ml-experiments-using-mlflow-7910197091bb)
+
+### ML Modelling
+
+### Math 
+
+### Visualization
+
+- [Python Seaborn Tutorial For Beginners](https://www.datacamp.com/community/tutorials/seaborn-python-tutorial)
+
 
 # Changelog
 All notable changes to this project will be documented here.
@@ -131,5 +197,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Linear regression for static2value problems
+- Split training and test datasets for model building (dataprep2dataset)
+- Essential preprocessing tasks for numerical, categorical and textual data (data2dataprep)
+- Simple application for data visualization with streamlit webserver (data2view)
+- MLflow tracking record
+- Script management: logging, working folder, time spent
 - Project conception by [@danieldominguete](https://github.com/danieldominguete).
 

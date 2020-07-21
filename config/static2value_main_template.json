@@ -1,0 +1,31 @@
+{
+  "environment_parameters": {
+    "app_name" : "example",
+    "environment_id" : "console_localhost",
+    "output_folder": "outputs",
+    "logging_level" : "info",
+    "view_plots" : false,
+    "save_plots" : false,
+    "tracking": true
+  },
+
+  "static2value_parameters": {
+    "data_source":"localhost_datafile",
+    "data_train_file_path":"static/working/example_20-07-18-21-03-00_train.tsv",
+    "data_test_file_path":"static/working/example_20-07-18-21-03-00_test.tsv",
+    "separator":"\t",
+    "perc_load":1.0,
+    "mode_load":"sequential",
+    "numerical_inputs":["x_1_num", "y_1_value"],
+    "categorical_inputs":["x_2_cat", "y_2_class"],
+    "txt_inputs":[],
+    "output_target":["y_3_forecast"],
+    "model_type": "linear_regression",
+    "scale_numerical_inputs": "min_max",
+    "encode_categorical_inputs": "one_hot"
+    },
+
+  "linear_regression_parameters": {
+    "fit_intersection": true
+  }
+}

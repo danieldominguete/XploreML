@@ -15,7 +15,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -132,5 +131,9 @@ dmypy.json
 # Temporary files
 _repository
 guides/_templates.txt
+outputs
+static/working
+mlruns
 
-
+# Datasets
+static/raw_data
