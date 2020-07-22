@@ -1,6 +1,6 @@
 """
 ===========================================================================================
-Decision Tree Regression Model Building Parameters Class
+Logistic Regression Model Building Parameters Class
 ===========================================================================================
 Script by COGNAS
 ===========================================================================================
@@ -9,10 +9,7 @@ from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
 
-class XRandomForestRegressionParameters(BaseModel):
 
-    # random state
+class XLogisticRegressionParameters(BaseModel):
+
     random_state: int = 0
-
-    # number of estimators
-    n_estimators: int = 2

@@ -1,6 +1,6 @@
 """
 ===========================================================================================
-Decision Tree Regression Model Building Parameters Class
+K-Nearest neighbors Model Building Parameters Class
 ===========================================================================================
 Script by COGNAS
 ===========================================================================================
@@ -9,10 +9,13 @@ from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
 
-class XRandomForestRegressionParameters(BaseModel):
+class Metrics(str, Enum):
+    '''
+        "":
+    '''
+    minkowski = "minkowski"
 
-    # random state
-    random_state: int = 0
-
-    # number of estimators
-    n_estimators: int = 2
+class XKNearestNeighborsParameters(BaseModel):
+    n_neighbors: int = 5,
+    metric:Metrics = "minkowski",
+    metric_power: int = 2

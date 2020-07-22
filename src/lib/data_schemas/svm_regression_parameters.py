@@ -16,7 +16,7 @@ class Kernel(str, Enum):
     '''
     rbr = 'rbf'
 
-class SVMRegressionParameters(BaseModel):
+class XSVMRegressionParameters(BaseModel):
 
     # polynomial degree
     kernel: Kernel = 'rbf'

@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
 
-class DecisionTreeRegressionParameters(BaseModel):
+class XDecisionTreeRegressionParameters(BaseModel):
 
     # polynomial degree
     random_state: int = 0

@@ -10,7 +10,7 @@ from enum import Enum
 from typing import Optional
 
 
-class LinearRegressionParameters(BaseModel):
+class XLinearRegressionParameters(BaseModel):
 
     # data source
     """Whether to calculate the intercept for this model. If set to False, no intercept will be used

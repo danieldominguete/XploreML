@@ -10,7 +10,7 @@ from enum import Enum
 from typing import Optional
 
 
-class PolynomialRegressionParameters(BaseModel):
+class XPolynomialRegressionParameters(BaseModel):
 
     # polynomial degree
     degree: int

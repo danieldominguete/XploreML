@@ -18,3 +18,15 @@ class XModel(ABC):
     @abstractmethod
     def fit(self, data_input, data_target):
         pass
+
+    @abstractmethod
+    def eval_regression_predict(self, data_input):
+        pass
+
+    @abstractmethod
+    def eval_classification_predict(self, data_input):
+        pass
+
+    def test(self):
+        print("ok!")
+        return True

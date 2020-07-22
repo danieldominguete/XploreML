@@ -9,7 +9,7 @@
     "tracking": true
   },
 
-  "static2value_parameters": {
+  "static2class_parameters": {
     "data_source":"localhost_datafile",
     "data_train_file_path":"static/working/example_20-07-18-21-03-00_train.tsv",
     "data_test_file_path":"static/working/example_20-07-18-21-03-00_test.tsv",
@@ -17,24 +17,31 @@
     "perc_load":1.0,
     "mode_load":"sequential",
     "numerical_inputs":["x_1_num", "y_1_value"],
-    "categorical_inputs":["x_2_cat", "y_2_class"],
+    "categorical_inputs":["x_2_cat"],
     "txt_inputs":[],
-    "output_target":["y_3_forecast"],
+    "output_target":["y_2_class"],
+    "classification_type": "multi_category_unilabel",
     "scale_numerical_inputs": "min_max",
     "encode_categorical_inputs": "one_hot",
-    "model_type": "random_forest_regression"
+    "model_type": "k_nearest_neighbors"
   },
 
-  "linear_regression_parameters": {
-    "fit_intersection": true
+  "logistic_regression_parameters": {
+    "random_state": 0
   },
 
-  "polynomial_regression_parameters": {
-    "degree": 2
+  "k_nearest_neighbors_parameters": {
+    "n_neighbors" : 5,
+    "metric": "minkowski",
+    "metric_power": 2
   },
 
   "svm_parameters": {
     "kernel": "rbf"
+  },
+
+  "naive_bayes_parameters": {
+
   },
 
   "decision_tree_parameters": {
