@@ -754,7 +754,7 @@ class DataProcessing:
                 # test = encoder_int.inverse_transform(bin_df)
 
                 # Creating dictionaries convertion
-                categories = encoder_bin.classes_[0]
+                categories = encoder_bin.classes_
                 int_to_cat = {i: categories[i] for i in range(0, len(categories))}
                 cat_to_int = {categories[i]: i for i in range(0, len(categories))}
 
@@ -794,6 +794,20 @@ class DataProcessing:
 
             ohe_df = pd.DataFrame(transformed, columns=col_temp)
             data = pd.concat([data, ohe_df], axis=1)
+
+        return data
+
+    def encode_bin_categorical_variable(
+        self, data: pd, columns: list, encoder_bin
+    ) -> pd:
+
+        for i in range(len(columns)):
+
+            transformed = encoder_bin[i].transform(data[columns[i]].to_numpy().reshape(-1, 1))
+            col_temp = []
+            col_temp.append(columns[i] + "_" + "bin")
+            bin_df = pd.DataFrame(transformed, columns=col_temp)
+            data = pd.concat([data, bin_df], axis=1)
 
         return data
 
@@ -974,7 +988,7 @@ class DataProcessing:
                         "======================================================================"
                     )
                     logging.info("Classification problem with categorical output encoded")
-                    logging.info("Encoding output target with: " + "one hot coding")
+                    logging.info("Encoding output target with: " + "binary")
 
                     if self.param.encode_categorical_inputs is not None:
                         (
@@ -992,11 +1006,10 @@ class DataProcessing:
                             type="binarizer",
                         )
 
-                    data_test_target = self.encode_one_hot_categorical_variable(
+                    data_test_target = self.encode_bin_categorical_variable(
                         data=data_test_target,
                         columns=self.param.output_target,
-                        encoder_hot=encoders_hot,
-                        encoder_int=encoders_int,
+                        encoder_bin= encoders_bin,
                     )
 
 

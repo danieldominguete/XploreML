@@ -4,15 +4,15 @@
     "environment_id" : "console_localhost",
     "output_folder": "outputs",
     "logging_level" : "info",
-    "view_plots" : false,
+    "view_plots" : true,
     "save_plots" : true,
     "tracking": true
   },
 
   "static2value_parameters": {
     "data_source":"localhost_datafile",
-    "data_train_file_path":"static/working/example_20-07-18-21-03-00_train.tsv",
-    "data_test_file_path":"static/working/example_20-07-18-21-03-00_test.tsv",
+    "data_train_file_path":"static/working/example_20-07-22-12-35-19_train.tsv",
+    "data_test_file_path":"static/working/example_20-07-22-12-35-19_test.tsv",
     "separator":"\t",
     "perc_load":1.0,
     "mode_load":"sequential",
@@ -23,7 +23,7 @@
     "scale_numerical_inputs": "min_max",
     "encode_categorical_inputs": "one_hot",
     "scale_output_target": "min_max",
-    "model_type": "random_forest"
+    "model_type": "svm"
   },
 
   "linear_regression_parameters": {

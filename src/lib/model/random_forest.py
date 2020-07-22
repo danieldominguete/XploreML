@@ -46,8 +46,8 @@ class XRandomForest(XModel):
         raw_predict = self.model.predict(data_input)
 
         if self._application == "classification":
-            data_predict = self.convert_onehot_classification_to_xout(data_predict=raw_predict,
-                                                                      int_to_cat_dict_target=int_to_cat_dict_target)
+            data_predict = self.convert_classification_to_xout(data_predict=raw_predict,
+                                                               int_to_cat_dict_target=int_to_cat_dict_target)
 
         elif self._application == "regression":
             data_predict = self.convert_regression_to_xout(data_predict=raw_predict.reshape(len(raw_predict), 1))

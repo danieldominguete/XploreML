@@ -13,9 +13,10 @@ import numpy as np
 
 
 class XModel(ABC):
-    def __init__(self, param: dict, application: str):
+    def __init__(self, param: dict, application: str, application_type: str = None):
         self._param = param
         self._application = application
+        self._application_type = application_type
         self._model = None
         self._history = {}
         super().__init__()
@@ -40,24 +41,45 @@ class XModel(ABC):
     def model(self):
         return self._model
 
-    def convert_onehot_classification_to_xout(self, data_predict:pd, int_to_cat_dict_target:dict)-> pd:
+    def convert_classification_to_xout(self, data_predict:pd, int_to_cat_dict_target:dict)-> pd:
 
-        # convert coding output to label category (1 max)
-        id_max = np.argmax(data_predict, axis=1)
-        value_max = np.max(data_predict, axis=1)
+        if self._application_type == "multi_category_unilabel":
+            # convert coding output to label category (1 max)
+            id_max = np.argmax(data_predict, axis=1)
+            value_max = np.max(data_predict, axis=1)
 
-        prediction = []
-        prediction_reliability = []
-        for sample in id_max:
-            prediction.append(int_to_cat_dict_target[sample])
+            prediction = []
+            prediction_reliability = []
+            for sample in id_max:
+                prediction.append(int_to_cat_dict_target[sample])
 
-        for sample in value_max:
-            prediction_reliability.append(sample)
+            for sample in value_max:
+                prediction_reliability.append(sample)
 
-        # convert ndarray to pandas dataframe
-        data = pd.DataFrame(data= list(zip(prediction, prediction_reliability)), columns=["predict", "reliability"])
+            # convert ndarray to pandas dataframe
+            data = pd.DataFrame(data= list(zip(prediction, prediction_reliability)), columns=["predict", "reliability"])
 
-        return data
+            return data
+
+        if self._application_type == "binary_category":
+
+            # convert coding output to label category
+            prediction = []
+            prediction_reliability = []
+
+            # getting round between 0 and 1 for label and reliability
+            for value in data_predict:
+                prediction_reliability.append(abs(value-0.5)*2)
+                prediction.append(int_to_cat_dict_target[np.round(value,0)])
+
+
+            # convert ndarray to pandas dataframe
+            data = pd.DataFrame(data=list(zip(prediction, prediction_reliability)), columns=["predict", "reliability"])
+
+            return data
+
+        logging.error('Application type not valid for convertion.')
+        return None
 
     def convert_regression_to_xout(self,data_predict:pd):
 

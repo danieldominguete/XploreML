@@ -73,13 +73,15 @@ class RegressionModelEvaluation:
 
 class ClassificationModelEvaluation:
 
-    def __init__(self, Y_target:pd=None, Y_predict:pd=None, subset_label:str=None, classification_type:str=None, Y_int_to_cat_labels:dict=None, history=None):
+    def __init__(self, Y_target:pd=None, Y_predict:pd=None, subset_label:str=None, classification_type:str=None, Y_int_to_cat_labels:dict=None, Y_cat_to_int_labels:dict=None, history=None):
         '''Constructor for this class'''
         self.Y_target = Y_target
         self.Y_predict = Y_predict
         self.subset_label = subset_label
         self.classification_type = classification_type
         self.Y_labels = list(Y_int_to_cat_labels[0].values())
+        self.Y_int_to_cat_labels = Y_int_to_cat_labels[0]
+        self.Y_cat_to_int_labels = Y_cat_to_int_labels[0]
         self.history = history
 
     def get_accuracy_score(self):
@@ -130,6 +132,9 @@ class ClassificationModelEvaluation:
             cm = self.get_confusion_matrix()
             dv.plot_confusion_matrix(cm=cm, names=self.Y_labels)
 
+            # converting binary labels to 0,1
+            result_train['Output_Target'].replace(self.Y_cat_to_int_labels,inplace=True)
+            result_train['Output_Pred'].replace(self.Y_cat_to_int_labels, inplace=True)
             dv.plot_roc(pred=result_train['Output_Pred'], y=result_train['Output_Target'])
 
         if self.classification_type == "multi_category_unilabel":

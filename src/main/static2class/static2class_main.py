@@ -44,25 +44,25 @@ class BuildStatic2ValueMain:
             model_param = XKNearestNeighborsParameters(
                 **data_config.get("k_nearest_neighbors_parameters")
             )
-            model = XKNearestNeighbors(param=model_param, application=data_param.application)
+            model = XKNearestNeighbors(param=model_param, application=data_param.application, application_type=data_param.classification_type)
 
         elif data_param.model_type == "svm":
             model_param = XSVMParameters(
                 **data_config.get("svm_parameters")
             )
-            model = XSVM(param=model_param, application=data_param.application)
+            model = XSVM(param=model_param, application=data_param.application, application_type=data_param.classification_type)
 
         elif data_param.model_type == "decision_tree":
             model_param = XDecisionTreeParameters(
                 **data_config.get("decision_tree_parameters")
             )
-            model = XDecisionTree(param=model_param, application=data_param.application)
+            model = XDecisionTree(param=model_param, application=data_param.application, application_type=data_param.classification_type)
 
         elif data_param.model_type == "random_forest":
             model_param = XRandomForestParameters(
                 **data_config.get("random_forest_parameters")
             )
-            model = XRandomForest(param=model_param, application=data_param.application)
+            model = XRandomForest(param=model_param, application=data_param.application, application_type=data_param.classification_type)
 
         else:
             logging.error('Model type not valid.')
@@ -145,6 +145,7 @@ class BuildStatic2ValueMain:
             subset_label="Train",
             classification_type=data_param.classification_type,
             Y_int_to_cat_labels=int_to_cat_dict_list_target,
+            Y_cat_to_int_labels=cat_to_int_dict_list_target,
             history=None,
         )
 
@@ -178,6 +179,7 @@ class BuildStatic2ValueMain:
             subset_label="Test",
             classification_type=data_param.classification_type,
             Y_int_to_cat_labels=int_to_cat_dict_list_target,
+            Y_cat_to_int_labels=cat_to_int_dict_list_target,
             history=None,
         )
 

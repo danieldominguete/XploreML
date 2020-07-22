@@ -118,6 +118,7 @@ Features:
 Features:
 - Scaling numerical variables
 - Encoding categorical variables
+- Multi category unilabel and binary category support
 - Logistic Regression classification model building
 - K-Nearest Neighbors classification model building
 - SVM classification model building

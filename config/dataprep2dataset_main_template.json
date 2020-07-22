@@ -11,14 +11,14 @@
 
   "dataset_parameters": {
     "data_source":"localhost_datafile",
-    "data_file_path":"static/working/example_20-07-18-18-30-08_data.tsv",
+    "data_file_path":"static/working/example_20-07-22-12-32-47_data.tsv",
     "separator":"\t",
     "perc_load":1.0,
     "mode_load":"sequential",
     "numerical_variables":["x_1_num", "y_1_value", "y_3_forecast"],
-    "categorical_variables":["x_2_cat", "y_2_class"],
+    "categorical_variables":["x_2_cat", "y_2_class", "y_4_bin"],
     "txt_variables":[["x_3_txt"],["x_2_cat","x_3_txt"]],
-    "output_target":["y_3_forecast"],
+    "output_target":["y_4_bin"],
     "test_subset": 0.1,
     "test_shuffle": true
     }
