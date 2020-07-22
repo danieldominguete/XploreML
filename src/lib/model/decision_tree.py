@@ -1,25 +1,31 @@
-'''
+"""
 ===========================================================================================
-K-nearest Neighbors Model Building Class
+Decision Tree Regression Model Building Class
 ===========================================================================================
 Script Reviewed by COGNAS
 ===========================================================================================
-'''
+"""
+
 import pandas as pd
-import numpy as np
 import logging
 from src.lib.model.xmodel import XModel
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 
-class XKNearestNeighbors(XModel):
+
+class XDecisionTree(XModel):
 
     def init(self) -> bool:
 
-        # init model
-        self._model = KNeighborsClassifier(n_neighbors=self._param.n_neighbors, metric=self._param.metric,
-                                     p=self._param.metric_power)
+        ## init model
+        if self._application == "regression":
+            self._model = DecisionTreeRegressor(random_state=self._param.random_state)
+        elif self._application == "classification":
+            self._model = DecisionTreeClassifier(random_state=self._param.random_state)
+        else:
+            logging.error('Application type for Decision Tree is not valid')
 
         return True
+
 
     def fit(self, data_input, data_target):
 
@@ -29,20 +35,22 @@ class XKNearestNeighbors(XModel):
         # fit model
         self._model.fit(data_input, data_target)
 
-        # report results
+        # save results
         self.save_results()
 
-        return self.model
+        return self._model
 
-    def eval_predict(self, data_input:pd, int_to_cat_dict_target)->pd:
+    def eval_predict(self, data_input: pd, int_to_cat_dict_target:dict = None) -> pd:
 
+        # predict
         raw_predict = self.model.predict(data_input)
 
         if self._application == "classification":
-            data_predict = self.convert_onehot_classification_to_xout(data_predict=raw_predict, int_to_cat_dict_target=int_to_cat_dict_target)
+            data_predict = self.convert_onehot_classification_to_xout(data_predict=raw_predict,
+                                                                      int_to_cat_dict_target=int_to_cat_dict_target)
 
         elif self._application == "regression":
-            data_predict = self.convert_regression_to_xout(data_predict=raw_predict)
+            data_predict = self.convert_regression_to_xout(data_predict=raw_predict.reshape(len(raw_predict), 1))
 
         return data_predict
 

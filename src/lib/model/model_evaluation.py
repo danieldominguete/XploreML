@@ -116,7 +116,7 @@ class ClassificationModelEvaluation:
         result_train['Output_Pred'] = self.Y_predict.iloc[:,0]
 
         title = self.subset_label + " Dataset"
-        dv = DataPlotting(dataframe=result_train)
+        dv = DataPlotting(dataframe=result_train, view_plots=view, save_plots=save, folder_path=path, prefix=prefix)
 
         # history of training process
         if self.history is not None:

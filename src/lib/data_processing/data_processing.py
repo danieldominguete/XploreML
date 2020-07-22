@@ -747,7 +747,9 @@ class DataProcessing:
             cat_to_int_dict_list,
         )
 
-    def encode_one_hot_categorical_variable(self, data: pd, columns: list, encoder_hot, encoder_int) -> pd:
+    def encode_one_hot_categorical_variable(
+        self, data: pd, columns: list, encoder_hot, encoder_int
+    ) -> pd:
 
         for i in range(len(columns)):
 
@@ -756,7 +758,6 @@ class DataProcessing:
             col_temp.append(columns[i] + "_" + "int")
             int_df = pd.DataFrame(transformed, columns=col_temp)
             data = pd.concat([data, int_df], axis=1)
-
 
             transformed = encoder_hot[i].transform(data[columns[i]].to_numpy().reshape(-1, 1))
             col_temp = []
@@ -788,9 +789,8 @@ class DataProcessing:
         if len(self.param.numerical_inputs) > 0:
             logging.info("======================================================================")
             logging.info("Processing scaling data for numerical inputs")
-            # X_number = data[self.param.numerical_inputs].to_numpy()
 
-            if self.param.scale_numerical_inputs is not None:
+            if self.param.scale_numerical_inputs != "":
                 (
                     data_train_input[self.param.numerical_inputs],
                     num_scaler,
@@ -836,8 +836,8 @@ class DataProcessing:
                 data_test_input = self.encode_one_hot_categorical_variable(
                     data=data_test_input,
                     columns=self.param.categorical_inputs,
-                    encoder_hot = encoders_hot,
-                    encoder_int= encoders_int
+                    encoder_hot=encoders_hot,
+                    encoder_int=encoders_int,
                 )
 
             for var in var_inputs:
@@ -880,38 +880,70 @@ class DataProcessing:
 
             logging.info("Processing output features...")
 
-            if (
-                self.param.classification_type == "binary_category"
-                or self.param.classification_type == "multi_category_unilabel"
-            ):
+            if self.param.application == "regression":
 
-                logging.info(
-                    "======================================================================"
-                )
-                logging.info("Classification problem with categorical output encoded")
-                logging.info("Encoding output target with: " + "one hot coding")
-
-                if self.param.encode_categorical_inputs is not None:
+                if self.param.scale_output_target != "":
                     (
-                        data_train_target,
-                        var_target,
-                        _,
-                        encoders_int,
-                        encoders_hot,
-                        int_to_cat_dict_list_target,
-                        cat_to_int_dict_list_target,
-                    ) = self.fit_encode_categorical_variable(
-                        data=data_train_target,
-                        columns=self.param.output_target,
-                        type='one_hot',
+                        data_train_target[self.param.output_target],
+                        output_scaler,
+                    ) = self.fit_scale_numerical_variables(
+                        data=data_train_target[self.param.output_target],
+                        scaler=self.param.scale_output_target,
                     )
 
-                data_test_target = self.encode_one_hot_categorical_variable(
-                    data=data_test_target, columns=self.param.output_target, encoder_hot=encoders_hot, encoder_int=encoders_int
-                )
+                    logging.info("Scale output target with " + self.param.scale_output_target)
 
+                    data_test_target[self.param.output_target] = self.scale_numerical_variables(
+                        data=data_test_target[self.param.output_target], filter=output_scaler
+                    )
+
+                # Outputs
+                var_target = self.param.output_target
+                int_to_cat_dict_list_target = None
+                cat_to_int_dict_list_target = None
+
+            elif self.param.application == "classification":
+
+                if (
+                    self.param.classification_type == "binary_category"
+                    or self.param.classification_type == "multi_category_unilabel"
+                ):
+
+                    logging.info(
+                        "======================================================================"
+                    )
+                    logging.info("Classification problem with categorical output encoded")
+                    logging.info("Encoding output target with: " + "one hot coding")
+
+                    if self.param.encode_categorical_inputs is not None:
+                        (
+                            data_train_target,
+                            var_target,
+                            _,
+                            encoders_int,
+                            encoders_hot,
+                            int_to_cat_dict_list_target,
+                            cat_to_int_dict_list_target,
+                        ) = self.fit_encode_categorical_variable(
+                            data=data_train_target,
+                            columns=self.param.output_target,
+                            type="one_hot",
+                        )
+
+                    data_test_target = self.encode_one_hot_categorical_variable(
+                        data=data_test_target,
+                        columns=self.param.output_target,
+                        encoder_hot=encoders_hot,
+                        encoder_int=encoders_int,
+                    )
+
+            else:
+                logging.error("Application type is not valid")
+
+            # preparing working variables
             for var in var_target:
                 target_var_list.append(var)
+
         else:
             logging.error("Output target not valid")
 

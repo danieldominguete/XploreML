@@ -1,23 +1,28 @@
-'''
+"""
 ===========================================================================================
-Linear Regression Model Building Class
+SVM Regression Model Building Class
 ===========================================================================================
 Script Reviewed by COGNAS
 ===========================================================================================
-'''
+"""
 
 import pandas as pd
 import logging
 from src.lib.model.xmodel import XModel
-from sklearn.linear_model import LinearRegression
+from sklearn.svm import SVR, SVC
 
-class XLinearRegression(XModel):
 
+class XSVM(XModel):
 
     def init(self) -> bool:
 
-        # init model
-        self._model = LinearRegression(fit_intercept=self._param.fit_intersection)
+        ## init model
+        if self._application == "regression":
+            self._model = SVR(kernel=self._param.kernel)
+        elif self._application == "classification":
+            self._model = SVC(kernel=self._param.kernel)
+        else:
+            logging.error('Application type for SVM is not valid')
 
         return True
 
@@ -32,21 +37,21 @@ class XLinearRegression(XModel):
         # save results
         self.save_results()
 
-        return True
+        return self._model
 
-    def eval_predict(self, data_input:pd)->pd:
+    def eval_predict(self, data_input: pd, int_to_cat_dict_target:dict = None) -> pd:
 
-        # model evaluation
-        raw_predict = self._model.predict(data_input)
+        # predict
+        raw_predict = self.model.predict(data_input)
 
         if self._application == "classification":
-            logging.error('Application not valid for Linear Regression.')
+            data_predict = self.convert_onehot_classification_to_xout(data_predict=raw_predict, int_to_cat_dict_target=int_to_cat_dict_target)
 
         elif self._application == "regression":
-            data_predict = self.convert_regression_to_xout(data_predict=raw_predict)
+            data_predict = self.convert_regression_to_xout(data_predict=raw_predict.reshape(len(raw_predict),1))
 
         return data_predict
-    
+
     def save_results(self) -> bool:
 
         # hyperparameters (numbers and string)

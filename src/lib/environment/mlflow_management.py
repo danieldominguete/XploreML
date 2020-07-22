@@ -91,8 +91,13 @@ class MLFlowManagement:
 
     def publish_history(self, history):
 
-        self.log_params(params=history["params"])
-        self.log_metrics(metrics=history["metrics"])
-        self.log_artifacts(files_dict=history["files"])
+        if history.get('params') is not None:
+            self.log_params(params=history["params"])
+
+        if history.get('metrics') is not None:
+            self.log_metrics(metrics=history["metrics"])
+
+        if history.get('files') is not None:
+            self.log_artifacts(files_dict=history["files"])
 
         # save plot: https://towardsdatascience.com/tracking-ml-experiments-using-mlflow-7910197091bb

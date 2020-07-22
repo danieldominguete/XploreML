@@ -16,7 +16,7 @@ class XLogisticRegression(XModel):
     def fit(self, data_input, data_target):
 
         # init model
-        model = LogisticRegression(random_state=self.param.random_state)
+        model = LogisticRegression(random_state=self._param.random_state)
         
         # fit model
         if data_target.shape[1] == 1:
@@ -42,7 +42,7 @@ class XLogisticRegression(XModel):
 
         logging.info("======================================================================")
         logging.info('Hyperparameters:')
-        logging.info('random state : ' + str(self.param.random_state))
+        logging.info('random state : ' + str(self._param.random_state))
         #logging.info('fit_intersection : {a:.3f}'.format(a=self.param.fit_intersection))
 
         return True

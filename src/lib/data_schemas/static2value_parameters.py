@@ -9,7 +9,6 @@ from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
 
-
 class DataSource(str, Enum):
     '''
         'localhost_datafile': local file
@@ -50,16 +49,18 @@ class ScaleNumericalVariables(str, Enum):
 
 class EncodingCategoricalVariables(str, Enum):
     '''
-        "":
         "one_hot":
         "int":
     '''
-    none = ""
     one_hot = "one_hot"
     int = "int"
 
 
 class Static2ValueParameters(BaseModel):
+
+    # application
+    application = 'regression'
+
     # data source
     data_source: DataSource
 
@@ -95,6 +96,9 @@ class Static2ValueParameters(BaseModel):
 
     # encoding categorical variables
     encode_categorical_inputs: EncodingCategoricalVariables = ''
+
+    # scaling numerical output target
+    scale_output_target: ScaleNumericalVariables = ''
 
     # type of modeling technique
     model_type: ModelType

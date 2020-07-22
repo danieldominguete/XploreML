@@ -30,7 +30,6 @@ class ModelType(str, Enum):
     '''
         'linear regression':
     '''
-    logistic_regression = 'logistic_regression'
     k_nearest_neighbors = 'k_nearest_neighbors'
     naive_bayes = 'naive_bayes'
     svm = 'svm'
@@ -68,6 +67,10 @@ class ClassificationType(str, Enum):
     multi_category_multilabel = "multi_category_multilabel"  # not implemented
 
 class Static2ClassParameters(BaseModel):
+
+    # application
+    application = 'classification'
+
     # data source
     data_source: DataSource
 

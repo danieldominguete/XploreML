@@ -14,36 +14,50 @@ from sklearn.preprocessing import PolynomialFeatures
 
 
 class XPolynomialRegression(XModel):
+
+    def init(self) -> bool:
+
+        ## init model
+        self._model = LinearRegression()
+
+        return True
+
     def fit(self, data_input, data_target):
 
         # init model
-        poly_features = PolynomialFeatures(degree=self.param.degree)
+        poly_features = PolynomialFeatures(degree=self._param.degree)
         X_poly = poly_features.fit_transform(data_input)
-        self.model = LinearRegression()
+        self.init()
 
         # fit model
-        self.model.fit(X_poly, data_target)
+        self._model.fit(X_poly, data_target)
 
-        # report results
-        self.report_modeling()
+        # save results
+        self.save_results()
 
         return self.model
 
     def eval_predict(self, data_input: pd) -> pd:
 
-        poly_features = PolynomialFeatures(degree=self.param.degree)
+        poly_features = PolynomialFeatures(degree=self._param.degree)
         X_poly = poly_features.fit_transform(data_input)
-        data_predict = self.model.predict(X_poly)
+        raw_predict = self.model.predict(X_poly)
 
-        # convert ndarray to pandas dataframe
-        data = pd.DataFrame(data=data_predict)
+        if self._application == "classification":
+            logging.error('Application not valid for Linear Regression.')
 
-        return data
+        elif self._application == "regression":
+            data_predict = self.convert_regression_to_xout(data_predict=raw_predict)
 
-    def report_modeling(self) -> bool:
+        return data_predict
 
-        logging.info("======================================================================")
-        logging.info("Hyperparameters:")
-        logging.info('degree : {a:.3f}'.format(a=self.param.degree))
+    def save_results(self) -> bool:
+
+        # hyperparameters (numbers and string)
+        self._history['params'] = dict(self._param)
+
+        # metrics (list numbers only)
+        # self._history['metrics'] = {'teste': [100]}
 
         return True
+

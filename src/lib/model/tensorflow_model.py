@@ -145,7 +145,7 @@ class TensorFlowModel:
             embedding_model.load_model(self.model_parameters.embedding_word_model_file)
 
             # dictionary and matrix from w2v model
-            word_index = {word: vocab.index for word, vocab in embedding_model.model.wv.vocab.items()}
+            word_index = {word: vocab.index for word, vocab in embedding_model._model.wv.vocab.items()}
             embedding_model.word_index = word_index
             embedding_matrix = embedding_model.get_embedding_matrix()
 
@@ -178,7 +178,7 @@ class TensorFlowModel:
             embedding_model.load_model(self.model_parameters.embedding_word_model_file)
 
             # dictionary and matrix from w2v model
-            word_index = {word: vocab.index for word, vocab in embedding_model.model.wv.vocab.items()}
+            word_index = {word: vocab.index for word, vocab in embedding_model._model.wv.vocab.items()}
             embedding_model.word_index = word_index
             embedding_matrix = embedding_model.get_embedding_matrix()
 
@@ -208,7 +208,7 @@ class TensorFlowModel:
             embedding_model.load_model(self.model_parameters.embedding_word_model_file)
 
             # dictionary and matrix from w2v model
-            word_index = {word: vocab.index for word, vocab in embedding_model.model.wv.vocab.items()}
+            word_index = {word: vocab.index for word, vocab in embedding_model._model.wv.vocab.items()}
             embedding_model.word_index = word_index
             embedding_matrix = embedding_model.get_embedding_matrix()
 
@@ -256,7 +256,7 @@ class TensorFlowModel:
             embedding_model.load_model(self.model_parameters.embedding_word_model_file)
 
             # dictionary and matrix from w2v model
-            word_index = {word: vocab.index for word, vocab in embedding_model.model.wv.vocab.items()}
+            word_index = {word: vocab.index for word, vocab in embedding_model._model.wv.vocab.items()}
             embedding_model.word_index = word_index
             embedding_matrix = embedding_model.get_embedding_matrix()
 

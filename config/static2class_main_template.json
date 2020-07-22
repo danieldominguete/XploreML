@@ -1,11 +1,11 @@
 {
   "environment_parameters": {
-    "app_name" : "example",
+    "app_name" : "example-class",
     "environment_id" : "console_localhost",
     "output_folder": "outputs",
     "logging_level" : "info",
-    "view_plots" : true,
-    "save_plots" : false,
+    "view_plots" : false,
+    "save_plots" : true,
     "tracking": true
   },
 
@@ -23,7 +23,7 @@
     "classification_type": "multi_category_unilabel",
     "scale_numerical_inputs": "min_max",
     "encode_categorical_inputs": "one_hot",
-    "model_type": "k_nearest_neighbors"
+    "model_type": "decision_tree"
   },
 
   "logistic_regression_parameters": {

@@ -16,7 +16,7 @@ class XRandomForesteRegression(XModel):
     def fit(self, data_input, data_target):
 
         # init model
-        self.model = DecisionTreeRegressor(random_state=self.param.random_state)
+        self.model = DecisionTreeRegressor(random_state=self._param.random_state)
 
         # fit model
         self.model.fit(data_input, data_target)
@@ -40,7 +40,7 @@ class XRandomForesteRegression(XModel):
 
         logging.info("======================================================================")
         logging.info("Hyperparameters:")
-        logging.info('random state: ' + str(self.param.random_state))
-        logging.info('number of estimators: ' + str(self.param.n_estimators))
+        logging.info('random state: ' + str(self._param.random_state))
+        logging.info('number of estimators: ' + str(self._param.n_estimators))
 
         return True
