@@ -1,23 +1,23 @@
 '''
 ===========================================================================================
-Linear Regression Model Building Class
+K-nearest Neighbors Model Building Class
 ===========================================================================================
 Script Reviewed by COGNAS
 ===========================================================================================
 '''
-
 import pandas as pd
+import numpy as np
 import logging
 from src.lib.model.xmodel import XModel
-from sklearn.linear_model import LinearRegression
+from sklearn.neighbors import KNeighborsClassifier
 
-class XLinearRegression(XModel):
-
+class XKNearestNeighbors(XModel):
 
     def init(self) -> bool:
 
         # init model
-        self._model = LinearRegression(fit_intercept=self._param.fit_intersection)
+        self._model = KNeighborsClassifier(n_neighbors=self._param.n_neighbors, metric=self._param.metric,
+                                     p=self._param.metric_power)
 
         return True
 
@@ -29,24 +29,23 @@ class XLinearRegression(XModel):
         # fit model
         self._model.fit(data_input, data_target)
 
-        # save results
+        # report results
         self.save_results()
 
-        return True
+        return self.model
 
-    def eval_predict(self, data_input:pd)->pd:
+    def eval_predict(self, data_input:pd, int_to_cat_dict_target)->pd:
 
-        # model evaluation
-        raw_predict = self._model.predict(data_input)
+        raw_predict = self.model.predict(data_input)
 
         if self._application == "classification":
-            logging.error('Application not valid for Linear Regression.')
+            data_predict = self.convert_classification_to_xout(data_predict=raw_predict, int_to_cat_dict_target=int_to_cat_dict_target)
 
         elif self._application == "regression":
             data_predict = self.convert_regression_to_xout(data_predict=raw_predict)
 
         return data_predict
-    
+
     def save_results(self) -> bool:
 
         # hyperparameters (numbers and string)
@@ -56,4 +55,3 @@ class XLinearRegression(XModel):
         # self._history['metrics'] = {'teste': [100]}
 
         return True
-

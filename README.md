@@ -68,7 +68,6 @@ Features:
 - Missing data processing
 - Duplicate samples processing
 - Outliers detection
-- 
     
 ### Step 4 - Building dataset
 
@@ -109,10 +108,23 @@ Features:
 - Scaling numerical variables
 - Encoding categorical variables
 - Linear regression model building
-
+- Polynomial regression model building
+- SVM regression model building
+- Decision Trees regression model building
+- Random Forest regression model building
 
 #### Static2Class: Problems involving static input feature vector to estimate the most likelihood class
-_In progress._ 
+
+Features:
+- Scaling numerical variables
+- Encoding categorical variables
+- Multi category unilabel and binary category support
+- Logistic Regression classification model building
+- K-Nearest Neighbors classification model building
+- SVM classification model building
+- Decision Trees classification model building
+- Random Forest classification model building
+ 
 #### Img2Class: Problems involving input images to estimate the most likelihood class
 _In progress._
 #### Seq2Class: Problems involving input sequences of feature vectors to estimate the most likelihood class
@@ -140,8 +152,9 @@ _In progress._
 - test: test scripts   
 
 # Technical References
+List of inspiring technical references! =)  
 
-## Frameworks Applied
+## Frameworks
 
 ### ML Lifecycle Management
 

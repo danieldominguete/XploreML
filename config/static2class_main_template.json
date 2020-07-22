@@ -1,6 +1,6 @@
 {
   "environment_parameters": {
-    "app_name" : "example-regress",
+    "app_name" : "example-class",
     "environment_id" : "console_localhost",
     "output_folder": "outputs",
     "logging_level" : "info",
@@ -9,7 +9,7 @@
     "tracking": true
   },
 
-  "static2value_parameters": {
+  "static2class_parameters": {
     "data_source":"localhost_datafile",
     "data_train_file_path":"static/working/example_20-07-22-12-35-19_train.tsv",
     "data_test_file_path":"static/working/example_20-07-22-12-35-19_test.tsv",
@@ -19,23 +19,29 @@
     "numerical_inputs":["x_1_num", "y_1_value"],
     "categorical_inputs":["x_2_cat", "y_2_class"],
     "txt_inputs":[],
-    "output_target":["y_3_forecast"],
+    "output_target":["y_4_bin"],
+    "classification_type": "binary_category",
     "scale_numerical_inputs": "min_max",
     "encode_categorical_inputs": "one_hot",
-    "scale_output_target": "min_max",
-    "model_type": "svm"
+    "model_type": "random_forest"
   },
 
-  "linear_regression_parameters": {
-    "fit_intersection": true
+  "logistic_regression_parameters": {
+    "random_state": 0
   },
 
-  "polynomial_regression_parameters": {
-    "degree": 2
+  "k_nearest_neighbors_parameters": {
+    "n_neighbors" : 5,
+    "metric": "minkowski",
+    "metric_power": 2
   },
 
   "svm_parameters": {
     "kernel": "rbf"
+  },
+
+  "naive_bayes_parameters": {
+
   },
 
   "decision_tree_parameters": {

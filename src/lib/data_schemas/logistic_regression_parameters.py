@@ -1,6 +1,6 @@
 """
 ===========================================================================================
-Linear Regression Model Building Parameters Class
+Logistic Regression Model Building Parameters Class
 ===========================================================================================
 Script by COGNAS
 ===========================================================================================
@@ -10,9 +10,6 @@ from enum import Enum
 from typing import Optional
 
 
-class XLinearRegressionParameters(BaseModel):
+class XLogisticRegressionParameters(BaseModel):
 
-    # data source
-    """Whether to calculate the intercept for this model. If set to False, no intercept will be used
-    in calculations (i.e. data is expected to be centered). Independent term=0"""
-    fit_intersection: bool
+    random_state: int = 0

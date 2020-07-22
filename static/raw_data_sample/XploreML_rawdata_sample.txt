@@ -1,301 +1,301 @@
-index	datetime	x_1_num	x_2_cat	x_3_txt	y_1_value	y_2_class	y_3_forecast
-1.00	15/07/2020 22:00	0.98	A	ððð_ @ Catedral de Santo Ant™nio - Governador Valadares/MG https://t.co/JSbKamIqUJ	0.82	A	1.95
-2.00	15/07/2020 22:15	0.85	B	ð @ Governador Valadares. Minas Gerais https://t.co/B3ThIDJCSf	0.76	B	2.20
-3.00	15/07/2020 22:30	0.21	C	ðð @ Governador Valadares. Minas Gerais https://t.co/dPkgzVR2Qw	0.20	A	0.85
-4.00	15/07/2020 22:45	0.44	A	ððð https://t.co/BnDsO34qK0	0.43	C	0.98
-5.00	15/07/2020 23:00	0.27	D	ððð PSOL vai questionar aumento de vereadores e prefeito de BH na Justia - Politica - Estado de Minas https://t.co/DMg7BGsek5	0.25	B	0.75
-6.00	15/07/2020 23:15	0.50	C	""" bom Ž bandido morto"""	0.47	A	1.14
-7.00	15/07/2020 23:30	0.13	D		0.13	C	0.52
-8.00	15/07/2020 23:45	0.68	B	"""..E 25% dos mineiros dizem n‹o torcer para time nenhum.mesmo dentro de um estado com AtlŽtico-MG e Cruzeiro. Pq?.."" https://t.co/fN5evlLQsR"	0.64	A	1.42
-9.00	16/07/2020 00:00	0.17	A	"""A gigantesca barba do mal"" em destaque no caderno Cultura do Estado de Minas. https://t.co/PxNurIkTlw"	0.18	B	0.67
-10.00	16/07/2020 00:15	0.10	C	"""BB e governo de Minas travam disputa sobre dep—sitos judiciais"" https://t.co/CnMu2A2Qo5"	0.09	C	0.28
-11.00	16/07/2020 00:30	0.60	B	"""com vcs bh fica pequena!"" Belo Horizonte (pron. [b_lo_i_z›nt_i][10]) Ž a capital do estado de MG. com uma ‡rea de aproximadamente 331 km_"	0.57	A	1.24
-12.00	16/07/2020 00:45	0.62	A	"""Da’ a gente visita governador valadares"""	0.59	A	1.55
-13.00	16/07/2020 01:00	0.87	B		0.76	B	2.05
-14.00	16/07/2020 01:15	0.40	C		0.39	A	1.23
-15.00	16/07/2020 01:30	0.25	A		0.25	C	0.69
-16.00	16/07/2020 01:45	0.21	D		0.21	B	0.53
-17.00	16/07/2020 02:00	0.05	C	"""ƒ bonita e Ž bonita..."" "	0.05	A	0.20
-18.00	16/07/2020 02:15	0.33	D		0.32	C	0.69
-19.00	16/07/2020 02:30	0.88	B	"""erro desconhecido"" Ž mato! Ali‡s. Ž da secretaria estadual de fazenda que t‡ assim... MG n‹o precisa de dinheiro n‹o. Governador?"	0.77	A	1.93
-20.00	16/07/2020 02:45	0.58	A	"""La La Land: Cantando Esta›es"" arrasa no Globo de Ouro - Estado de Minas https://t.co/aQ0NG1bp5f https://t.co/aY3qlrVnTE"	0.54	B	1.61
-21.00	16/07/2020 03:00	0.62	C	"""La La Land: Cantando Esta›es"" arrasa no Globo de Ouro - Estado de Minas https://t.co/qRI9DCiicc"	0.57	C	1.54
-22.00	16/07/2020 03:15	0.27	B	"""Los abusos. aun en el estado m‡s s—lido. son minas sordas que tarde o temprano estallan"" Joseph Sanial-Dubay"	0.27	A	0.84
-23.00	16/07/2020 03:30	0.94	A	"""Mesmo sem muito dinheiro no caixa o governo de Minas Gerais compra 2 (DOIS) helic—pteros."" Dois... Helic—pteros... Minas Gerais... #2017 s1"	0.80	A	2.02
-24.00	16/07/2020 03:45	0.73	B	"""Modelo de segurana ser‡ o nosso legado"". diz Cl‡udio Beato - Politica - Estado de Minas https://t.co/1MqOJo7Nnf"	0.66	B	1.92
-25.00	16/07/2020 04:00	0.13	C	"""Modelo de segurana ser‡ o nosso legado"". diz Cl‡udio Beato - Politica - Estado de Minas https://t.co/kA09mEn4xN"	0.13	A	0.63
-26.00	16/07/2020 04:15	0.60	A	"""Modelo de segurana ser‡ o nosso legado"". diz Cl‡udio Beato - Politica - Estado de Minas https://t.co/S97Khxldiu"	0.56	C	1.28
-27.00	16/07/2020 04:30	0.30	D	"""O governo de Minas Gerais n‹o comentou o assunto. """	0.31	B	0.90
-28.00	16/07/2020 04:45	0.19	C		0.18	A	0.53
-29.00	16/07/2020 05:00	0.68	D		0.62	C	1.46
-30.00	16/07/2020 05:15	0.60	B	"""O governo federal publicou no dia 27 de dezembro de 2016. a Medida Provis—ria 764/16 que permite a diferencia‹o... https://t.co/0DlDpZ9WGz"	0.56	A	1.53
-31.00	16/07/2020 05:30	0.76	A	"""Pol’cia Federal acaba de divulgar que encontrou provas no apartamento do Lula. mas s— atŽ a 4» sŽrie."" Jornal Estado de Minas"	0.68	B	1.82
-32.00	16/07/2020 05:45	0.17	C	"""Praia da Esta‹o"" lota neste s‡bado de ver‹o em BH - Gerais - Estado de Minas https://t.co/DpG3CNfZBb"	0.17	C	0.72
-33.00	16/07/2020 06:00	0.94	B	"""Representando mais uma ferramenta de monitoramento da educa‹o da rede estadual em Minas. a Secretaria de Estado... https://t.co/brsfBqHXlQ"	0.82	A	1.96
-34.00	16/07/2020 06:15	0.33	A	"""uso de aeronave pertencente ao  Estado de MG. em domingo. p/ fins pessoais.  em claro desvio de finalidade"" - https://t.co/WEfv5iLyju"	0.33	A	1.14
-35.00	16/07/2020 06:30	0.25	B	"""vou postar umas curiosidades sobre o corpo humano"""	0.26	B	0.66
-36.00	16/07/2020 06:45	0.17	C		0.18	A	0.46
-37.00	16/07/2020 07:00	0.83	A		0.74	C	1.74
-38.00	16/07/2020 07:15	0.41	D	#ACORDAMINAS!!!	0.41	B	1.23
-39.00	16/07/2020 07:30	0.64	C		0.59	A	1.48
-40.00	16/07/2020 07:45	0.07	D		0.08	C	0.45
-41.00	16/07/2020 08:00	0.49	B	#ACORDAMINAS!!!!	0.48	A	1.02
-42.00	16/07/2020 08:15	0.58	A		0.55	B	1.41
-43.00	16/07/2020 08:30	0.01	C		0.02	C	0.32
-44.00	16/07/2020 08:45	0.47	B	#Alerta - Nome da CEEE Ž utilizado em golpe no Estado. https://t.co/i5ndsWhXR4 https://t.co/yaEM6s3Z2f	0.45	A	0.94
-45.00	16/07/2020 09:00	0.88	A	#beta #betalab #mg Afiliada da Globo: Apresentador no AM Ž demitido ap—s criticar governadorÉ https://t.co/hlH8ITxXig	0.78	A	1.99
-46.00	16/07/2020 09:15	0.71	B	#beta #betalab #mg Caos nos pres’dios: AM pede apoio ˆ Uni‹o seis dias ap—s massacre https://t.co/GRv0HkrX3TÉ https://t.co/YJy2RcSfWZ	0.66	B	1.85
-47.00	16/07/2020 09:30	0.11	C	#beta #betalab #mg Caos nos pres’dios: Temer e C‡rmen Lœcia se reœnem para debater crise https://t.co/e34RNvtU7vÉ https://t.co/8xKwPTOv4C	0.11	A	0.57
-48.00	16/07/2020 09:45	0.16	A	#beta #betalab #mg Crise carcer‡ria: Governo de Roraima pede Fora Nacional a Temer https://t.co/wLslS1T6ZIÉ https://t.co/NK4c5IhNUg	0.16	C	0.37
-49.00	16/07/2020 10:00	0.40	D	#beta #betalab #mg Crise carcer‡ria: Secret‡rio de SP diz haver guerra de fac›es no pa’s https://t.co/RSf2Tk1VmXÉ https://t.co/Sonel0f8Xq	0.39	B	0.89
-50.00	16/07/2020 10:15	0.03	C	#beta #betalab #mg Crise pol’tica no DF se agrava: Rollemberg exonera vice-governador de cargoÉ https://t.co/idJfAELeW4 #timbeta #rt #brasil	0.02	A	0.26
-51.00	16/07/2020 10:30	0.94	D	#beta #betalab #mg Escalada de violncia nos pres’dios: AM pede apoio da Fora Nacional	0.81	C	1.89
-52.00	16/07/2020 10:45	0.39	B	#beta #betalab #mg Escalada de violncia: Crime organizado no Brasil Ž disputado por 27É https://t.co/loRe3EfGaFÉ https://t.co/sSY5liKfMl	0.37	A	1.25
-53.00	16/07/2020 11:00	0.58	A	#beta #betalab #mg Estado afirma n‹o ter sido notificado: Apesar de decis‹o judicial. reajusteÉÉ https://t.co/IMG9Vxs4nK	0.56	B	1.36
-54.00	16/07/2020 11:15	0.69	C	"#beta #betalab #mg Estado de esp’rito do paulistano: ""Voz"" do tr‰nsito. buzina reflete pressa.ÉÉ https://t.co/hvLy03lyt3"	0.64	C	1.68
-55.00	16/07/2020 11:30	0.86	B	#beta #betalab #mg Estados falidos: Parte do PMDB quer barrar vetos de Temer na negocia‹o deÉÉ https://t.co/h9KQvBYlYV	0.75	A	2.06
-56.00	16/07/2020 11:45	0.08	A	#beta #betalab #mg Ex-ministro e outros: Servidores da era PT se mantm em cargos estratŽgicosÉ https://t.co/Q2Nor97ngg #timbeta #rt #brasil	0.08	A	0.60
-57.00	16/07/2020 12:00	0.65	B	#beta #betalab #mg Ex-presidente da C‰mara: Justia su’a v 'ind’cios concretos' contraÉ https://t.co/fwuwi8S4oDÉ https://t.co/w1W2SaN172	0.61	B	1.34
-58.00	16/07/2020 12:15	0.02	C	#beta #betalab #mg Governo em calamidade financeira: BB avisa Justia que Minas n‹o temÉ https://t.co/CdXt0cvcuYÉ https://t.co/s8un5iFnQS	0.02	A	0.36
-59.00	16/07/2020 12:30	0.81	A	#beta #betalab #mg Mais sobre o massacre: PF: Fac‹o tinha 'cela de comando' dentro da pris‹oÉ https://t.co/W3Cr89L0dk	0.73	C	1.63
-60.00	16/07/2020 12:45	0.40	D	#beta #betalab #mg Marketing e veto a medidas de Paes: De doa‹o de sangue a capoeira: a 1»ÉÉ https://t.co/xPnt6omym6	0.39	B	1.20
-61.00	16/07/2020 13:00	0.73	C	#beta #betalab #mg Massacre em pres’dio de Manaus: Governo do AM rebate ministro da Justia eÉ https://t.co/MaBb4airMU #timbeta #rt #brasil	0.68	A	1.66
-62.00	16/07/2020 13:15	0.78	D	#beta #betalab #mg Mudanas propostas pelo governo: Reforma libera trabalhar 12 horas algunsÉÉ https://t.co/eIDgx5Ak3n	0.70	C	1.93
-63.00	16/07/2020 13:30	0.65	B	"#beta #betalab #mg Muitas p‡ginas de investiga‹o: ""QG"" da Lava Jato reœne mais de 30 milh›esÉÉ https://t.co/pQF48BKPMr"	0.61	A	1.69
-64.00	16/07/2020 13:45	0.65	A	#beta #betalab #mg Nos œltimos dois anos: Governo pagou R$ 2.4 bi a alvos da Lava Jato https://t.co/KN8C0LcRebÉ https://t.co/GDQVhjO1Hc	0.61	B	1.62
-65.00	16/07/2020 14:00	0.89	C	#beta #betalab #mg Nova chacina em pres’dio: PCC matou presos sem fac‹o. diz governo de RR https://t.co/e17QVKbWVVÉ https://t.co/HJinQ9Y8aT	0.77	C	2.11
-66.00	16/07/2020 14:15	0.44	B	#beta #betalab #mg Onda de violncia nos pres’dios: Governo de Roraima divulga lista oficialÉÉ https://t.co/HLcGf3UtCx	0.43	A	1.32
-67.00	16/07/2020 14:30	0.06	A	#beta #betalab #mg Pede respeito aos direitos dos detentos: Defensoria Pœblica da Uni‹o vai aoÉÉ https://t.co/kKbLNKRXfi	0.05	A	0.33
-68.00	16/07/2020 14:45	0.21	B	#beta #betalab #mg Pedido ao STF irritou Meirelles: Governo ameaa suspender aval paraÉ https://t.co/cHJbFIKAOYÉ https://t.co/uSTdKS5mCn	0.21	B	0.44
-69.00	16/07/2020 15:00	0.13	C	#beta #betalab #mg Reforma no poder da Venezuela: Maduro nomeia novo vice-presidente e trocaÉÉ https://t.co/BPMWBODUM2	0.14	A	0.36
-70.00	16/07/2020 15:15	0.76	A	#beta #betalab #mg Revista encontra armas e drogas: Rifle. 42 facas e roteador s‹o achados emÉÉ https://t.co/TlIOyQeKb0	0.68	C	1.59
-71.00	16/07/2020 15:30	0.76	D	#beta #betalab #mg Rio reforou Opera‹o Praia: S‡bado de calor tem confus‹o e roubo nasÉ https://t.co/TwU41FTyfqÉ https://t.co/fSPlWFWWVo	0.68	B	1.90
-72.00	16/07/2020 15:45	0.47	C	#beta #betalab #mg Segundo agentes penitenci‡rios: Pres’dios do RJ est‹o em alerta desdeÉ https://t.co/jODEM3J6Y4É https://t.co/gLMfJEuCNS	0.44	A	1.32
-73.00	16/07/2020 16:00	0.34	D	#beta #betalab #mg 'Tinha que matar mais': Secret‡rio de Temer deixa cargo ap—s dizer queÉ https://t.co/ZZm1TCutjzÉ https://t.co/OoJJ3GcokW	0.33	C	0.91
-74.00	16/07/2020 16:15	0.11	B	#beta #betalab #mg UOL Confere a crise prisional: Gest‹o privada de pres’dio n‹o eximeÉ https://t.co/dj5fy2PIwiÉ https://t.co/wCmH4Qhxt7	0.11	A	0.40
-75.00	16/07/2020 16:30	0.48	A	#beta #betalab #mg UOL Confere: Governo Temer distorce dados econ™micos em propaganda de 120ÉÉ https://t.co/w4dzb3AgfT	0.46	B	1.02
-76.00	16/07/2020 16:45	0.76	C	#BRASILest‡CHEIOdeMAMÌEsouFODA #METADEdoBRASILpertenceaosPOLêTICOSaoutraŽdosBANCOSeEMPRESçRIOS	0.68	C	1.77
-77.00	16/07/2020 17:00	0.12	B		0.11	A	0.62
-78.00	16/07/2020 17:15	0.00	A	#brasilmetropole Saœde mantŽm estado de aten‹o e investiga casos de febre amarela https://t.co/HAq4OMqMJK	0.00	A	0.06
-79.00	16/07/2020 17:30	0.39	B	#Cidades Com a alta incidncia. a Secretaria de Estado de Saœde mantŽm alerta para moradores e visitantes de 15... https://t.co/qsntM0quLy	0.38	B	0.77
-80.00	16/07/2020 17:45	0.06	C	#COPINHANAREDEVIDA  Eu e meu pai ligado na copinha pela Rede Vida! SOMOS DE GOVERNADOR VALADARES MG	0.06	A	0.31
-81.00	16/07/2020 18:00	0.70	A	"#DefesaAgropecu‡ria ""Governo de Minas Gerais aposta nos Arranjos Produtivos Locais"" na #RITDA: https://t.co/FzwaAJbcsw"	0.65	C	1.43
-82.00	16/07/2020 18:15	0.21	D	#EBC Governo de Minas investiga casos suspeitos de febre amarela e mal‡ria no estado https://t.co/SQIpvlLbvY	0.20	B	0.77
-83.00	16/07/2020 18:30	0.61	C	#Educa‹oMG Governo de Minas Gerais reconhece Folias de Reis como Patrim™nio Imaterial do Estado.É https://t.co/YvVFinjaLL	0.56	A	1.32
-84.00	16/07/2020 18:45	0.70	D	#ForaMichael O atacante Michael sofreu um traumatismo craniano ap—s colidir com uma vaca em Minas e est‡ em estadoÉ https://t.co/dja4NqF1ZD	0.63	C	1.70
-85.00	16/07/2020 19:00	0.41	B	#holachilevierneschico jajaja los wns preparados. nada al azar #califa las minas abran estado tan buenas.como para haber asumido el riesgo?	0.40	A	1.17
-86.00	16/07/2020 19:15	0.78	A	#i5gornascimento @i5gornascimento @cristiano UFJF abre 62 vagas para cursos em Governador Valadares https://t.co/NnA9YFp4BP	0.71	B	1.77
-87.00	16/07/2020 19:30	0.05	C	#i5gornascimento @i5gornascimento g1 Corpo em estado de decomposi‹o Ž encontrado em Poos de Caldas. MG https://t.co/ndVVD6kdly	0.05	C	0.49
-88.00	16/07/2020 19:45	0.12	B	#i5gornascimento @i5gornascimento g1 Prefeito de AimorŽs decreta estado de emergncia administrativa https://t.co/0Jh7ARbSnk	0.13	A	0.27
-89.00	16/07/2020 20:00	0.05	A	#i5gornascimento @i5gornascimento g1 Vereadores de Governador Valadares n‹o ter‹o 13¼ sal‡rio em 2017 https://t.co/9dJnmDxEAI	0.06	A	0.16
-90.00	16/07/2020 20:15	0.35	B	#i5gornascimento @i5gornascimento Governador Valadares registra dois assassinatos em menos de uma hora https://t.co/ZcuZugp8dq	0.34	B	0.73
-91.00	16/07/2020 20:30	0.34	C	#i5gornascimento @i5gornascimento UFJF abre 62 vagas para cursos em Governador Valadares https://t.co/FYeEFvieCy	0.34	A	0.85
-92.00	16/07/2020 20:45	0.89	A	#ImpeachmentPimentel #PTNuncaMais 	0.79	C	1.95
-93.00	16/07/2020 21:00	0.77	D		0.70	B	1.98
-94.00	16/07/2020 21:15	0.38	C	#ImpeachmentPimentel #PTNuncaMais #ForaPT #ForaPCdoB #ForaPSOL #ForaRede 	0.36	A	1.14
-95.00	16/07/2020 21:30	0.09	D		0.10	C	0.36
-96.00	16/07/2020 21:45	0.56	B	#Janeiro. #PartiuFerias. GOVERNADOR VALADARES/MG. Pousada Vale Silvestre EcoPark. Comprar: https://t.co/rNRqRFbUeMÉ https://t.co/2UyZ6Ojdp7	0.52	A	1.16
-97.00	16/07/2020 22:00	0.48	A	#Janeiro. #PartiuFerias. GOVERNADOR VALADARES/MG. Pousada Vale Silvestre EcoPark. Comprar: https://t.co/rNRqRFbUeMÉ https://t.co/qw78x6qm7k	0.46	B	1.24
-98.00	16/07/2020 22:15	0.77	C	#jornaldacultura	0.69	C	1.79
-99.00	16/07/2020 22:30	0.06	B		0.06	A	0.51
-100.00	16/07/2020 22:45	0.94	A	#METADEdoBRASILpertenceaosPOLêTICOSaoutraŽdosBANCOSeEMPRESçRIOS  Politica - Estado de Minas https://t.co/usvOMucmuq	0.80	A	1.91
-101.00	16/07/2020 23:00	0.19	B	#Microsoft  #lumia galera hj descobrir que aqui n estado do rio de janeiro n tem autorizada .(S.PAULO E MINAS ) NAO COMPREI WINDOWS PHONE	0.19	B	0.85
-102.00	16/07/2020 23:15	0.37	C	#M’dia:  Press Release from Business Wire : Consumer Technology ... - Estado de Minas https://t.co/FGoxtwksdM	0.38	A	0.84
-103.00	16/07/2020 23:30	0.54	A	#M’dia:  Press Release from Business Wire : Digital Living Network Alliance - Estado de Minas https://t.co/wj7wMchv8S	0.50	C	1.27
-104.00	16/07/2020 23:45	0.98	D	#M’dia:  Press Release from Business Wire : IBC - Estado de Minas https://t.co/Uy5QuJo8wx	0.82	B	2.23
-105.00	17/07/2020 00:00	0.39	C	#MINAS Postos dos Sine oferecem mais de 1.500 vagas de emprego no estado https://t.co/ZTrZ8MGrRp #Trabalho #Emprego #MG #Oportunidades	0.39	A	1.28
-106.00	17/07/2020 00:15	0.16	D	#Minas vai dobrar oferta de trabalho e estudo nos #pres’dios do Estado	0.17	C	0.51
-107.00	17/07/2020 00:30	0.30	B		0.29	A	0.67
-108.00	17/07/2020 00:45	0.74	A	#Minas vai dobrar oferta de trabalho e estudo nos #pres’dios do Estado	0.69	B	1.63
-109.00	17/07/2020 01:00	0.28	C		0.28	C	0.94
-110.00	17/07/2020 01:15	0.86	B	#Mortalidade por c‰ncer cai 25% em 25 anos nos Estados Unidos - Estado de Minas https://t.co/fsZg1D8WCL	0.77	A	1.86
-111.00	17/07/2020 01:30	0.36	A	#musicagratis Funda‹o Hospitalar do Estado de Minas Gerais (FHEMIG): A Funda‹o HospitalarÉÉ https://t.co/JXxZCenikX	0.34	A	1.14
-112.00	17/07/2020 01:45	0.77	B	#musicagratis MinistŽrio Pœblico de Minas Gerais (Arax‡): O MinistŽrio Pœblico do Estado deÉÉ https://t.co/4WqHRHwxOg	0.69	B	1.71
-113.00	17/07/2020 02:00	0.88	C	#musicagratis Prefeitura de Rodeiro: A Prefeitura de Rodeiro. no Estado de Minas Gerais.É https://t.co/kdGlkcQKcGÉ https://t.co/NyF4ZQiZqm	0.77	A	2.15
-114.00	17/07/2020 02:15	0.29	A	#noticiasdorenan Em calamidade financeira. governo de MG compra dois helic—pteros: OÉ https://t.co/oW6G9hElta	0.29	C	1.02
-115.00	17/07/2020 02:30	0.19	D	#noticiasdorenan Governo de Minas Gerais reconhece Folias de Reis como Patrim™nio ImaterialÉ https://t.co/AL18Rr45X3	0.20	B	0.52
-116.00	17/07/2020 02:45	0.88	C	#noticiasdorenan Uso de dep—sitos judiciais pelo governo tem nova polmica em MG: O BancoÉ https://t.co/kHuZpKQaj5	0.78	A	1.86
-117.00	17/07/2020 03:00	0.79	D	#OperacaoBetaLab #TimBeta #Beta #BetaLab #BetaAjudaBeta #BetaSegueBeta UOL: Desastre ambiental em MG: Empresas pedÉ https://t.co/kwyeKjhtcI	0.71	C	2.01
-118.00	17/07/2020 03:15	0.41	B	#OperacaoBetaLab #TimBeta #Beta #BetaLab #BetaAjudaBeta #BetaSegueBeta UOL: Governo em calamidade financeira: BB aÉ https://t.co/1rWaHUACqt	0.40	A	1.21
-119.00	17/07/2020 03:30	0.80	A	#OperacaoBetaLab #TimBeta #Beta #BetaLab #BetaAjudaBeta #BetaSegueBeta UOL: Polmica com filho de Pimentel: GovernÉ https://t.co/E1EhSA9Ti3	0.73	B	1.81
-120.00	17/07/2020 03:45	0.28	C	#operacaobetalab BB avisa Justia que governo de MG n‹o tem recursos em conta judicial https://t.co/W6AoFMMsvA #rt #sdv	0.26	C	0.96
-121.00	17/07/2020 04:00	0.96	B	#PedroMotta visita as mem—rias da inf‰ncia na sŽrie #FrutosEstranhos da exposi‹o #EstadodaNatureza ð Visite:É https://t.co/Fti430VnjI	0.83	A	2.06
-122.00	17/07/2020 04:15	0.12	A	#petralha no governo Ž isso ai! Mesmo em calamidade financeira. governo de MG compra mais dois helic—pteros https://t.co/ZR9N6Gl0KW	0.13	A	0.71
-123.00	17/07/2020 04:30	0.62	B	#pmdb #pt #tj #tjmg #almg #psdb #pdt O FILHO ACHOU O OUTRO VELHO Em calamidade financeira MG compra 2 helic—pteros https://t.co/SXfamLNCqd	0.58	B	1.30
-124.00	17/07/2020 04:45	0.29	C	#prŽ_hospitalar homem estado alterado de conscincia dificuldade respirat—ria press‹o elevada em supermercado no b s‹o benedito av brasilia	0.27	A	0.89
-125.00	17/07/2020 05:00	0.37	A	#pt #pmdb #pdt #tj #tjmg #stf #almg #pp MAIS UMA DELE ... #BB cobra de Minas R$ 1.5 bilh‹o em dep—sitos judiciais https://t.co/yPWflY0U5f	0.37	C	0.88
-126.00	17/07/2020 05:15	0.10	D	#road #trip #mg #car #gopro @ Governador Valadares. Minas Gerais https://t.co/v6LZ557K6d	0.10	B	0.39
-127.00	17/07/2020 05:30	0.93	C	#SomosTodosMoro 	0.81	A	1.91
-128.00	17/07/2020 05:45	0.32	D		0.33	C	1.11
-129.00	17/07/2020 06:00	0.92	B		0.79	A	2.01
-130.00	17/07/2020 06:15	0.82	A	#Supercluster #Oracle (@ Secretaria de Estado da Fazenda in Belo Horizonte. MG) https://t.co/Raj2oJz8tq	0.73	B	2.10
-131.00	17/07/2020 06:30	0.65	C	#SUS Minas Gerais recebe recurso m‡ximo disponibilizado pelo Governo Federal para a›es da #Vigil‰nciaSanit‡riaÉ https://t.co/0OrT7R8gMO	0.61	C	1.70
-132.00	17/07/2020 06:45	0.59	B	#SUS SES-MG convoca coletiva para falar da situa‹o da #FebreAmarela no estado @SaudeMG @GotasSalvadoras https://t.co/TEydsKsvnB	0.55	A	1.49
-133.00	17/07/2020 07:00	0.43	A	#SUS SES-MG convoca coletiva para falar da situa‹o da #FebreAmarela no estado https://t.co/7RwhYPH1Oz https://t.co/lfICLTfvxZ	0.43	A	1.15
-134.00	17/07/2020 07:15	0.66	B	#timbeta #globo Ap—s ser agredida. mulher atira contra homem em Governador Valadares https://t.co/LSQcIK1ugn #OperacaoBetaLab #Sigodevolta	0.61	B	1.53
-135.00	17/07/2020 07:30	0.29	C	#timbeta #globo BB cobra restitui‹o de recursos por parte do governo de MG	0.29	A	0.91
-136.00	17/07/2020 07:45	0.67	A	#timbeta #globo Corpo em estado de decomposi‹o Ž encontrado em Poos de Caldas. MG https://t.co/QIT9YlYMog #OperacaoBetaLab #Sigodevolta	0.63	C	1.48
-137.00	17/07/2020 08:00	0.32	D	#timbeta #globo Defesa Civil de MG confirma 16» morte pela chuva no estado https://t.co/SYMRdMAXFX #OperacaoBetaLab #Sigodevolta	0.31	B	0.97
-138.00	17/07/2020 08:15	0.95	C	#timbeta #globo Governador Valadares registra dois assassinatos em menos de uma hora https://t.co/888hGlseNv #OperacaoBetaLab #Sigodevolta	0.82	A	2.06
-139.00	17/07/2020 08:30	0.94	D	#timbeta #globo Homem Ž morto a tiros ap—s deixar pres’dio em Governador Valadares https://t.co/ecLiHQp1VR #OperacaoBetaLab #Sigodevolta	0.82	C	2.36
-140.00	17/07/2020 08:45	0.66	B	#timbeta #globo MG Ž o quarto estado a garantir o direito ˆ amamenta‹o em pœblico https://t.co/sCrrQLncHs #OperacaoBetaLab #Sigodevolta	0.62	A	1.78
-141.00	17/07/2020 09:00	0.15	A	#timbeta #globo PM apreende armas usadas em homic’dio em Governador Valadares https://t.co/YEFA0XEdKB #OperacaoBetaLab #Sigodevolta	0.15	B	0.62
-142.00	17/07/2020 09:15	0.50	C	#timbeta #globo Pol’cia Militar apreende 30 kg de maconha em Governador Valadares https://t.co/eK1qMAUL36 #OperacaoBetaLab #Sigodevolta	0.47	C	1.08
-143.00	17/07/2020 09:30	0.06	B	#timbeta #globo Prefeito de AimorŽs decreta estado de emergncia administrativa https://t.co/0Z7GX9GBPM #OperacaoBetaLab #Sigodevolta	0.05	A	0.38
-144.00	17/07/2020 09:45	0.76	A	#timbeta #globo Prefeito de Ribeir‹o das Neves decreta estado de calamidade financeira https://t.co/cyvkfwwslD #OperacaoBetaLab #SigodevolÉ	0.69	A	1.56
-145.00	17/07/2020 10:00	0.22	B	#timbeta #globo Prefeitura de Uberl‰ndia decreta estado de calamidade financeira  https://t.co/whTppNXDOk #OperacaoBetaLab #Sigodevolta	0.22	B	0.82
-146.00	17/07/2020 10:15	0.77	C	#timbeta #globo UFJF abre 62 vagas para cursos em Governador Valadares https://t.co/Fd8uVtW5bm #OperacaoBetaLab #Sigodevolta	0.71	A	1.65
-147.00	17/07/2020 10:30	0.34	A	#timbeta #globo Vereadores de Governador Valadares n‹o ter‹o 13¼ sal‡rio em 2017 https://t.co/YA3HKtxvza #OperacaoBetaLab #Sigodevolta	0.32	C	1.06
-148.00	17/07/2020 10:45	0.86	D	* #MG Y con tu Apellido tiro un Estado.. _ððððð	0.77	B	1.89
-149.00	17/07/2020 11:00	0.60	C	*	0.57	A	1.64
-150.00	17/07/2020 11:15	0.56	D		0.53	C	1.42
-151.00	17/07/2020 11:30	0.46	B		0.44	A	1.20
-152.00	17/07/2020 11:45	0.24	A		0.24	B	0.71
-153.00	17/07/2020 12:00	0.29	C		0.28	C	0.71
-154.00	17/07/2020 12:15	0.45	B		0.43	A	1.05
-155.00	17/07/2020 12:30	0.01	A		0.02	A	0.25
-156.00	17/07/2020 12:45	0.73	B		0.66	B	1.47
-157.00	17/07/2020 13:00	0.13	C		0.12	A	0.62
-158.00	17/07/2020 13:15	0.81	A		0.73	C	1.68
-159.00	17/07/2020 13:30	0.70	D		0.63	B	1.80
-160.00	17/07/2020 13:45	0.68	C		0.63	A	1.71
-161.00	17/07/2020 14:00	0.08	D	@__MathLaham @1psicopatar @samuelcost4 n‹o sabia que o Estado de Minas existia em 1926. amigo...E detalhe:isso s— apareceu depois de 2011 rs	0.09	C	0.50
-162.00	17/07/2020 14:15	0.14	B	@_pereiraclayton em Minas ta seu cu kkkkkk estou no mesmo estado q voc palhao ðð	0.13	A	0.33
-163.00	17/07/2020 14:30	0.21	A	@1chathais TambŽm n‹o acreditei. O Estado de Minas pulicou que est‹o estudando implantar uma unidade	0.21	B	0.49
-164.00	17/07/2020 14:45	0.40	C	@50Rosanaborges @folha @UOL j‡ Ž o pior governador da hist—ria de Minas.	0.38	C	0.91
-165.00	17/07/2020 15:00	0.38	B	@a_alinediniz parabŽns vc emplacou o release no estad‹o.  folha.  o globo.  isto Ž e Veja. Na pr—xima vez consiga SPTV.  Estado de Minas...	0.38	A	0.97
-166.00	17/07/2020 15:15	0.04	A	@AcordouAcordou Minas est‡ linda. recheada de mineiros e mineiras gente boa. o problema Ž o governo de MG.	0.04	A	0.27
-167.00	17/07/2020 15:30	0.95	B	@AdemirAlvim @pdevechi Estado de Minas melhorando a manchete tb... s— n‹o falou que eram negros. mas mencionou a motiva‹o pol’tica.	0.81	B	1.92
-168.00	17/07/2020 15:45	0.36	C	@AL_Kaio_ acho que n‹o 4 de SP. 4 do RJ. 3 de MG. 3 do RS. e 3 do ES! Todos se enfrentavam e o melhor de cada estado passava pras semis	0.36	A	1.19
-169.00	17/07/2020 16:00	0.52	A	@AlbertoLage @rebeldescalca @YouTube quero ver a desculpa quando ele ganhar uma boquinha no governo de Minas	0.49	C	1.22
-170.00	17/07/2020 16:15	0.37	D	@AnaPaulaVolei e tem mais essa: https://t.co/BnDsO34qK0	0.35	B	1.00
-171.00	17/07/2020 16:30	0.97	C	@Anastasia @revistaencontro Espero que voc seja o pr—ximo governador das Minas Geraes!	0.83	A	2.12
-172.00	17/07/2020 16:45	0.92	D	@andregallindo @R2renatoribeiro @JornalOGlobo Sou de minas. flamenguista e Ž triste. muito triste ver o maior palco do futebol neste estado.	0.78	C	2.32
-173.00	17/07/2020 17:00	0.75	B	@anterogreco @gianoddi @rafaelribeiro se der. manda um abrao para os palmeirenses aqui de governador Valadares MG. Antero.	0.69	A	1.96
-174.00	17/07/2020 17:15	0.54	A	@AREZZO_ estou em outro estado! Comprei durante as fŽrias em MG.	0.50	B	1.45
-175.00	17/07/2020 17:30	0.07	C	@AxelRolonOk Y tiene 7 mg este estado que nadie se venga a hacer la inocenteðð	0.07	C	0.41
-176.00	17/07/2020 17:45	0.40	B	@azeredo_mg @STF_oficial @MichelTemer Justamente isso. morreu bandido Ž indenizado. enquanto isso os inocentes est‹o sem aparo do governo	0.39	A	0.84
-177.00	17/07/2020 18:00	0.13	A	@b3arland eu sou do interior de MG. mas minha cidade faz divisa com o estado de SP. O mais perto que eu conheo aqui Ž o Breno	0.13	A	0.45
-178.00	17/07/2020 18:15	0.62	B	@baekliar o governo de minas d‡ ate estojo???????socorro	0.57	B	1.30
-179.00	17/07/2020 18:30	0.41	C	@Bella_DiGenaro y patea con las 2 patas. adem‡s el wueon es zurdos. con todas las minas buenas q a estado. se le va el gusto atr‡s?	0.38	A	1.12
-180.00	17/07/2020 18:45	0.33	A	@beppo22 Risco de calote de Estados com a Uni‹o cresce - Politica - Estado de Minas https://t.co/zdjOcATDo3	0.33	C	0.85
-181.00	17/07/2020 19:00	0.38	D	@betorosio Bom dia professor!!!!	0.36	B	0.93
-182.00	17/07/2020 19:15	0.91	C		0.80	A	2.02
-183.00	17/07/2020 19:30	0.98	D		0.82	C	2.42
-184.00	17/07/2020 19:45	0.13	B	@BlogDoPim @carioca556 	0.12	A	0.76
-185.00	17/07/2020 20:00	0.57	A		0.53	B	1.20
-186.00	17/07/2020 20:15	0.34	C	@cartacapital e em minas governador usa helic—ptero do governo para buscar filho em festa	0.32	C	0.96
-187.00	17/07/2020 20:30	0.48	B	@cartacapital isso tudo Ž um absurdo. legal mesmo Ž isso aqui https://t.co/TnVZQTadaD	0.47	A	1.14
-188.00	17/07/2020 20:45	0.48	A	@Castro2Monica ent‹o. qual Ž o governador das Minas Gerais?	0.45	A	1.20
-189.00	17/07/2020 21:00	0.08	B	@charlesbigfoot @DecaRGarcia @Poder_360 Concordo plenamente. J‡ trabalhei no governo de MG e vi isso de perto.	0.07	B	0.40
-190.00	17/07/2020 21:15	0.80	C	@ClaroPeru q era 700 mg mas no de ahi c cortaba mis megas como a estado ocurriendo inclusive los 1ero meses no tube megas!!	0.73	A	1.64
-191.00	17/07/2020 21:30	0.72	A	@claudfeb @mayrasmendoza @CFKArgentina Andar con minas no. pelotudo. pagarlas con guita del Estado. s’:	0.67	C	1.83
-192.00	17/07/2020 21:45	0.23	D		0.23	B	0.81
-193.00	17/07/2020 22:00	0.67	C		0.63	A	1.46
-194.00	17/07/2020 22:15	0.25	D	@Codevasf e @governomg discutem retomada do convnio para constru‹o da barragem do Jequita’. Veja:É https://t.co/ndMvqAk49E	0.24	C	0.84
-195.00	17/07/2020 22:30	0.51	B	@ConsuladosGalo Boa tarde. Consulado do Galo de Governador Valadares/MG. Ajude a divulgar. ObriGalo.	0.48	A	1.14
-196.00	17/07/2020 22:45	0.12	A	@cotonewers praticamente hahah uma parte da minha fam’lia Ž de mg. Pra mim Ž o melhor estado p passear no Brasil ð	0.11	B	0.48
-197.00	17/07/2020 23:00	0.25	C	@danilo12mf @pires_magela  ele ja saiu seu mineiro filha da puta menor de minas chupaaa estado de merda ..s— tem lixo nessa porra	0.26	C	0.56
-198.00	17/07/2020 23:15	0.88	B	@DCM_online Newton Cardoso Junior Ž da pior estirpe de politicos mineiros. Um golpista e desonesto. herana do pai. ex-governador de Minas.!	0.76	A	1.88
-199.00	17/07/2020 23:30	0.36	A	@deeh_gerhardt https://t.co/TONVnZGvHq	0.36	A	1.16
-200.00	17/07/2020 23:45	0.98	B	@deivaolm @Ary_AntiPT @c0nvey Antes ou depois de o governo de MG comprar 2 helic—pteros?	0.83	B	2.15
-201.00	18/07/2020 00:00	0.17	C	@dibiaseneves v‹o se apaixonar pelo melhor estado do Brasil e pelo MAIOR de MG. sejam bem vindos a BH. #cruzeirosempre #maiordeminas	0.16	A	0.84
-202.00	18/07/2020 00:15	0.37	A	@diegocabral75 @exame a’ em MG. ta td bem? Pimentel cada dia fazendo melhor para o estado nŽ? ainda bem q o doria Ž prefeito de SP e nao BH	0.36	C	0.82
-203.00	18/07/2020 00:30	0.21	D	@digaoi a internet ta ruim no estado de MG ?	0.22	B	0.60
-204.00	18/07/2020 00:45	0.47	C	@diogo_cc estou hahahaha mas trabalho mais pro impresso. Estado de Minas	0.46	A	1.05
-205.00	18/07/2020 01:00	0.48	D	@doidao_galo @_FSEP @twitpalmeiras kkkk mineirao e do governo de Minas.  A’ joga no indepencia pq torcida s— enche caixa de f—sforo	0.47	C	1.21
-206.00	18/07/2020 01:15	0.31	B	@DonaMed_VE 	0.30	A	0.85
-207.00	18/07/2020 01:30	0.92	A		0.79	B	2.00
-208.00	18/07/2020 01:45	0.46	C		0.44	C	1.38
-209.00	18/07/2020 02:00	0.07	B		0.07	A	0.36
-210.00	18/07/2020 02:15	0.72	A		0.66	A	1.47
-211.00	18/07/2020 02:30	0.97	B		0.82	B	2.29
-212.00	18/07/2020 02:45	0.79	C	@DonaMed_VE BUSCO EN VALENCIA ESTADO CARABOBO SOMAZINA PASTILLA 500 MG CONTACTO 04162571719 04124011533	0.72	A	2.06
-213.00	18/07/2020 03:00	0.86	A	@droguerianena.Buenas tardes para saber si hay disponible abretia o strattera de 10 o 18 mg en la sucursal del Estado Lara.Gracias	0.75	C	2.12
-214.00	18/07/2020 03:15	0.39	D	@ElPoliTwico AYUDA HOY ES UNA NI„A CON MENINGITIS. ma–ana puede ser cualquiera. Su estado es grave x falta d medicamento Aciclovir 500 mg.	0.37	B	1.22
-215.00	18/07/2020 03:30	0.79	C	@em_com MG. o estado da idade do ferro. e sua capital	0.70	A	1.78
-216.00	18/07/2020 03:45	0.83	D	@em_com v‹o cobrir isto? https://t.co/SNYMRfQ737	0.73	C	2.06
-217.00	18/07/2020 04:00	0.58	B	@esd4n ninguno. a decir verdad he estado con minas peores	0.55	A	1.58
-218.00	18/07/2020 04:15	0.77	A	@eumateus75 @Morro_Cristo @JanainaDoBrasil @ptnacional @ptbrasiI Em MG. a criminalidade aumentou com o PT https://t.co/3E7sdl1UsT	0.71	B	1.84
-219.00	18/07/2020 04:30	0.81	C	@evaristocosta j‡ visitou o estado de MG? Se sim o que achou?	0.72	C	2.01
-220.00	18/07/2020 04:45	0.39	B	@filiperabelo @JocaMani	0.39	A	1.18
-221.00	18/07/2020 05:00	0.32	A		0.31	A	0.83
-222.00	18/07/2020 05:15	0.04	B		0.05	B	0.24
-223.00	18/07/2020 05:30	0.75	C	@FlowstreetYT bueno ese mg no ha estado nada mal lool omgggg!!!Gracias Flowiiii	0.68	A	1.51
-224.00	18/07/2020 05:45	0.77	A	@folha - E da’? O palhao de Minas voou trocentas vezes no helic—ptero do ESTADO para namorar em Florian—polis e a imprensa n‹o deu um PIO.	0.70	C	1.90
-225.00	18/07/2020 06:00	0.67	D	@folha esse lixo petista quebrou o estado de Minas Gerais mais uma vez! seu lugar Ž um s—..	0.61	B	1.72
-226.00	18/07/2020 06:15	0.26	C	@ForunsMG v‹o eleger novos prefeitos e vereadores para o Colegiado Executivo e avanar na participa‹o popular.É https://t.co/hLjmXWoK4i	0.27	A	0.86
-227.00	18/07/2020 06:30	0.66	D	@FutDados William n‹o tem mais clima para prosseguir no maior time do Estado de Minas Gerais ... fora William...ð__	0.62	C	1.46
-228.00	18/07/2020 06:45	0.32	B	@Fute_Minas O complicado Ž isso! Desse jeito nunca teremos uma terceira. quarta fora no estado! N‹o da pros clubes do interior investir!	0.32	A	0.98
-229.00	18/07/2020 07:00	0.29	A	@GaloAustralia incorreto. No socialismo. a elite nunca se fode. O Estado fede.	0.29	B	0.74
-230.00	18/07/2020 07:15	0.58	C	@Galonopeito1 Se Minas tivesse mar. esse Estado ia ser o para’so hahaha _	0.55	C	1.31
-231.00	18/07/2020 07:30	0.57	B	@geraldoalckmin_ boa noite governador gostaria de um emprego trabalho na ‡rea da indœstria meu governador PT Minas Gerais	0.55	A	1.42
-232.00	18/07/2020 07:45	0.83	A	@gercinu tu est‡s em MG? H‡ uma zona de baixa press‹o em cima do estado que impede a forma‹o de nuvens.	0.75	A	1.94
-233.00	18/07/2020 08:00	0.79	B	@GilzanaCarvalho SP Ž realmente fascinante.tem v‡rios contrastes.mas Minas Ž um estado bom tbm...alias o Brasil Ž um Belo Pais.so q mau admð	0.71	B	2.00
-234.00	18/07/2020 08:15	0.49	C	@GPronaldo13 Com um GOVERNADOR desse! Qualquer CORRUPTO vai querer ser CANDIDATO EM MG! AtŽ as FAC‚ÍES do lula BæBADO	0.47	A	1.37
-235.00	18/07/2020 08:30	0.69	A	@helhaodoaxe @ninobec @penso_ra @JornalOGlobo Estado de Minas. bunit‹o. chegados do AŽcio. https://t.co/sjkpoMJvqX	0.62	C	1.61
-236.00	18/07/2020 08:45	0.85	D	@hidselena minas gerais estado do p‹o de queij	0.75	B	2.05
-237.00	18/07/2020 09:00	0.12	C	@HSOGameplays  vc e de qual estado de minas so para saber mesmo se pa e meu vizinho	0.11	A	0.66
-238.00	18/07/2020 09:15	0.83	D	@i5gornascimento #i5gornascimento Governador Valadares registra dois assassinatos em menos de uma hora https://t.co/yM8IsmD4Wn	0.75	C	1.72
-239.00	18/07/2020 09:30	0.90	B	@i5gornascimento #i5gornascimento UFJF abre 62 vagas para cursos em Governador Valadares https://t.co/5sutw56PxJ	0.79	A	2.22
-240.00	18/07/2020 09:45	0.44	A	@I5gornascimento @I5gornascimento #I5gornascimento Governador Valadares registra dois assassinatos em menos de ... https://t.co/7IiBGRNW9l	0.43	B	1.34
-241.00	18/07/2020 10:00	0.22	C	@I5gornascimento @I5gornascimento #I5gornascimento UFJF abre 62 vagas para cursos em Governador Valadares https://t.co/4MiJlXKxoW	0.22	C	0.65
-242.00	18/07/2020 10:15	0.54	B	@Independent  o melhor queijo do mundo Ž daqui do Brasil mais exatamente do estado de Minas Gerais	0.52	A	1.18
-243.00	18/07/2020 10:30	0.97	A	"@infomoney ""bando do Brasil"" Ž o partido do governador de MG."	0.82	A	2.21
-244.00	18/07/2020 10:45	0.90	B	@IPAFARMA @Avivasa1965 buenos d’as. Tienen stalevo de 100 mg. Vivo en el Estado Nueva Espsrta	0.78	B	2.29
-245.00	18/07/2020 11:00	0.88	C	@israel_massa @ferrisss @JornalOGlobo pelo menos 1 coisa p se orgulhar do governo de minas. Esse tem q ser o modelo. Recuperar o cidad‹o...	0.77	A	2.22
-246.00	18/07/2020 11:15	0.15	A	@jairbolsonaro Por favor nos ajude a Pizza Pimentel aqui em MG Ž o maior cabide de empregos do meu estado. minha m‹e coitada nem cheiro 13 s	0.16	C	0.74
-247.00	18/07/2020 11:30	0.61	D	@jcavaa Cuando vi tu nombre como ganador del #EuroLogo me sonaste mucho. tras 3 d’as. me doy cuenta de que me has estado dando mg en instað	0.56	B	1.29
-248.00	18/07/2020 11:45	0.06	C	@jeffs_araujo35 @sjayanthi @Ueiler2 @virginiaduailib Conheo bem as APACs de quando trabalhei no governo de MG...	0.07	A	0.42
-249.00	18/07/2020 12:00	0.91	D	@JoanapereiraF Ol‡! Podemos usar a sua foto no jornal Estado de MInas? Obrigada!	0.80	C	1.86
-250.00	18/07/2020 12:15	0.69	B	@joaoleiteBH isso  jo‹o. contamos com vcs pra derrotar esses bandidos q est‹o no poder. lugar de bandido Ž na cadeia. n no governo de MG	0.64	A	1.83
-251.00	18/07/2020 12:30	0.75	A	@jonanperrea @holdmenouis_ mejor!! Eswue estado unos d’as sin conectarme por estudiar y aunque siempre intento darte mg y comentar! Un besoo	0.67	B	1.84
-252.00	18/07/2020 12:45	0.35	C	@jornal_cultura @tvcultura 	0.36	C	1.08
-253.00	18/07/2020 13:00	0.64	B		0.59	A	1.46
-254.00	18/07/2020 13:15	0.34	A	@jornal_cultura governo federal com cart‹o de crŽdito...governo de MG passeando e comprando helic—pteros. AtŽ onde?	0.32	A	1.00
-255.00	18/07/2020 13:30	0.10	B	@jornaldacbn O @LFPezao  quando precisar dar um passeio. ele pode pedir emprestado o helic—ptero emprestado do  Governador de MG.	0.11	B	0.37
-256.00	18/07/2020 13:45	0.70	C	@JoseAMeadeK Los abusos. aun en el estado mas s—lido. son minas sordas que tarde o temprano estallan.	0.66	A	1.46
-257.00	18/07/2020 14:00	0.05	A	@JustMoveOn10 #TeamBTS confieso que me da pena que mi ex me haya cambiado altiro con varias minas y yo ni siquiera he estado con otro:))))	0.05	C	0.46
-258.00	18/07/2020 14:15	0.56	D	@kalkssabrina @AnaPaulaVolei E o Estado com as finanas no vermelho! E o resto da era PT acabando com MG.	0.52	B	1.14
-259.00	18/07/2020 14:30	0.92	C	@Kefera teria como doar sangue pra ele morando em outro estado? eu sou de Minas e gostaria de ajudar	0.80	A	2.11
-260.00	18/07/2020 14:45	0.09	D	@kellybh1 Ol‡ Kelly. somos do estado do Paran‡. mas o servio 181 est‡ em Minas Gerais tambŽm! Ligue 181 e denuncie!	0.10	C	0.64
-261.00	18/07/2020 15:00	0.18	B	@lancenet aqui em Minas nenhum dos grandes portais (itatiaia. superesportes. Estado de Minas) noticia isso. AtŽ os setoristas desconhecem	0.19	A	0.41
-262.00	18/07/2020 15:15	0.92	A	@Laurinahloves5h @WorlDms91 aja si y por eso le diste mg a su estado para que te mande preguntas al chat ððð basta no puedo	0.80	B	1.93
-263.00	18/07/2020 15:30	0.25	C	@Leisparaquem @portalfab sinto muito. existem outras prioridades.  o governador de Minas precisa transportar seus pimpolhos	0.25	C	0.96
-264.00	18/07/2020 15:45	0.88	B	@leonardogoncal7 qual sua principal meta pra 2017? Que Deus te abenoe cada dia mais _ (volta pra Governador Valadares/MG hahah)	0.78	A	1.88
-265.00	18/07/2020 16:00	0.91	A	@LocatelVzla_ATC buenos d’as me pueden informar si hay stalevo de 100 mg en Locatel la limpia Estado Zulia?	0.79	A	2.27
-266.00	18/07/2020 16:15	0.68	B	@Lucas_htt anuncia no estado de minas o bcta kkkkkkk	0.64	B	1.82
-267.00	18/07/2020 16:30	0.39	C	@Lucianaleiva99 mira no me quiero ni imaginar ese estado. As’ mg	0.39	A	1.11
-268.00	18/07/2020 16:45	0.35	A	@lucosttab eu fico meio pistola porque minas Ž o estado que mais produz cafŽ porŽm o melhor vai pro exterior e aqui do msm custa absurdos	0.33	C	0.90
-269.00	18/07/2020 17:00	0.89	D	@LuliiPrimo MG tengo que ser sirvienta tuya hasta 2018 por mi estado	0.78	B	1.96
-270.00	18/07/2020 17:15	0.62	C	@MacarenaTablada amm que le pones mg a mo estado. El finde hagamos algo asi te despedimos . Dspea te vamos a extra–arrr	0.58	A	1.69
-271.00	18/07/2020 17:30	0.95	D	@macsanto777 @Acircamargo @KatiaAbreu Minas j‡ sabe bem o que Ž ter um governador aspirador de p—... ððð	0.81	C	2.22
-272.00	18/07/2020 17:45	0.09	B	@madeleinelacsko Em MG e SP.o Estado tem razo‡vel controle sobre o sistema prisional.c —rg‹os d adimnistra‹o penitenci‡ria bem estruturados	0.09	A	0.67
-273.00	18/07/2020 18:00	0.37	A	@Madonegatti MG melhor estado	0.36	B	0.78
-274.00	18/07/2020 18:15	1.00	C	@Mandah05 vc viu o Governador de Minas que foi buscar o filho de helic—ptero do governo ? Isso Ž Repœblica!	0.83	C	2.18
-275.00	18/07/2020 18:30	0.49	B	@mangelrogel a mi mg tu v’deo qsyo yo no lo relacione con tu estado de ‡nimo. lo vi medio realista. eso le da el toke de queda ahr	0.46	A	1.48
-276.00	18/07/2020 18:45	0.77	A	@ManoloMontalt Paco Roig en estado puro Manolo... Jajaja!!! Me rio por no llorar :(	0.70	A	1.79
-277.00	18/07/2020 19:00	0.88	B	@marcelorubens ƒ https://t.co/6lRueqop6N	0.76	B	2.16
-278.00	18/07/2020 19:15	0.56	C	@MarcoPaolo He estado en conciertos dnd las minas son una + empujando y pegando pero no. dale con el prejuicio queÉ https://t.co/scssXuac0t	0.52	A	1.55
-279.00	18/07/2020 19:30	0.99	A	@MarcosV60958142 S— lembrando que este cr‡pula.mesmo com todo o apoio da m’dia e dessas elei›es controladas.NÌO VENCEU EM MG (estado dele)	0.83	C	2.26
-280.00	18/07/2020 19:45	0.98	D	@McOmghall @OcenMind Segura q no es el estado quien les cede la explotaci—n d las minas a cambio d parte de la producci—n?	0.82	B	2.45
-281.00	18/07/2020 20:00	0.78	C	@mcveylands donde viste esa mierda. bryana es la m‡s agradable de las minas que han estado con 5sos	0.69	A	2.05
-282.00	18/07/2020 20:15	0.41	D	@meditotal buenos d’as. Tienen stalevo de 100 mg? Vivo en el Estado Nueva Esparta. con urgencia	0.41	C	1.22
-283.00	18/07/2020 20:30	0.09	B	@mgfernetmgbirra 10 horas antes borraste mi estado. sacaste nuestra foto de todos lados.y le diste mg a una zorra ð	0.09	A	0.39
-284.00	18/07/2020 20:45	0.26	A	@MichelTemer Esses sim precisam de indenizaao do governo. @GloboNews https://t.co/BZtYad6JTe	0.26	B	0.56
-285.00	18/07/2020 21:00	0.81	C	@MichelTemer https://t.co/6gfWgoWZfn N‹o tem que perdoar a divida se tem tanto dinheiro para helicoptero	0.71	C	1.74
-286.00	18/07/2020 21:15	0.11	B	@MidiaNINJA Apoia o governo corrupto do Fernando Pimentel em MG? Ap—ia que use helic—ptero para buscar filho em balada?	0.10	A	0.62
-287.00	18/07/2020 21:30	0.75	A	@MidiaNINJA Apoia que Pimentel ignore a falncia do estado de MG e compre mais helic—pteros pra passear! #ForaPimentelMG	0.69	A	1.55
-288.00	18/07/2020 21:45	0.50	B	@MidiaNINJA E o governador de MG? Comprar helic—pteros pode nŽ? Basta ser petista! ðð	0.48	B	1.37
-289.00	18/07/2020 22:00	0.12	C	@MiriamLeitaoCom @JornalOGlobo N‹o sabem nada .Nem se h‡ crise mesmo nos Estados.Pelo jeito .n‹o. Em MG o governo esbanja.	0.13	A	0.49
-290.00	18/07/2020 22:15	0.28	A	@mrc_mg Non basta cambiare canale. bisogna cambiare ennesimo Governo abusivo e soprattutto politici arroganti	0.27	C	0.62
-291.00	18/07/2020 22:30	0.42	D	@MrSincero_ @klyfor @MBLivre @MBLivreBH Minas foi governada de 2003 a 2014 pelo PSDB e voc quer fazer acreditar que Pimentel faliu o estado	0.40	B	0.98
-292.00	18/07/2020 22:45	0.17	C	@mtv_anab esse sotaque de minas seu ___ melhor estado n‹o Ž msm? Amo! https://t.co/4jwaOrTNMp	0.16	A	0.54
-293.00	18/07/2020 23:00	0.64	D	@Multi_Anime no puedo decidirme. por eso di MG y RT. Mi infancia sin alguno de los dos hubiera estado incompleta.	0.60	C	1.36
-294.00	18/07/2020 23:15	0.07	B	@mvbill Salve.em MG ta do mesmo estado	0.06	A	0.46
-295.00	18/07/2020 23:30	0.63	A	@NataliaAssis0 Se voc mora em çgua Doce do Norte-ES. as capela mais pr—ximas ficam em Governador Valadares-MG e Nova VenŽcia-ES.	0.60	B	1.30
-296.00	18/07/2020 23:45	0.85	C	@NiBarga  participou junto com a anta ( Dilms ) de terrorismo no Brasil. hoje infelizmente o povo de Minas o elegeu Governador	0.75	C	2.02
-297.00	19/07/2020 00:00	0.37	B	@NiBarga Agora aguentem. mas n‹o podemos esquecer que ele declarou estado de emergncia em Minas. e vejam a hipocrisia desse safado	0.35	A	1.17
-298.00	19/07/2020 00:15	0.16	A	@NiBarga Aproximadamente R$ 1.5 bilh‹o para o pagamento de resgates dos dep—sitos judiciais sumiram das contas do gÉ https://t.co/Uzw2mQup3p	0.17	A	0.50
-299.00	19/07/2020 00:30	0.89	B	@NiBarga crise que Minas Gerais enfrenta. e antes declarou estado de emergncia em Minas Gerais. o cara Ž pilantra e comunista terrorista.	0.77	B	1.86
-300.00	19/07/2020 00:45	0.90	C		0.78	A	2.24
+index	datetime	x_1_num	x_2_cat	x_3_txt	y_1_value	y_2_class	y_3_forecast	y_4_bin
+1.00	15/07/2020 22:00	0.06	A	ððð_ @ Catedral de Santo Ant™nio - Governador Valadares/MG https://t.co/JSbKamIqUJ	0.06	A	0.12	positivo
+2.00	15/07/2020 22:15	0.22	B	ð @ Governador Valadares. Minas Gerais https://t.co/B3ThIDJCSf	0.21	B	0.47	negativo
+3.00	15/07/2020 22:30	0.34	C	ðð @ Governador Valadares. Minas Gerais https://t.co/dPkgzVR2Qw	0.34	A	0.79	positivo
+4.00	15/07/2020 22:45	0.11	A	ððð https://t.co/BnDsO34qK0	0.10	C	0.39	negativo
+5.00	15/07/2020 23:00	0.48	D	ððð PSOL vai questionar aumento de vereadores e prefeito de BH na Justia - Politica - Estado de Minas https://t.co/DMg7BGsek5	0.47	B	1.02	positivo
+6.00	15/07/2020 23:15	0.42	C	""" bom Ž bandido morto"""	0.40	A	1.09	negativo
+7.00	15/07/2020 23:30	0.52	D		0.49	C	1.25	positivo
+8.00	15/07/2020 23:45	0.52	B	"""..E 25% dos mineiros dizem n‹o torcer para time nenhum.mesmo dentro de um estado com AtlŽtico-MG e Cruzeiro. Pq?.."" https://t.co/fN5evlLQsR"	0.50	A	1.29	negativo
+9.00	16/07/2020 00:00	0.72	A	"""A gigantesca barba do mal"" em destaque no caderno Cultura do Estado de Minas. https://t.co/PxNurIkTlw"	0.67	B	1.70	positivo
+10.00	16/07/2020 00:15	0.15	C	"""BB e governo de Minas travam disputa sobre dep—sitos judiciais"" https://t.co/CnMu2A2Qo5"	0.16	C	0.66	negativo
+11.00	16/07/2020 00:30	0.18	B	"""com vcs bh fica pequena!"" Belo Horizonte (pron. [b_lo_i_z›nt_i][10]) Ž a capital do estado de MG. com uma ‡rea de aproximadamente 331 km_"	0.18	A	0.43	positivo
+12.00	16/07/2020 00:45	0.26	A	"""Da’ a gente visita governador valadares"""	0.26	A	0.61	negativo
+13.00	16/07/2020 01:00	0.24	B		0.22	B	0.60	positivo
+14.00	16/07/2020 01:15	0.39	C		0.39	A	0.90	negativo
+15.00	16/07/2020 01:30	0.81	A		0.73	C	1.82	positivo
+16.00	16/07/2020 01:45	0.24	D		0.24	B	0.88	negativo
+17.00	16/07/2020 02:00	0.53	C	"""ƒ bonita e Ž bonita..."" "	0.51	A	1.17	positivo
+18.00	16/07/2020 02:15	0.71	D		0.66	C	1.69	negativo
+19.00	16/07/2020 02:30	0.06	B	"""erro desconhecido"" Ž mato! Ali‡s. Ž da secretaria estadual de fazenda que t‡ assim... MG n‹o precisa de dinheiro n‹o. Governador?"	0.06	A	0.47	positivo
+20.00	16/07/2020 02:45	0.33	A	"""La La Land: Cantando Esta›es"" arrasa no Globo de Ouro - Estado de Minas https://t.co/aQ0NG1bp5f https://t.co/aY3qlrVnTE"	0.33	B	0.68	negativo
+21.00	16/07/2020 03:00	0.88	C	"""La La Land: Cantando Esta›es"" arrasa no Globo de Ouro - Estado de Minas https://t.co/qRI9DCiicc"	0.77	C	1.92	positivo
+22.00	16/07/2020 03:15	0.66	B	"""Los abusos. aun en el estado m‡s s—lido. son minas sordas que tarde o temprano estallan"" Joseph Sanial-Dubay"	0.61	A	1.76	negativo
+23.00	16/07/2020 03:30	0.18	A	"""Mesmo sem muito dinheiro no caixa o governo de Minas Gerais compra 2 (DOIS) helic—pteros."" Dois... Helic—pteros... Minas Gerais... #2017 s1"	0.19	A	0.69	positivo
+24.00	16/07/2020 03:45	0.70	B	"""Modelo de segurana ser‡ o nosso legado"". diz Cl‡udio Beato - Politica - Estado de Minas https://t.co/1MqOJo7Nnf"	0.63	B	1.49	negativo
+25.00	16/07/2020 04:00	0.94	C	"""Modelo de segurana ser‡ o nosso legado"". diz Cl‡udio Beato - Politica - Estado de Minas https://t.co/kA09mEn4xN"	0.80	A	2.24	positivo
+26.00	16/07/2020 04:15	0.95	A	"""Modelo de segurana ser‡ o nosso legado"". diz Cl‡udio Beato - Politica - Estado de Minas https://t.co/S97Khxldiu"	0.80	C	2.37	negativo
+27.00	16/07/2020 04:30	0.46	D	"""O governo de Minas Gerais n‹o comentou o assunto. """	0.46	B	1.40	positivo
+28.00	16/07/2020 04:45	0.84	C		0.75	A	1.91	negativo
+29.00	16/07/2020 05:00	0.54	D		0.51	C	1.50	positivo
+30.00	16/07/2020 05:15	0.04	B	"""O governo federal publicou no dia 27 de dezembro de 2016. a Medida Provis—ria 764/16 que permite a diferencia‹o... https://t.co/0DlDpZ9WGz"	0.04	A	0.34	negativo
+31.00	16/07/2020 05:30	0.21	A	"""Pol’cia Federal acaba de divulgar que encontrou provas no apartamento do Lula. mas s— atŽ a 4» sŽrie."" Jornal Estado de Minas"	0.20	B	0.43	positivo
+32.00	16/07/2020 05:45	0.65	C	"""Praia da Esta‹o"" lota neste s‡bado de ver‹o em BH - Gerais - Estado de Minas https://t.co/DpG3CNfZBb"	0.61	C	1.41	negativo
+33.00	16/07/2020 06:00	0.86	B	"""Representando mais uma ferramenta de monitoramento da educa‹o da rede estadual em Minas. a Secretaria de Estado... https://t.co/brsfBqHXlQ"	0.77	A	2.05	positivo
+34.00	16/07/2020 06:15	0.05	A	"""uso de aeronave pertencente ao  Estado de MG. em domingo. p/ fins pessoais.  em claro desvio de finalidade"" - https://t.co/WEfv5iLyju"	0.05	A	0.53	negativo
+35.00	16/07/2020 06:30	0.42	B	"""vou postar umas curiosidades sobre o corpo humano"""	0.41	B	0.87	positivo
+36.00	16/07/2020 06:45	0.10	C		0.11	A	0.40	negativo
+37.00	16/07/2020 07:00	0.51	A		0.50	C	1.07	positivo
+38.00	16/07/2020 07:15	0.71	D	#ACORDAMINAS!!!	0.65	B	1.68	negativo
+39.00	16/07/2020 07:30	0.62	C		0.59	A	1.59	positivo
+40.00	16/07/2020 07:45	0.97	D		0.82	C	2.24	negativo
+41.00	16/07/2020 08:00	0.27	B	#ACORDAMINAS!!!!	0.27	A	1.02	positivo
+42.00	16/07/2020 08:15	0.22	A		0.23	B	0.58	negativo
+43.00	16/07/2020 08:30	0.27	C		0.26	C	0.66	positivo
+44.00	16/07/2020 08:45	0.43	B	#Alerta - Nome da CEEE Ž utilizado em golpe no Estado. https://t.co/i5ndsWhXR4 https://t.co/yaEM6s3Z2f	0.42	A	1.00	negativo
+45.00	16/07/2020 09:00	0.35	A	#beta #betalab #mg Afiliada da Globo: Apresentador no AM Ž demitido ap—s criticar governadorÉ https://t.co/hlH8ITxXig	0.33	A	0.91	positivo
+46.00	16/07/2020 09:15	0.46	B	#beta #betalab #mg Caos nos pres’dios: AM pede apoio ˆ Uni‹o seis dias ap—s massacre https://t.co/GRv0HkrX3TÉ https://t.co/YJy2RcSfWZ	0.44	B	1.10	negativo
+47.00	16/07/2020 09:30	0.01	C	#beta #betalab #mg Caos nos pres’dios: Temer e C‡rmen Lœcia se reœnem para debater crise https://t.co/e34RNvtU7vÉ https://t.co/8xKwPTOv4C	0.01	A	0.26	positivo
+48.00	16/07/2020 09:45	0.02	A	#beta #betalab #mg Crise carcer‡ria: Governo de Roraima pede Fora Nacional a Temer https://t.co/wLslS1T6ZIÉ https://t.co/NK4c5IhNUg	0.03	C	0.05	negativo
+49.00	16/07/2020 10:00	0.87	D	#beta #betalab #mg Crise carcer‡ria: Secret‡rio de SP diz haver guerra de fac›es no pa’s https://t.co/RSf2Tk1VmXÉ https://t.co/Sonel0f8Xq	0.75	B	1.75	positivo
+50.00	16/07/2020 10:15	0.39	C	#beta #betalab #mg Crise pol’tica no DF se agrava: Rollemberg exonera vice-governador de cargoÉ https://t.co/idJfAELeW4 #timbeta #rt #brasil	0.38	A	1.21	negativo
+51.00	16/07/2020 10:30	0.15	D	#beta #betalab #mg Escalada de violncia nos pres’dios: AM pede apoio da Fora Nacional	0.15	C	0.50	positivo
+52.00	16/07/2020 10:45	0.88	B	#beta #betalab #mg Escalada de violncia: Crime organizado no Brasil Ž disputado por 27É https://t.co/loRe3EfGaFÉ https://t.co/sSY5liKfMl	0.76	A	1.83	negativo
+53.00	16/07/2020 11:00	0.70	A	#beta #betalab #mg Estado afirma n‹o ter sido notificado: Apesar de decis‹o judicial. reajusteÉÉ https://t.co/IMG9Vxs4nK	0.65	B	1.85	positivo
+54.00	16/07/2020 11:15	0.04	C	"#beta #betalab #mg Estado de esp’rito do paulistano: ""Voz"" do tr‰nsito. buzina reflete pressa.ÉÉ https://t.co/hvLy03lyt3"	0.05	C	0.44	negativo
+55.00	16/07/2020 11:30	0.62	B	#beta #betalab #mg Estados falidos: Parte do PMDB quer barrar vetos de Temer na negocia‹o deÉÉ https://t.co/h9KQvBYlYV	0.58	A	1.27	positivo
+56.00	16/07/2020 11:45	0.39	A	#beta #betalab #mg Ex-ministro e outros: Servidores da era PT se mantm em cargos estratŽgicosÉ https://t.co/Q2Nor97ngg #timbeta #rt #brasil	0.37	A	1.10	negativo
+57.00	16/07/2020 12:00	0.18	B	#beta #betalab #mg Ex-presidente da C‰mara: Justia su’a v 'ind’cios concretos' contraÉ https://t.co/fwuwi8S4oDÉ https://t.co/w1W2SaN172	0.17	B	0.56	positivo
+58.00	16/07/2020 12:15	0.46	C	#beta #betalab #mg Governo em calamidade financeira: BB avisa Justia que Minas n‹o temÉ https://t.co/CdXt0cvcuYÉ https://t.co/s8un5iFnQS	0.46	A	1.02	negativo
+59.00	16/07/2020 12:30	0.47	A	#beta #betalab #mg Mais sobre o massacre: PF: Fac‹o tinha 'cela de comando' dentro da pris‹oÉ https://t.co/W3Cr89L0dk	0.46	C	1.17	positivo
+60.00	16/07/2020 12:45	0.71	D	#beta #betalab #mg Marketing e veto a medidas de Paes: De doa‹o de sangue a capoeira: a 1»ÉÉ https://t.co/xPnt6omym6	0.65	B	1.65	negativo
+61.00	16/07/2020 13:00	0.98	C	#beta #betalab #mg Massacre em pres’dio de Manaus: Governo do AM rebate ministro da Justia eÉ https://t.co/MaBb4airMU #timbeta #rt #brasil	0.82	A	2.31	positivo
+62.00	16/07/2020 13:15	0.18	D	#beta #betalab #mg Mudanas propostas pelo governo: Reforma libera trabalhar 12 horas algunsÉÉ https://t.co/eIDgx5Ak3n	0.19	C	0.86	negativo
+63.00	16/07/2020 13:30	0.40	B	"#beta #betalab #mg Muitas p‡ginas de investiga‹o: ""QG"" da Lava Jato reœne mais de 30 milh›esÉÉ https://t.co/pQF48BKPMr"	0.38	A	0.90	positivo
+64.00	16/07/2020 13:45	0.13	A	#beta #betalab #mg Nos œltimos dois anos: Governo pagou R$ 2.4 bi a alvos da Lava Jato https://t.co/KN8C0LcRebÉ https://t.co/GDQVhjO1Hc	0.14	B	0.46	negativo
+65.00	16/07/2020 14:00	0.41	C	#beta #betalab #mg Nova chacina em pres’dio: PCC matou presos sem fac‹o. diz governo de RR https://t.co/e17QVKbWVVÉ https://t.co/HJinQ9Y8aT	0.39	C	0.88	positivo
+66.00	16/07/2020 14:15	0.06	B	#beta #betalab #mg Onda de violncia nos pres’dios: Governo de Roraima divulga lista oficialÉÉ https://t.co/HLcGf3UtCx	0.05	A	0.33	negativo
+67.00	16/07/2020 14:30	0.17	A	#beta #betalab #mg Pede respeito aos direitos dos detentos: Defensoria Pœblica da Uni‹o vai aoÉÉ https://t.co/kKbLNKRXfi	0.18	A	0.38	positivo
+68.00	16/07/2020 14:45	0.29	B	#beta #betalab #mg Pedido ao STF irritou Meirelles: Governo ameaa suspender aval paraÉ https://t.co/cHJbFIKAOYÉ https://t.co/uSTdKS5mCn	0.28	B	0.67	negativo
+69.00	16/07/2020 15:00	0.11	C	#beta #betalab #mg Reforma no poder da Venezuela: Maduro nomeia novo vice-presidente e trocaÉÉ https://t.co/BPMWBODUM2	0.10	A	0.37	positivo
+70.00	16/07/2020 15:15	0.62	A	#beta #betalab #mg Revista encontra armas e drogas: Rifle. 42 facas e roteador s‹o achados emÉÉ https://t.co/TlIOyQeKb0	0.57	C	1.29	negativo
+71.00	16/07/2020 15:30	0.15	D	#beta #betalab #mg Rio reforou Opera‹o Praia: S‡bado de calor tem confus‹o e roubo nasÉ https://t.co/TwU41FTyfqÉ https://t.co/fSPlWFWWVo	0.16	B	0.60	positivo
+72.00	16/07/2020 15:45	0.33	C	#beta #betalab #mg Segundo agentes penitenci‡rios: Pres’dios do RJ est‹o em alerta desdeÉ https://t.co/jODEM3J6Y4É https://t.co/gLMfJEuCNS	0.32	A	0.73	negativo
+73.00	16/07/2020 16:00	0.32	D	#beta #betalab #mg 'Tinha que matar mais': Secret‡rio de Temer deixa cargo ap—s dizer queÉ https://t.co/ZZm1TCutjzÉ https://t.co/OoJJ3GcokW	0.32	C	0.80	positivo
+74.00	16/07/2020 16:15	0.42	B	#beta #betalab #mg UOL Confere a crise prisional: Gest‹o privada de pres’dio n‹o eximeÉ https://t.co/dj5fy2PIwiÉ https://t.co/wCmH4Qhxt7	0.41	A	1.00	negativo
+75.00	16/07/2020 16:30	0.77	A	#beta #betalab #mg UOL Confere: Governo Temer distorce dados econ™micos em propaganda de 120ÉÉ https://t.co/w4dzb3AgfT	0.71	B	1.75	positivo
+76.00	16/07/2020 16:45	0.30	C	#BRASILest‡CHEIOdeMAMÌEsouFODA #METADEdoBRASILpertenceaosPOLêTICOSaoutraŽdosBANCOSeEMPRESçRIOS	0.31	C	1.00	negativo
+77.00	16/07/2020 17:00	0.18	B		0.19	A	0.51	positivo
+78.00	16/07/2020 17:15	0.02	A	#brasilmetropole Saœde mantŽm estado de aten‹o e investiga casos de febre amarela https://t.co/HAq4OMqMJK	0.01	A	0.14	negativo
+79.00	16/07/2020 17:30	0.36	B	#Cidades Com a alta incidncia. a Secretaria de Estado de Saœde mantŽm alerta para moradores e visitantes de 15... https://t.co/qsntM0quLy	0.35	B	0.73	positivo
+80.00	16/07/2020 17:45	0.23	C	#COPINHANAREDEVIDA  Eu e meu pai ligado na copinha pela Rede Vida! SOMOS DE GOVERNADOR VALADARES MG	0.24	A	0.65	negativo
+81.00	16/07/2020 18:00	0.72	A	"#DefesaAgropecu‡ria ""Governo de Minas Gerais aposta nos Arranjos Produtivos Locais"" na #RITDA: https://t.co/FzwaAJbcsw"	0.65	C	1.56	positivo
+82.00	16/07/2020 18:15	0.07	D	#EBC Governo de Minas investiga casos suspeitos de febre amarela e mal‡ria no estado https://t.co/SQIpvlLbvY	0.08	B	0.51	negativo
+83.00	16/07/2020 18:30	0.94	C	#Educa‹oMG Governo de Minas Gerais reconhece Folias de Reis como Patrim™nio Imaterial do Estado.É https://t.co/YvVFinjaLL	0.81	A	1.91	positivo
+84.00	16/07/2020 18:45	0.29	D	#ForaMichael O atacante Michael sofreu um traumatismo craniano ap—s colidir com uma vaca em Minas e est‡ em estadoÉ https://t.co/dja4NqF1ZD	0.30	C	1.06	negativo
+85.00	16/07/2020 19:00	0.15	B	#holachilevierneschico jajaja los wns preparados. nada al azar #califa las minas abran estado tan buenas.como para haber asumido el riesgo?	0.15	A	0.45	positivo
+86.00	16/07/2020 19:15	0.65	A	#i5gornascimento @i5gornascimento @cristiano UFJF abre 62 vagas para cursos em Governador Valadares https://t.co/NnA9YFp4BP	0.61	B	1.37	negativo
+87.00	16/07/2020 19:30	0.51	C	#i5gornascimento @i5gornascimento g1 Corpo em estado de decomposi‹o Ž encontrado em Poos de Caldas. MG https://t.co/ndVVD6kdly	0.49	C	1.35	positivo
+88.00	16/07/2020 19:45	0.61	B	#i5gornascimento @i5gornascimento g1 Prefeito de AimorŽs decreta estado de emergncia administrativa https://t.co/0Jh7ARbSnk	0.59	A	1.48	negativo
+89.00	16/07/2020 20:00	0.13	A	#i5gornascimento @i5gornascimento g1 Vereadores de Governador Valadares n‹o ter‹o 13¼ sal‡rio em 2017 https://t.co/9dJnmDxEAI	0.13	A	0.57	positivo
+90.00	16/07/2020 20:15	0.81	B	#i5gornascimento @i5gornascimento Governador Valadares registra dois assassinatos em menos de uma hora https://t.co/ZcuZugp8dq	0.71	B	1.68	negativo
+91.00	16/07/2020 20:30	0.78	C	#i5gornascimento @i5gornascimento UFJF abre 62 vagas para cursos em Governador Valadares https://t.co/FYeEFvieCy	0.69	A	1.97	positivo
+92.00	16/07/2020 20:45	0.04	A	#ImpeachmentPimentel #PTNuncaMais 	0.04	C	0.47	negativo
+93.00	16/07/2020 21:00	0.91	D		0.78	B	1.84	positivo
+94.00	16/07/2020 21:15	0.55	C	#ImpeachmentPimentel #PTNuncaMais #ForaPT #ForaPCdoB #ForaPSOL #ForaRede 	0.54	A	1.56	negativo
+95.00	16/07/2020 21:30	0.34	D		0.33	C	0.96	positivo
+96.00	16/07/2020 21:45	0.80	B	#Janeiro. #PartiuFerias. GOVERNADOR VALADARES/MG. Pousada Vale Silvestre EcoPark. Comprar: https://t.co/rNRqRFbUeMÉ https://t.co/2UyZ6Ojdp7	0.70	A	1.76	negativo
+97.00	16/07/2020 22:00	0.89	A	#Janeiro. #PartiuFerias. GOVERNADOR VALADARES/MG. Pousada Vale Silvestre EcoPark. Comprar: https://t.co/rNRqRFbUeMÉ https://t.co/qw78x6qm7k	0.78	B	2.18	positivo
+98.00	16/07/2020 22:15	0.64	C	#jornaldacultura	0.61	C	1.73	negativo
+99.00	16/07/2020 22:30	0.55	B		0.53	A	1.42	positivo
+100.00	16/07/2020 22:45	0.79	A	#METADEdoBRASILpertenceaosPOLêTICOSaoutraŽdosBANCOSeEMPRESçRIOS  Politica - Estado de Minas https://t.co/usvOMucmuq	0.72	A	1.87	negativo
+101.00	16/07/2020 23:00	0.59	B	#Microsoft  #lumia galera hj descobrir que aqui n estado do rio de janeiro n tem autorizada .(S.PAULO E MINAS ) NAO COMPREI WINDOWS PHONE	0.55	B	1.58	positivo
+102.00	16/07/2020 23:15	0.46	C	#M’dia:  Press Release from Business Wire : Consumer Technology ... - Estado de Minas https://t.co/FGoxtwksdM	0.45	A	1.21	negativo
+103.00	16/07/2020 23:30	0.43	A	#M’dia:  Press Release from Business Wire : Digital Living Network Alliance - Estado de Minas https://t.co/wj7wMchv8S	0.40	C	1.08	positivo
+104.00	16/07/2020 23:45	0.16	D	#M’dia:  Press Release from Business Wire : IBC - Estado de Minas https://t.co/Uy5QuJo8wx	0.15	B	0.53	negativo
+105.00	17/07/2020 00:00	0.87	C	#MINAS Postos dos Sine oferecem mais de 1.500 vagas de emprego no estado https://t.co/ZTrZ8MGrRp #Trabalho #Emprego #MG #Oportunidades	0.77	A	1.82	positivo
+106.00	17/07/2020 00:15	0.18	D	#Minas vai dobrar oferta de trabalho e estudo nos #pres’dios do Estado	0.18	C	0.80	negativo
+107.00	17/07/2020 00:30	0.67	B		0.61	A	1.44	positivo
+108.00	17/07/2020 00:45	0.55	A	#Minas vai dobrar oferta de trabalho e estudo nos #pres’dios do Estado	0.51	B	1.44	negativo
+109.00	17/07/2020 01:00	0.12	C		0.12	C	0.51	positivo
+110.00	17/07/2020 01:15	0.91	B	#Mortalidade por c‰ncer cai 25% em 25 anos nos Estados Unidos - Estado de Minas https://t.co/fsZg1D8WCL	0.78	A	1.89	negativo
+111.00	17/07/2020 01:30	0.28	A	#musicagratis Funda‹o Hospitalar do Estado de Minas Gerais (FHEMIG): A Funda‹o HospitalarÉÉ https://t.co/JXxZCenikX	0.26	A	1.01	positivo
+112.00	17/07/2020 01:45	0.50	B	#musicagratis MinistŽrio Pœblico de Minas Gerais (Arax‡): O MinistŽrio Pœblico do Estado deÉÉ https://t.co/4WqHRHwxOg	0.48	B	1.14	negativo
+113.00	17/07/2020 02:00	0.42	C	#musicagratis Prefeitura de Rodeiro: A Prefeitura de Rodeiro. no Estado de Minas Gerais.É https://t.co/kdGlkcQKcGÉ https://t.co/NyF4ZQiZqm	0.41	A	1.08	positivo
+114.00	17/07/2020 02:15	0.52	A	#noticiasdorenan Em calamidade financeira. governo de MG compra dois helic—pteros: OÉ https://t.co/oW6G9hElta	0.50	C	1.25	negativo
+115.00	17/07/2020 02:30	0.97	D	#noticiasdorenan Governo de Minas Gerais reconhece Folias de Reis como Patrim™nio ImaterialÉ https://t.co/AL18Rr45X3	0.81	B	2.20	positivo
+116.00	17/07/2020 02:45	0.24	C	#noticiasdorenan Uso de dep—sitos judiciais pelo governo tem nova polmica em MG: O BancoÉ https://t.co/kHuZpKQaj5	0.23	A	0.97	negativo
+117.00	17/07/2020 03:00	0.69	D	#OperacaoBetaLab #TimBeta #Beta #BetaLab #BetaAjudaBeta #BetaSegueBeta UOL: Desastre ambiental em MG: Empresas pedÉ https://t.co/kwyeKjhtcI	0.63	C	1.50	positivo
+118.00	17/07/2020 03:15	0.93	B	#OperacaoBetaLab #TimBeta #Beta #BetaLab #BetaAjudaBeta #BetaSegueBeta UOL: Governo em calamidade financeira: BB aÉ https://t.co/1rWaHUACqt	0.79	A	2.21	negativo
+119.00	17/07/2020 03:30	0.54	A	#OperacaoBetaLab #TimBeta #Beta #BetaLab #BetaAjudaBeta #BetaSegueBeta UOL: Polmica com filho de Pimentel: GovernÉ https://t.co/E1EhSA9Ti3	0.52	B	1.54	positivo
+120.00	17/07/2020 03:45	0.23	C	#operacaobetalab BB avisa Justia que governo de MG n‹o tem recursos em conta judicial https://t.co/W6AoFMMsvA #rt #sdv	0.22	C	0.72	negativo
+121.00	17/07/2020 04:00	0.79	B	#PedroMotta visita as mem—rias da inf‰ncia na sŽrie #FrutosEstranhos da exposi‹o #EstadodaNatureza ð Visite:É https://t.co/Fti430VnjI	0.72	A	1.69	positivo
+122.00	17/07/2020 04:15	0.49	A	#petralha no governo Ž isso ai! Mesmo em calamidade financeira. governo de MG compra mais dois helic—pteros https://t.co/ZR9N6Gl0KW	0.47	A	1.38	negativo
+123.00	17/07/2020 04:30	0.22	B	#pmdb #pt #tj #tjmg #almg #psdb #pdt O FILHO ACHOU O OUTRO VELHO Em calamidade financeira MG compra 2 helic—pteros https://t.co/SXfamLNCqd	0.21	B	0.70	positivo
+124.00	17/07/2020 04:45	0.74	C	#prŽ_hospitalar homem estado alterado de conscincia dificuldade respirat—ria press‹o elevada em supermercado no b s‹o benedito av brasilia	0.66	A	1.58	negativo
+125.00	17/07/2020 05:00	0.69	A	#pt #pmdb #pdt #tj #tjmg #stf #almg #pp MAIS UMA DELE ... #BB cobra de Minas R$ 1.5 bilh‹o em dep—sitos judiciais https://t.co/yPWflY0U5f	0.65	C	1.76	positivo
+126.00	17/07/2020 05:15	0.93	D	#road #trip #mg #car #gopro @ Governador Valadares. Minas Gerais https://t.co/v6LZ557K6d	0.80	B	2.21	negativo
+127.00	17/07/2020 05:30	0.90	C	#SomosTodosMoro 	0.77	A	2.27	positivo
+128.00	17/07/2020 05:45	0.79	D		0.71	C	2.03	negativo
+129.00	17/07/2020 06:00	0.52	B		0.51	A	1.44	positivo
+130.00	17/07/2020 06:15	0.50	A	#Supercluster #Oracle (@ Secretaria de Estado da Fazenda in Belo Horizonte. MG) https://t.co/Raj2oJz8tq	0.49	B	1.26	negativo
+131.00	17/07/2020 06:30	0.71	C	#SUS Minas Gerais recebe recurso m‡ximo disponibilizado pelo Governo Federal para a›es da #Vigil‰nciaSanit‡riaÉ https://t.co/0OrT7R8gMO	0.65	C	1.67	positivo
+132.00	17/07/2020 06:45	0.69	B	#SUS SES-MG convoca coletiva para falar da situa‹o da #FebreAmarela no estado @SaudeMG @GotasSalvadoras https://t.co/TEydsKsvnB	0.65	A	1.74	negativo
+133.00	17/07/2020 07:00	0.87	A	#SUS SES-MG convoca coletiva para falar da situa‹o da #FebreAmarela no estado https://t.co/7RwhYPH1Oz https://t.co/lfICLTfvxZ	0.76	A	2.09	positivo
+134.00	17/07/2020 07:15	0.55	B	#timbeta #globo Ap—s ser agredida. mulher atira contra homem em Governador Valadares https://t.co/LSQcIK1ugn #OperacaoBetaLab #Sigodevolta	0.51	B	1.53	negativo
+135.00	17/07/2020 07:30	0.43	C	#timbeta #globo BB cobra restitui‹o de recursos por parte do governo de MG	0.42	A	1.12	positivo
+136.00	17/07/2020 07:45	0.90	A	#timbeta #globo Corpo em estado de decomposi‹o Ž encontrado em Poos de Caldas. MG https://t.co/QIT9YlYMog #OperacaoBetaLab #Sigodevolta	0.78	C	2.00	negativo
+137.00	17/07/2020 08:00	0.33	D	#timbeta #globo Defesa Civil de MG confirma 16» morte pela chuva no estado https://t.co/SYMRdMAXFX #OperacaoBetaLab #Sigodevolta	0.32	B	1.11	positivo
+138.00	17/07/2020 08:15	0.07	C	#timbeta #globo Governador Valadares registra dois assassinatos em menos de uma hora https://t.co/888hGlseNv #OperacaoBetaLab #Sigodevolta	0.06	A	0.30	negativo
+139.00	17/07/2020 08:30	0.10	D	#timbeta #globo Homem Ž morto a tiros ap—s deixar pres’dio em Governador Valadares https://t.co/ecLiHQp1VR #OperacaoBetaLab #Sigodevolta	0.10	C	0.23	positivo
+140.00	17/07/2020 08:45	0.48	B	#timbeta #globo MG Ž o quarto estado a garantir o direito ˆ amamenta‹o em pœblico https://t.co/sCrrQLncHs #OperacaoBetaLab #Sigodevolta	0.45	A	1.02	negativo
+141.00	17/07/2020 09:00	0.40	A	#timbeta #globo PM apreende armas usadas em homic’dio em Governador Valadares https://t.co/YEFA0XEdKB #OperacaoBetaLab #Sigodevolta	0.38	B	1.05	positivo
+142.00	17/07/2020 09:15	0.77	C	#timbeta #globo Pol’cia Militar apreende 30 kg de maconha em Governador Valadares https://t.co/eK1qMAUL36 #OperacaoBetaLab #Sigodevolta	0.70	C	1.74	negativo
+143.00	17/07/2020 09:30	0.71	B	#timbeta #globo Prefeito de AimorŽs decreta estado de emergncia administrativa https://t.co/0Z7GX9GBPM #OperacaoBetaLab #Sigodevolta	0.65	A	1.81	positivo
+144.00	17/07/2020 09:45	0.51	A	#timbeta #globo Prefeito de Ribeir‹o das Neves decreta estado de calamidade financeira https://t.co/cyvkfwwslD #OperacaoBetaLab #SigodevolÉ	0.49	A	1.37	negativo
+145.00	17/07/2020 10:00	0.23	B	#timbeta #globo Prefeitura de Uberl‰ndia decreta estado de calamidade financeira  https://t.co/whTppNXDOk #OperacaoBetaLab #Sigodevolta	0.21	B	0.71	positivo
+146.00	17/07/2020 10:15	0.59	C	#timbeta #globo UFJF abre 62 vagas para cursos em Governador Valadares https://t.co/Fd8uVtW5bm #OperacaoBetaLab #Sigodevolta	0.54	A	1.29	negativo
+147.00	17/07/2020 10:30	0.62	A	#timbeta #globo Vereadores de Governador Valadares n‹o ter‹o 13¼ sal‡rio em 2017 https://t.co/YA3HKtxvza #OperacaoBetaLab #Sigodevolta	0.58	C	1.53	positivo
+148.00	17/07/2020 10:45	0.07	D	* #MG Y con tu Apellido tiro un Estado.. _ððððð	0.08	B	0.44	negativo
+149.00	17/07/2020 11:00	0.44	C	*	0.44	A	0.92	positivo
+150.00	17/07/2020 11:15	0.75	D		0.69	C	1.73	negativo
+151.00	17/07/2020 11:30	0.41	B		0.39	A	1.20	positivo
+152.00	17/07/2020 11:45	0.33	A		0.33	B	0.87	negativo
+153.00	17/07/2020 12:00	0.33	C		0.33	C	0.84	positivo
+154.00	17/07/2020 12:15	0.08	B		0.09	A	0.33	negativo
+155.00	17/07/2020 12:30	0.79	A		0.70	A	1.62	positivo
+156.00	17/07/2020 12:45	0.44	B		0.42	B	1.27	negativo
+157.00	17/07/2020 13:00	0.73	C		0.67	A	1.67	positivo
+158.00	17/07/2020 13:15	0.76	A		0.69	C	1.88	negativo
+159.00	17/07/2020 13:30	0.63	D		0.59	B	1.65	positivo
+160.00	17/07/2020 13:45	0.31	C		0.30	A	0.94	negativo
+161.00	17/07/2020 14:00	0.49	D	@__MathLaham @1psicopatar @samuelcost4 n‹o sabia que o Estado de Minas existia em 1926. amigo...E detalhe:isso s— apareceu depois de 2011 rs	0.47	C	1.13	positivo
+162.00	17/07/2020 14:15	0.71	B	@_pereiraclayton em Minas ta seu cu kkkkkk estou no mesmo estado q voc palhao ðð	0.65	A	1.66	negativo
+163.00	17/07/2020 14:30	0.47	A	@1chathais TambŽm n‹o acreditei. O Estado de Minas pulicou que est‹o estudando implantar uma unidade	0.44	B	1.30	positivo
+164.00	17/07/2020 14:45	0.99	C	@50Rosanaborges @folha @UOL j‡ Ž o pior governador da hist—ria de Minas.	0.85	C	2.22	negativo
+165.00	17/07/2020 15:00	0.32	B	@a_alinediniz parabŽns vc emplacou o release no estad‹o.  folha.  o globo.  isto Ž e Veja. Na pr—xima vez consiga SPTV.  Estado de Minas...	0.31	A	1.14	positivo
+166.00	17/07/2020 15:15	0.94	A	@AcordouAcordou Minas est‡ linda. recheada de mineiros e mineiras gente boa. o problema Ž o governo de MG.	0.81	A	2.05	negativo
+167.00	17/07/2020 15:30	0.02	B	@AdemirAlvim @pdevechi Estado de Minas melhorando a manchete tb... s— n‹o falou que eram negros. mas mencionou a motiva‹o pol’tica.	0.03	B	0.51	positivo
+168.00	17/07/2020 15:45	0.56	C	@AL_Kaio_ acho que n‹o 4 de SP. 4 do RJ. 3 de MG. 3 do RS. e 3 do ES! Todos se enfrentavam e o melhor de cada estado passava pras semis	0.54	A	1.14	negativo
+169.00	17/07/2020 16:00	0.63	A	@AlbertoLage @rebeldescalca @YouTube quero ver a desculpa quando ele ganhar uma boquinha no governo de Minas	0.59	C	1.55	positivo
+170.00	17/07/2020 16:15	0.79	D	@AnaPaulaVolei e tem mais essa: https://t.co/BnDsO34qK0	0.70	B	1.89	negativo
+171.00	17/07/2020 16:30	0.03	C	@Anastasia @revistaencontro Espero que voc seja o pr—ximo governador das Minas Geraes!	0.04	A	0.45	positivo
+172.00	17/07/2020 16:45	0.29	D	@andregallindo @R2renatoribeiro @JornalOGlobo Sou de minas. flamenguista e Ž triste. muito triste ver o maior palco do futebol neste estado.	0.30	C	0.60	negativo
+173.00	17/07/2020 17:00	0.37	B	@anterogreco @gianoddi @rafaelribeiro se der. manda um abrao para os palmeirenses aqui de governador Valadares MG. Antero.	0.37	A	0.88	positivo
+174.00	17/07/2020 17:15	0.58	A	@AREZZO_ estou em outro estado! Comprei durante as fŽrias em MG.	0.55	B	1.34	negativo
+175.00	17/07/2020 17:30	0.74	C	@AxelRolonOk Y tiene 7 mg este estado que nadie se venga a hacer la inocenteðð	0.66	C	1.77	positivo
+176.00	17/07/2020 17:45	0.26	B	@azeredo_mg @STF_oficial @MichelTemer Justamente isso. morreu bandido Ž indenizado. enquanto isso os inocentes est‹o sem aparo do governo	0.27	A	0.89	negativo
+177.00	17/07/2020 18:00	0.75	A	@b3arland eu sou do interior de MG. mas minha cidade faz divisa com o estado de SP. O mais perto que eu conheo aqui Ž o Breno	0.67	A	1.62	positivo
+178.00	17/07/2020 18:15	0.36	B	@baekliar o governo de minas d‡ ate estojo???????socorro	0.36	B	1.10	negativo
+179.00	17/07/2020 18:30	0.22	C	@Bella_DiGenaro y patea con las 2 patas. adem‡s el wueon es zurdos. con todas las minas buenas q a estado. se le va el gusto atr‡s?	0.21	A	0.62	positivo
+180.00	17/07/2020 18:45	0.76	A	@beppo22 Risco de calote de Estados com a Uni‹o cresce - Politica - Estado de Minas https://t.co/zdjOcATDo3	0.68	C	1.64	negativo
+181.00	17/07/2020 19:00	0.31	D	@betorosio Bom dia professor!!!!	0.30	B	1.01	positivo
+182.00	17/07/2020 19:15	0.62	C		0.57	A	1.40	negativo
+183.00	17/07/2020 19:30	0.84	D		0.74	C	1.99	positivo
+184.00	17/07/2020 19:45	0.05	B	@BlogDoPim @carioca556 	0.04	A	0.52	negativo
+185.00	17/07/2020 20:00	0.71	A		0.66	B	1.44	positivo
+186.00	17/07/2020 20:15	0.94	C	@cartacapital e em minas governador usa helic—ptero do governo para buscar filho em festa	0.81	C	2.23	negativo
+187.00	17/07/2020 20:30	0.66	B	@cartacapital isso tudo Ž um absurdo. legal mesmo Ž isso aqui https://t.co/TnVZQTadaD	0.61	A	1.80	positivo
+188.00	17/07/2020 20:45	0.62	A	@Castro2Monica ent‹o. qual Ž o governador das Minas Gerais?	0.59	A	1.58	negativo
+189.00	17/07/2020 21:00	0.17	B	@charlesbigfoot @DecaRGarcia @Poder_360 Concordo plenamente. J‡ trabalhei no governo de MG e vi isso de perto.	0.18	B	0.65	positivo
+190.00	17/07/2020 21:15	0.97	C	@ClaroPeru q era 700 mg mas no de ahi c cortaba mis megas como a estado ocurriendo inclusive los 1ero meses no tube megas!!	0.84	A	2.03	negativo
+191.00	17/07/2020 21:30	0.35	A	@claudfeb @mayrasmendoza @CFKArgentina Andar con minas no. pelotudo. pagarlas con guita del Estado. s’:	0.34	C	1.19	positivo
+192.00	17/07/2020 21:45	0.01	D		0.01	B	0.19	negativo
+193.00	17/07/2020 22:00	0.12	C		0.12	A	0.25	positivo
+194.00	17/07/2020 22:15	0.71	D	@Codevasf e @governomg discutem retomada do convnio para constru‹o da barragem do Jequita’. Veja:É https://t.co/ndMvqAk49E	0.64	C	1.48	negativo
+195.00	17/07/2020 22:30	0.81	B	@ConsuladosGalo Boa tarde. Consulado do Galo de Governador Valadares/MG. Ajude a divulgar. ObriGalo.	0.71	A	1.97	positivo
+196.00	17/07/2020 22:45	0.37	A	@cotonewers praticamente hahah uma parte da minha fam’lia Ž de mg. Pra mim Ž o melhor estado p passear no Brasil ð	0.37	B	1.14	negativo
+197.00	17/07/2020 23:00	0.90	C	@danilo12mf @pires_magela  ele ja saiu seu mineiro filha da puta menor de minas chupaaa estado de merda ..s— tem lixo nessa porra	0.78	C	1.99	positivo
+198.00	17/07/2020 23:15	0.27	B	@DCM_online Newton Cardoso Junior Ž da pior estirpe de politicos mineiros. Um golpista e desonesto. herana do pai. ex-governador de Minas.!	0.27	A	1.00	negativo
+199.00	17/07/2020 23:30	0.42	A	@deeh_gerhardt https://t.co/TONVnZGvHq	0.42	A	0.97	positivo
+200.00	17/07/2020 23:45	0.90	B	@deivaolm @Ary_AntiPT @c0nvey Antes ou depois de o governo de MG comprar 2 helic—pteros?	0.80	B	2.02	negativo
+201.00	18/07/2020 00:00	0.70	C	@dibiaseneves v‹o se apaixonar pelo melhor estado do Brasil e pelo MAIOR de MG. sejam bem vindos a BH. #cruzeirosempre #maiordeminas	0.63	A	1.85	positivo
+202.00	18/07/2020 00:15	0.87	A	@diegocabral75 @exame a’ em MG. ta td bem? Pimentel cada dia fazendo melhor para o estado nŽ? ainda bem q o doria Ž prefeito de SP e nao BH	0.75	C	2.09	negativo
+203.00	18/07/2020 00:30	0.30	D	@digaoi a internet ta ruim no estado de MG ?	0.30	B	1.04	positivo
+204.00	18/07/2020 00:45	0.66	C	@diogo_cc estou hahahaha mas trabalho mais pro impresso. Estado de Minas	0.62	A	1.47	negativo
+205.00	18/07/2020 01:00	0.60	D	@doidao_galo @_FSEP @twitpalmeiras kkkk mineirao e do governo de Minas.  A’ joga no indepencia pq torcida s— enche caixa de f—sforo	0.57	C	1.52	positivo
+206.00	18/07/2020 01:15	0.20	B	@DonaMed_VE 	0.20	A	0.70	negativo
+207.00	18/07/2020 01:30	0.08	A		0.08	B	0.27	positivo
+208.00	18/07/2020 01:45	0.68	C		0.62	C	1.40	negativo
+209.00	18/07/2020 02:00	0.13	B		0.12	A	0.59	positivo
+210.00	18/07/2020 02:15	0.25	A		0.26	A	0.56	negativo
+211.00	18/07/2020 02:30	0.99	B		0.84	B	2.11	positivo
+212.00	18/07/2020 02:45	0.56	C	@DonaMed_VE BUSCO EN VALENCIA ESTADO CARABOBO SOMAZINA PASTILLA 500 MG CONTACTO 04162571719 04124011533	0.54	A	1.61	negativo
+213.00	18/07/2020 03:00	0.37	A	@droguerianena.Buenas tardes para saber si hay disponible abretia o strattera de 10 o 18 mg en la sucursal del Estado Lara.Gracias	0.37	C	1.01	positivo
+214.00	18/07/2020 03:15	0.74	D	@ElPoliTwico AYUDA HOY ES UNA NI„A CON MENINGITIS. ma–ana puede ser cualquiera. Su estado es grave x falta d medicamento Aciclovir 500 mg.	0.68	B	1.66	negativo
+215.00	18/07/2020 03:30	0.46	C	@em_com MG. o estado da idade do ferro. e sua capital	0.44	A	1.29	positivo
+216.00	18/07/2020 03:45	0.79	D	@em_com v‹o cobrir isto? https://t.co/SNYMRfQ737	0.72	C	1.81	negativo
+217.00	18/07/2020 04:00	0.31	B	@esd4n ninguno. a decir verdad he estado con minas peores	0.32	A	1.02	positivo
+218.00	18/07/2020 04:15	0.58	A	@eumateus75 @Morro_Cristo @JanainaDoBrasil @ptnacional @ptbrasiI Em MG. a criminalidade aumentou com o PT https://t.co/3E7sdl1UsT	0.55	B	1.32	negativo
+219.00	18/07/2020 04:30	0.06	C	@evaristocosta j‡ visitou o estado de MG? Se sim o que achou?	0.06	C	0.41	positivo
+220.00	18/07/2020 04:45	0.84	B	@filiperabelo @JocaMani	0.73	A	1.71	negativo
+221.00	18/07/2020 05:00	0.70	A		0.63	A	1.81	positivo
+222.00	18/07/2020 05:15	0.44	B		0.43	B	1.23	negativo
+223.00	18/07/2020 05:30	0.94	C	@FlowstreetYT bueno ese mg no ha estado nada mal lool omgggg!!!Gracias Flowiiii	0.80	A	2.10	positivo
+224.00	18/07/2020 05:45	0.79	A	@folha - E da’? O palhao de Minas voou trocentas vezes no helic—ptero do ESTADO para namorar em Florian—polis e a imprensa n‹o deu um PIO.	0.71	C	2.05	negativo
+225.00	18/07/2020 06:00	0.20	D	@folha esse lixo petista quebrou o estado de Minas Gerais mais uma vez! seu lugar Ž um s—..	0.20	B	0.79	positivo
+226.00	18/07/2020 06:15	0.86	C	@ForunsMG v‹o eleger novos prefeitos e vereadores para o Colegiado Executivo e avanar na participa‹o popular.É https://t.co/hLjmXWoK4i	0.77	A	1.83	negativo
+227.00	18/07/2020 06:30	0.30	D	@FutDados William n‹o tem mais clima para prosseguir no maior time do Estado de Minas Gerais ... fora William...ð__	0.31	C	1.03	positivo
+228.00	18/07/2020 06:45	0.82	B	@Fute_Minas O complicado Ž isso! Desse jeito nunca teremos uma terceira. quarta fora no estado! N‹o da pros clubes do interior investir!	0.74	A	1.79	negativo
+229.00	18/07/2020 07:00	0.58	A	@GaloAustralia incorreto. No socialismo. a elite nunca se fode. O Estado fede.	0.55	B	1.57	positivo
+230.00	18/07/2020 07:15	0.08	C	@Galonopeito1 Se Minas tivesse mar. esse Estado ia ser o para’so hahaha _	0.07	C	0.46	negativo
+231.00	18/07/2020 07:30	0.73	B	@geraldoalckmin_ boa noite governador gostaria de um emprego trabalho na ‡rea da indœstria meu governador PT Minas Gerais	0.66	A	1.49	positivo
+232.00	18/07/2020 07:45	0.31	A	@gercinu tu est‡s em MG? H‡ uma zona de baixa press‹o em cima do estado que impede a forma‹o de nuvens.	0.31	A	0.98	negativo
+233.00	18/07/2020 08:00	0.33	B	@GilzanaCarvalho SP Ž realmente fascinante.tem v‡rios contrastes.mas Minas Ž um estado bom tbm...alias o Brasil Ž um Belo Pais.so q mau admð	0.32	B	0.81	positivo
+234.00	18/07/2020 08:15	0.31	C	@GPronaldo13 Com um GOVERNADOR desse! Qualquer CORRUPTO vai querer ser CANDIDATO EM MG! AtŽ as FAC‚ÍES do lula BæBADO	0.31	A	0.79	negativo
+235.00	18/07/2020 08:30	0.78	A	@helhaodoaxe @ninobec @penso_ra @JornalOGlobo Estado de Minas. bunit‹o. chegados do AŽcio. https://t.co/sjkpoMJvqX	0.71	C	1.73	positivo
+236.00	18/07/2020 08:45	0.53	D	@hidselena minas gerais estado do p‹o de queij	0.52	B	1.45	negativo
+237.00	18/07/2020 09:00	0.24	C	@HSOGameplays  vc e de qual estado de minas so para saber mesmo se pa e meu vizinho	0.24	A	0.75	positivo
+238.00	18/07/2020 09:15	0.11	D	@i5gornascimento #i5gornascimento Governador Valadares registra dois assassinatos em menos de uma hora https://t.co/yM8IsmD4Wn	0.11	C	0.33	negativo
+239.00	18/07/2020 09:30	0.19	B	@i5gornascimento #i5gornascimento UFJF abre 62 vagas para cursos em Governador Valadares https://t.co/5sutw56PxJ	0.20	A	0.44	positivo
+240.00	18/07/2020 09:45	0.83	A	@I5gornascimento @I5gornascimento #I5gornascimento Governador Valadares registra dois assassinatos em menos de ... https://t.co/7IiBGRNW9l	0.73	B	1.76	negativo
+241.00	18/07/2020 10:00	0.02	C	@I5gornascimento @I5gornascimento #I5gornascimento UFJF abre 62 vagas para cursos em Governador Valadares https://t.co/4MiJlXKxoW	0.03	C	0.45	positivo
+242.00	18/07/2020 10:15	0.63	B	@Independent  o melhor queijo do mundo Ž daqui do Brasil mais exatamente do estado de Minas Gerais	0.60	A	1.26	negativo
+243.00	18/07/2020 10:30	0.15	A	"@infomoney ""bando do Brasil"" Ž o partido do governador de MG."	0.15	A	0.61	positivo
+244.00	18/07/2020 10:45	0.73	B	@IPAFARMA @Avivasa1965 buenos d’as. Tienen stalevo de 100 mg. Vivo en el Estado Nueva Espsrta	0.67	B	1.53	negativo
+245.00	18/07/2020 11:00	0.98	C	@israel_massa @ferrisss @JornalOGlobo pelo menos 1 coisa p se orgulhar do governo de minas. Esse tem q ser o modelo. Recuperar o cidad‹o...	0.82	A	2.32	positivo
+246.00	18/07/2020 11:15	0.03	A	@jairbolsonaro Por favor nos ajude a Pizza Pimentel aqui em MG Ž o maior cabide de empregos do meu estado. minha m‹e coitada nem cheiro 13 s	0.02	C	0.56	negativo
+247.00	18/07/2020 11:30	0.14	D	@jcavaa Cuando vi tu nombre como ganador del #EuroLogo me sonaste mucho. tras 3 d’as. me doy cuenta de que me has estado dando mg en instað	0.15	B	0.29	positivo
+248.00	18/07/2020 11:45	0.62	C	@jeffs_araujo35 @sjayanthi @Ueiler2 @virginiaduailib Conheo bem as APACs de quando trabalhei no governo de MG...	0.59	A	1.30	negativo
+249.00	18/07/2020 12:00	0.77	D	@JoanapereiraF Ol‡! Podemos usar a sua foto no jornal Estado de MInas? Obrigada!	0.71	C	1.86	positivo
+250.00	18/07/2020 12:15	0.54	B	@joaoleiteBH isso  jo‹o. contamos com vcs pra derrotar esses bandidos q est‹o no poder. lugar de bandido Ž na cadeia. n no governo de MG	0.51	A	1.47	negativo
+251.00	18/07/2020 12:30	0.79	A	@jonanperrea @holdmenouis_ mejor!! Eswue estado unos d’as sin conectarme por estudiar y aunque siempre intento darte mg y comentar! Un besoo	0.72	B	1.84	positivo
+252.00	18/07/2020 12:45	0.12	C	@jornal_cultura @tvcultura 	0.13	C	0.63	negativo
+253.00	18/07/2020 13:00	0.54	B		0.51	A	1.14	positivo
+254.00	18/07/2020 13:15	0.95	A	@jornal_cultura governo federal com cart‹o de crŽdito...governo de MG passeando e comprando helic—pteros. AtŽ onde?	0.81	A	2.16	negativo
+255.00	18/07/2020 13:30	0.82	B	@jornaldacbn O @LFPezao  quando precisar dar um passeio. ele pode pedir emprestado o helic—ptero emprestado do  Governador de MG.	0.73	B	2.12	positivo
+256.00	18/07/2020 13:45	0.44	C	@JoseAMeadeK Los abusos. aun en el estado mas s—lido. son minas sordas que tarde o temprano estallan.	0.42	A	1.28	negativo
+257.00	18/07/2020 14:00	0.74	A	@JustMoveOn10 #TeamBTS confieso que me da pena que mi ex me haya cambiado altiro con varias minas y yo ni siquiera he estado con otro:))))	0.68	C	1.71	positivo
+258.00	18/07/2020 14:15	0.65	D	@kalkssabrina @AnaPaulaVolei E o Estado com as finanas no vermelho! E o resto da era PT acabando com MG.	0.61	B	1.66	negativo
+259.00	18/07/2020 14:30	0.84	C	@Kefera teria como doar sangue pra ele morando em outro estado? eu sou de Minas e gostaria de ajudar	0.73	A	1.99	positivo
+260.00	18/07/2020 14:45	0.89	D	@kellybh1 Ol‡ Kelly. somos do estado do Paran‡. mas o servio 181 est‡ em Minas Gerais tambŽm! Ligue 181 e denuncie!	0.78	C	2.21	negativo
+261.00	18/07/2020 15:00	0.96	B	@lancenet aqui em Minas nenhum dos grandes portais (itatiaia. superesportes. Estado de Minas) noticia isso. AtŽ os setoristas desconhecem	0.81	A	2.36	positivo
+262.00	18/07/2020 15:15	0.03	A	@Laurinahloves5h @WorlDms91 aja si y por eso le diste mg a su estado para que te mande preguntas al chat ððð basta no puedo	0.02	B	0.54	negativo
+263.00	18/07/2020 15:30	0.32	C	@Leisparaquem @portalfab sinto muito. existem outras prioridades.  o governador de Minas precisa transportar seus pimpolhos	0.32	C	0.66	positivo
+264.00	18/07/2020 15:45	0.70	B	@leonardogoncal7 qual sua principal meta pra 2017? Que Deus te abenoe cada dia mais _ (volta pra Governador Valadares/MG hahah)	0.64	A	1.56	negativo
+265.00	18/07/2020 16:00	0.87	A	@LocatelVzla_ATC buenos d’as me pueden informar si hay stalevo de 100 mg en Locatel la limpia Estado Zulia?	0.78	A	2.10	positivo
+266.00	18/07/2020 16:15	0.45	B	@Lucas_htt anuncia no estado de minas o bcta kkkkkkk	0.42	B	1.33	negativo
+267.00	18/07/2020 16:30	0.53	C	@Lucianaleiva99 mira no me quiero ni imaginar ese estado. As’ mg	0.49	A	1.28	positivo
+268.00	18/07/2020 16:45	0.73	A	@lucosttab eu fico meio pistola porque minas Ž o estado que mais produz cafŽ porŽm o melhor vai pro exterior e aqui do msm custa absurdos	0.66	C	1.72	negativo
+269.00	18/07/2020 17:00	0.92	D	@LuliiPrimo MG tengo que ser sirvienta tuya hasta 2018 por mi estado	0.81	B	2.20	positivo
+270.00	18/07/2020 17:15	0.77	C	@MacarenaTablada amm que le pones mg a mo estado. El finde hagamos algo asi te despedimos . Dspea te vamos a extra–arrr	0.70	A	2.01	negativo
+271.00	18/07/2020 17:30	0.87	D	@macsanto777 @Acircamargo @KatiaAbreu Minas j‡ sabe bem o que Ž ter um governador aspirador de p—... ððð	0.76	C	2.13	positivo
+272.00	18/07/2020 17:45	0.78	B	@madeleinelacsko Em MG e SP.o Estado tem razo‡vel controle sobre o sistema prisional.c —rg‹os d adimnistra‹o penitenci‡ria bem estruturados	0.72	A	2.01	negativo
+273.00	18/07/2020 18:00	0.31	A	@Madonegatti MG melhor estado	0.32	B	1.02	positivo
+274.00	18/07/2020 18:15	0.37	C	@Mandah05 vc viu o Governador de Minas que foi buscar o filho de helic—ptero do governo ? Isso Ž Repœblica!	0.37	C	0.90	negativo
+275.00	18/07/2020 18:30	0.56	B	@mangelrogel a mi mg tu v’deo qsyo yo no lo relacione con tu estado de ‡nimo. lo vi medio realista. eso le da el toke de queda ahr	0.52	A	1.30	positivo
+276.00	18/07/2020 18:45	0.29	A	@ManoloMontalt Paco Roig en estado puro Manolo... Jajaja!!! Me rio por no llorar :(	0.29	A	0.86	negativo
+277.00	18/07/2020 19:00	0.62	B	@marcelorubens ƒ https://t.co/6lRueqop6N	0.58	B	1.38	positivo
+278.00	18/07/2020 19:15	0.55	C	@MarcoPaolo He estado en conciertos dnd las minas son una + empujando y pegando pero no. dale con el prejuicio queÉ https://t.co/scssXuac0t	0.51	A	1.42	negativo
+279.00	18/07/2020 19:30	0.82	A	@MarcosV60958142 S— lembrando que este cr‡pula.mesmo com todo o apoio da m’dia e dessas elei›es controladas.NÌO VENCEU EM MG (estado dele)	0.72	C	1.92	positivo
+280.00	18/07/2020 19:45	0.08	D	@McOmghall @OcenMind Segura q no es el estado quien les cede la explotaci—n d las minas a cambio d parte de la producci—n?	0.08	B	0.57	negativo
+281.00	18/07/2020 20:00	0.24	C	@mcveylands donde viste esa mierda. bryana es la m‡s agradable de las minas que han estado con 5sos	0.24	A	0.52	positivo
+282.00	18/07/2020 20:15	0.80	D	@meditotal buenos d’as. Tienen stalevo de 100 mg? Vivo en el Estado Nueva Esparta. con urgencia	0.72	C	1.72	negativo
+283.00	18/07/2020 20:30	0.47	B	@mgfernetmgbirra 10 horas antes borraste mi estado. sacaste nuestra foto de todos lados.y le diste mg a una zorra ð	0.46	A	1.34	positivo
+284.00	18/07/2020 20:45	0.76	A	@MichelTemer Esses sim precisam de indenizaao do governo. @GloboNews https://t.co/BZtYad6JTe	0.68	B	1.75	negativo
+285.00	18/07/2020 21:00	0.67	C	@MichelTemer https://t.co/6gfWgoWZfn N‹o tem que perdoar a divida se tem tanto dinheiro para helicoptero	0.62	C	1.71	positivo
+286.00	18/07/2020 21:15	0.77	B	@MidiaNINJA Apoia o governo corrupto do Fernando Pimentel em MG? Ap—ia que use helic—ptero para buscar filho em balada?	0.69	A	1.87	negativo
+287.00	18/07/2020 21:30	0.12	A	@MidiaNINJA Apoia que Pimentel ignore a falncia do estado de MG e compre mais helic—pteros pra passear! #ForaPimentelMG	0.11	A	0.62	positivo
+288.00	18/07/2020 21:45	0.11	B	@MidiaNINJA E o governador de MG? Comprar helic—pteros pode nŽ? Basta ser petista! ðð	0.10	B	0.29	negativo
+289.00	18/07/2020 22:00	0.69	C	@MiriamLeitaoCom @JornalOGlobo N‹o sabem nada .Nem se h‡ crise mesmo nos Estados.Pelo jeito .n‹o. Em MG o governo esbanja.	0.64	A	1.43	positivo
+290.00	18/07/2020 22:15	0.38	A	@mrc_mg Non basta cambiare canale. bisogna cambiare ennesimo Governo abusivo e soprattutto politici arroganti	0.37	C	1.10	negativo
+291.00	18/07/2020 22:30	0.24	D	@MrSincero_ @klyfor @MBLivre @MBLivreBH Minas foi governada de 2003 a 2014 pelo PSDB e voc quer fazer acreditar que Pimentel faliu o estado	0.24	B	0.68	positivo
+292.00	18/07/2020 22:45	0.99	C	@mtv_anab esse sotaque de minas seu ___ melhor estado n‹o Ž msm? Amo! https://t.co/4jwaOrTNMp	0.83	A	2.10	negativo
+293.00	18/07/2020 23:00	0.30	D	@Multi_Anime no puedo decidirme. por eso di MG y RT. Mi infancia sin alguno de los dos hubiera estado incompleta.	0.29	C	1.09	positivo
+294.00	18/07/2020 23:15	0.91	B	@mvbill Salve.em MG ta do mesmo estado	0.79	A	1.96	negativo
+295.00	18/07/2020 23:30	0.79	A	@NataliaAssis0 Se voc mora em çgua Doce do Norte-ES. as capela mais pr—ximas ficam em Governador Valadares-MG e Nova VenŽcia-ES.	0.72	B	2.02	positivo
+296.00	18/07/2020 23:45	0.76	C	@NiBarga  participou junto com a anta ( Dilms ) de terrorismo no Brasil. hoje infelizmente o povo de Minas o elegeu Governador	0.69	C	1.91	negativo
+297.00	19/07/2020 00:00	0.99	B	@NiBarga Agora aguentem. mas n‹o podemos esquecer que ele declarou estado de emergncia em Minas. e vejam a hipocrisia desse safado	0.83	A	2.36	positivo
+298.00	19/07/2020 00:15	0.40	A	@NiBarga Aproximadamente R$ 1.5 bilh‹o para o pagamento de resgates dos dep—sitos judiciais sumiram das contas do gÉ https://t.co/Uzw2mQup3p	0.39	A	1.30	negativo
+299.00	19/07/2020 00:30	0.96	B	@NiBarga crise que Minas Gerais enfrenta. e antes declarou estado de emergncia em Minas Gerais. o cara Ž pilantra e comunista terrorista.	0.83	B	2.11	positivo
+300.00	19/07/2020 00:45	0.44	C		0.43	A	1.35	negativo

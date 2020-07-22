@@ -79,7 +79,7 @@ class Data2DataprepParameters(BaseModel):
     txt_variables: list
 
     # output target (categorical ou number) - support only one column
-    output_target: list
+    output_target: list = []
 
     # missing features values : "delete"
     missing_number_inputs: MissingFeaturesValues = MissingFeaturesValues.delete

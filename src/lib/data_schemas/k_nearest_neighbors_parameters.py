@@ -1,6 +1,6 @@
 """
 ===========================================================================================
-Linear Regression Model Building Parameters Class
+K-Nearest neighbors Model Building Parameters Class
 ===========================================================================================
 Script by COGNAS
 ===========================================================================================
@@ -9,10 +9,13 @@ from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
 
+class Metrics(str, Enum):
+    '''
+        "":
+    '''
+    minkowski = "minkowski"
 
-class XLinearRegressionParameters(BaseModel):
-
-    # data source
-    """Whether to calculate the intercept for this model. If set to False, no intercept will be used
-    in calculations (i.e. data is expected to be centered). Independent term=0"""
-    fit_intersection: bool
+class XKNearestNeighborsParameters(BaseModel):
+    n_neighbors: int = 5,
+    metric:Metrics = "minkowski",
+    metric_power: int = 2

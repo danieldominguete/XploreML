@@ -1,43 +1,47 @@
-'''
+"""
 ===========================================================================================
-Linear Regression Model Building Class
+Polynomial Regression Model Building Class
 ===========================================================================================
 Script Reviewed by COGNAS
 ===========================================================================================
-'''
+"""
 
 import pandas as pd
 import logging
 from src.lib.model.xmodel import XModel
 from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
 
-class XLinearRegression(XModel):
 
+class XPolynomialRegression(XModel):
 
     def init(self) -> bool:
 
-        # init model
-        self._model = LinearRegression(fit_intercept=self._param.fit_intersection)
+        ## init model
+        self._model = LinearRegression()
 
         return True
 
     def fit(self, data_input, data_target):
 
         # init model
+        poly_features = PolynomialFeatures(degree=self._param.degree)
+        X_poly = poly_features.fit_transform(data_input)
         self.init()
 
         # fit model
-        self._model.fit(data_input, data_target)
+        self._model.fit(X_poly, data_target)
 
         # save results
         self.save_results()
 
-        return True
+        return self.model
 
-    def eval_predict(self, data_input:pd)->pd:
+    def eval_predict(self, data_input: pd) -> pd:
 
-        # model evaluation
-        raw_predict = self._model.predict(data_input)
+        poly_features = PolynomialFeatures(degree=self._param.degree)
+        X_poly = poly_features.fit_transform(data_input)
+        raw_predict = self.model.predict(X_poly)
 
         if self._application == "classification":
             logging.error('Application not valid for Linear Regression.')
@@ -46,7 +50,7 @@ class XLinearRegression(XModel):
             data_predict = self.convert_regression_to_xout(data_predict=raw_predict)
 
         return data_predict
-    
+
     def save_results(self) -> bool:
 
         # hyperparameters (numbers and string)

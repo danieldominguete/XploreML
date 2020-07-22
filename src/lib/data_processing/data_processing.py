@@ -9,7 +9,13 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, OneHotEncoder, LabelEncoder
+from sklearn.preprocessing import (
+    StandardScaler,
+    MinMaxScaler,
+    OneHotEncoder,
+    OrdinalEncoder,
+    LabelBinarizer,
+)
 import logging
 import sys
 from src.lib.nlp.nlp_util import NLPUtils
@@ -672,42 +678,136 @@ class DataProcessing:
 
     def fit_encode_categorical_variable(self, data: pd, columns: list, type: str) -> pd:
 
-        col = []
-        encoders = []
+        var_list = []
+        val_working = []
+        encoders_int = []
+        encoders_hot = []
+        encoders_bin = []
+        int_to_cat_dict_list = []
+        cat_to_int_dict_list = []
+
         for var in columns:
 
             if type == "one_hot":
 
-                encoder = OneHotEncoder(
-                    categories="auto", sparse=False, dtype=np.int, handle_unknown="ignore"
+                # variable reference
+                var_list.append(var)
+
+                # Encoding with integer identification
+                col_int = []
+                encoder_int = OrdinalEncoder(categories="auto", dtype=np.int)
+                transf_int = encoder_int.fit_transform(data[var].to_numpy().reshape(-1, 1))
+                col_int.append(var + "_" + "int")
+                int_df = pd.DataFrame(transf_int, columns=col_int)
+                data = pd.concat([data, int_df], axis=1)
+                encoders_int.append(encoder_int)
+
+                # Decoding example
+                # test = encoder_int.inverse_transform(int_df)
+
+                # Encoding with one hot / dummy vector
+                encoder_hot = OneHotEncoder(
+                    categories="auto",
+                    drop=None,
+                    sparse=False,
+                    dtype=np.int,
+                    handle_unknown="ignore",
                 )
-                transformed = encoder.fit_transform(data[var].to_numpy().reshape(-1, 1))
+                transf_hot = encoder_hot.fit_transform(data[var].to_numpy().reshape(-1, 1))
+
                 col_temp = []
-                for item in encoder.get_feature_names():
-                    col.append(var + "_" + item)
+                for item in encoder_hot.get_feature_names():
+                    val_working.append(var + "_" + item)
                     col_temp.append(var + "_" + item)
 
-                ohe_df = pd.DataFrame(transformed, columns=col_temp)
-                # data = pd.concat([data, ohe_df], axis=1).drop([var], axis=1)
+                ohe_df = pd.DataFrame(transf_hot, columns=col_temp)
                 data = pd.concat([data, ohe_df], axis=1)
-                encoders.append(encoder)
+                encoders_hot.append(encoder_hot)
+
+                # Creating dictionaries convertion
+                categories = encoder_hot.categories_[0]
+                int_to_cat = {i: categories[i] for i in range(0, len(categories))}
+                cat_to_int = {categories[i]: i for i in range(0, len(categories))}
+
+                int_to_cat_dict_list.append(int_to_cat)
+                cat_to_int_dict_list.append(cat_to_int)
+
+                # decoding one hot code vector
+                # test = encoder_hot.inverse_transform(ohe_df)
+
+            if type == "binarizer":
+
+                # variable reference
+                var_list.append(var)
+
+                # Encoding with integer identification
+                col_bin = []
+                encoder_bin = LabelBinarizer()
+                transf_int = encoder_bin.fit_transform(data[var].to_numpy().reshape(-1, 1))
+                col_bin.append(var + "_" + "bin")
+                val_working.append(var + "_" + "bin")
+                bin_df = pd.DataFrame(transf_int, columns=col_bin)
+                data = pd.concat([data, bin_df], axis=1)
+                encoders_bin.append(encoder_bin)
+
+                # Decoding example
+                # test = encoder_int.inverse_transform(bin_df)
+
+                # Creating dictionaries convertion
+                categories = encoder_bin.classes_
+                int_to_cat = {i: categories[i] for i in range(0, len(categories))}
+                cat_to_int = {categories[i]: i for i in range(0, len(categories))}
+
+                int_to_cat_dict_list.append(int_to_cat)
+                cat_to_int_dict_list.append(cat_to_int)
 
             else:
                 logging.error("Categorical encoder not valid")
 
-        return data, col, encoders
+        return (
+            data,
+            val_working,
+            var_list,
+            encoders_int,
+            encoders_hot,
+            encoders_bin,
+            int_to_cat_dict_list,
+            cat_to_int_dict_list,
+        )
 
-    def encode_categorical_variable(self, data: pd, columns: list, encoder) -> pd:
+    def encode_one_hot_categorical_variable(
+        self, data: pd, columns: list, encoder_hot, encoder_int
+    ) -> pd:
 
         for i in range(len(columns)):
 
-            transformed = encoder[i].transform(data[columns[i]].to_numpy().reshape(-1, 1))
+            transformed = encoder_int[i].transform(data[columns[i]].to_numpy().reshape(-1, 1))
             col_temp = []
-            for item in encoder[i].get_feature_names():
+            col_temp.append(columns[i] + "_" + "int")
+            int_df = pd.DataFrame(transformed, columns=col_temp)
+            data = pd.concat([data, int_df], axis=1)
+
+            transformed = encoder_hot[i].transform(data[columns[i]].to_numpy().reshape(-1, 1))
+            col_temp = []
+            for item in encoder_hot[i].get_feature_names():
                 col_temp.append(columns[i] + "_" + item)
 
             ohe_df = pd.DataFrame(transformed, columns=col_temp)
             data = pd.concat([data, ohe_df], axis=1)
+
+        return data
+
+    def encode_bin_categorical_variable(
+        self, data: pd, columns: list, encoder_bin
+    ) -> pd:
+
+        for i in range(len(columns)):
+
+            transformed = encoder_bin[i].transform(data[columns[i]].to_numpy().reshape(-1, 1))
+            col_temp = []
+            col_temp.append(columns[i] + "_" + "bin")
+            bin_df = pd.DataFrame(transformed, columns=col_temp)
+            data = pd.concat([data, bin_df], axis=1)
 
         return data
 
@@ -731,9 +831,8 @@ class DataProcessing:
         if len(self.param.numerical_inputs) > 0:
             logging.info("======================================================================")
             logging.info("Processing scaling data for numerical inputs")
-            # X_number = data[self.param.numerical_inputs].to_numpy()
 
-            if self.param.scale_numerical_inputs is not None:
+            if self.param.scale_numerical_inputs != "":
                 (
                     data_train_input[self.param.numerical_inputs],
                     num_scaler,
@@ -762,14 +861,26 @@ class DataProcessing:
                 "Encoding input categorical features with: " + self.param.encode_categorical_inputs
             )
             if self.param.encode_categorical_inputs is not None:
-                data_train_input, var_inputs, encoders = self.fit_encode_categorical_variable(
+                (
+                    data_train_input,
+                    var_inputs,
+                    _,
+                    encoders_int,
+                    encoders_hot,
+                    encoders_bin,
+                    int_to_cat_dict_list_input,
+                    cat_to_int_dict_list_input,
+                ) = self.fit_encode_categorical_variable(
                     data=data_train_input,
                     columns=self.param.categorical_inputs,
                     type=self.param.encode_categorical_inputs,
                 )
 
-                data_test_input = self.encode_categorical_variable(
-                    data=data_test_input, columns=self.param.categorical_inputs, encoder=encoders
+                data_test_input = self.encode_one_hot_categorical_variable(
+                    data=data_test_input,
+                    columns=self.param.categorical_inputs,
+                    encoder_hot=encoders_hot,
+                    encoder_int=encoders_int,
                 )
 
             for var in var_inputs:
@@ -808,66 +919,117 @@ class DataProcessing:
 
         # ========================================
         # Processing output target
-        # if len(self.param.output_target) > 0:
-        #     logging.info("Processing output features...")
-        #
-        #     if self.param.output_type == "binary_category":
-        #         if len(self.param.output_target) > 0:
-        #             Y_categ = (
-        #                 self.data_train[self.param.output_target[0]].to_numpy().reshape(-1, 1)
-        #             )
-        #             Y, self.Y_encoder = self.encode_onehot_dataset(Y_categ)
-        #             self.Y_labels = np.unique(Y_categ)
-        #
-        #     elif self.param.output_type == "multi_category_unilabel":
-        #         if len(self.param.output_target) > 0:
-        #             if self.param.encode_categorical_output == "one_hot":
-        #                 Y_categ = (
-        #                     self.data_train[self.param.output_target[0]]
-        #                     .to_numpy()
-        #                     .reshape(-1, 1)
-        #                 )
-        #                 Y, self.Y_encoder = self.encode_onehot_dataset(Y_categ)
-        #                 self.Y_labels = np.unique(Y_categ)
-        #             elif self.param.encode_categorical_output == "int":
-        #                 Y_categ = (
-        #                     self.data_train[self.param.output_target[0]]
-        #                     .to_numpy()
-        #                     .reshape(-1, 1)
-        #                 )
-        #                 self.Y_labels = np.unique(Y_categ)
-        #                 Y, self.Y_encoder = self.encode_class_to_int_np(data_labels=Y_categ)
-        #
-        #     elif self.param.output_type == "number":
-        #         if len(self.param.output_target) > 0:
-        #             Y_number = (
-        #                 self.data_train[self.param.output_target[0]].to_numpy().reshape(-1, 1)
-        #             )
-        #             if self.param.scale_number_outputs is not None:
-        #                 Y, self.Y_scaler = self.scale_numerical_variables(
-        #                     data=Y_number, scaler=self.param.scale_number_outputs
-        #                 )
-        #                 logging.info(
-        #                     "Scale output features with " + self.param.scale_number_outputs
-        #                 )
-        #             else:
-        #                 Y = self.data_train[self.param.output_target].to_numpy()
-        #                 self.Y_scaler = None
-        #                 logging.info("No scale output features")
-        #     else:
-        #         logging.error("TODO: processing output multilabel multiclasse")
-        #
-        # # ========================================
-        # # Processing windows steps
-        # if self.param.input_look_back_steps > 0:
-        #     logging.info("Processing window steps...")
-        #     X, Y = self.create_window_input(
-        #         X=X, Y=Y, look_back=self.param.input_look_back_steps
-        #     )
-        #
-        # # ========================================
+        if len(self.param.output_target) > 0:
 
-        for var in self.param.output_target:
-            target_var_list.append(var)
+            logging.info("Processing output features...")
 
-        return data_train_input, data_train_target, data_test_input, data_test_target, input_var_list, target_var_list
+            if self.param.application == "regression":
+
+                if self.param.scale_output_target != "":
+                    (
+                        data_train_target[self.param.output_target],
+                        output_scaler,
+                    ) = self.fit_scale_numerical_variables(
+                        data=data_train_target[self.param.output_target],
+                        scaler=self.param.scale_output_target,
+                    )
+
+                    logging.info("Scale output target with " + self.param.scale_output_target)
+
+                    data_test_target[self.param.output_target] = self.scale_numerical_variables(
+                        data=data_test_target[self.param.output_target], filter=output_scaler
+                    )
+
+                # Outputs
+                var_target = self.param.output_target
+                int_to_cat_dict_list_target = None
+                cat_to_int_dict_list_target = None
+
+            elif self.param.application == "classification":
+
+                if (
+                 self.param.classification_type == "multi_category_unilabel"
+                ):
+
+                    logging.info(
+                        "======================================================================"
+                    )
+                    logging.info("Classification problem with categorical output encoded")
+                    logging.info("Encoding output target with: " + "one hot coding")
+
+                    if self.param.encode_categorical_inputs is not None:
+                        (
+                            data_train_target,
+                            var_target,
+                            _,
+                            encoders_int,
+                            encoders_hot,
+                            encoders_bin,
+                            int_to_cat_dict_list_target,
+                            cat_to_int_dict_list_target,
+                        ) = self.fit_encode_categorical_variable(
+                            data=data_train_target,
+                            columns=self.param.output_target,
+                            type="one_hot",
+                        )
+
+                    data_test_target = self.encode_one_hot_categorical_variable(
+                        data=data_test_target,
+                        columns=self.param.output_target,
+                        encoder_hot=encoders_hot,
+                        encoder_int=encoders_int,
+                    )
+
+                if (
+                        self.param.classification_type == "binary_category"
+                ):
+
+                    logging.info(
+                        "======================================================================"
+                    )
+                    logging.info("Classification problem with categorical output encoded")
+                    logging.info("Encoding output target with: " + "binary")
+
+                    if self.param.encode_categorical_inputs is not None:
+                        (
+                            data_train_target,
+                            var_target,
+                            _,
+                            encoders_int,
+                            encoders_hot,
+                            encoders_bin,
+                            int_to_cat_dict_list_target,
+                            cat_to_int_dict_list_target,
+                        ) = self.fit_encode_categorical_variable(
+                            data=data_train_target,
+                            columns=self.param.output_target,
+                            type="binarizer",
+                        )
+
+                    data_test_target = self.encode_bin_categorical_variable(
+                        data=data_test_target,
+                        columns=self.param.output_target,
+                        encoder_bin= encoders_bin,
+                    )
+
+
+            else:
+                logging.error("Application type is not valid")
+
+            # preparing working variables
+            for var in var_target:
+                target_var_list.append(var)
+
+        else:
+            logging.error("Output target not valid")
+
+        return (
+            data_train_input,
+            data_train_target,
+            data_test_input,
+            data_test_target,
+            input_var_list,
+            target_var_list,
+            int_to_cat_dict_list_target,
+            cat_to_int_dict_list_target,
+        )

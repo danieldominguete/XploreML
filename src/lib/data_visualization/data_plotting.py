@@ -108,7 +108,6 @@ class DataPlotting:
             plt.close()
 
         if self.view_plots:
-
             # Visualising
             if marginal_distribution:
                 sns.jointplot(x=X_name, y=Y_name, data=self.data, kind="reg")
@@ -187,34 +186,70 @@ class DataPlotting:
 
     def plot_confusion_matrix(self, cm, names, title='Confusion matrix', cmap=plt.cm.Blues):
 
-        plt.imshow(cm, interpolation='nearest', cmap=cmap)
-        plt.title(title)
-        plt.colorbar()
-        tick_marks = np.arange(len(names))
-        plt.xticks(tick_marks, names, rotation=45)
-        plt.yticks(tick_marks, names)
-        plt.tight_layout()
-        plt.ylabel('Label Observado')
-        plt.xlabel('Label Previsto')
-        plt.show()
+        if self.save_plots:
+            plt.imshow(cm, interpolation='nearest', cmap=cmap)
+            plt.title(title)
+            plt.colorbar()
+            tick_marks = np.arange(len(names))
+            plt.xticks(tick_marks, names, rotation=45)
+            plt.yticks(tick_marks, names)
+            plt.tight_layout()
+            plt.ylabel('Label Observado')
+            plt.xlabel('Label Previsto')
+
+            filename = self.folder_path + self.prefix + "confusion.png"
+            plt.savefig(filename)
+            plt.close()
+
+        if self.view_plots:
+
+            plt.imshow(cm, interpolation='nearest', cmap=cmap)
+            plt.title(title)
+            plt.colorbar()
+            tick_marks = np.arange(len(names))
+            plt.xticks(tick_marks, names, rotation=45)
+            plt.yticks(tick_marks, names)
+            plt.tight_layout()
+            plt.ylabel('Label Observado')
+            plt.xlabel('Label Previsto')
+            plt.show()
 
         return True
 
     def plot_roc(self, pred, y):
 
-        fpr, tpr, _ = roc_curve(y, pred)
-        roc_auc = auc(fpr, tpr)
+        if self.save_plots:
+            fpr, tpr, _ = roc_curve(y, pred)
+            roc_auc = auc(fpr, tpr)
 
-        plt.figure()
-        plt.plot(fpr, tpr, label='Curva ROC (area = %0.2f)' % roc_auc)
-        plt.plot([0, 1], [0, 1], 'k--')
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
-        plt.xlabel('Taxa de Falso Positivo')
-        plt.ylabel('Taxa de Verdadeiro Positivo')
-        plt.title('Receiver Operating Characteristic (ROC)')
-        plt.legend(loc="lower right")
-        plt.show()
+            plt.figure()
+            plt.plot(fpr, tpr, label='Curva ROC (area = %0.2f)' % roc_auc)
+            plt.plot([0, 1], [0, 1], 'k--')
+            plt.xlim([0.0, 1.0])
+            plt.ylim([0.0, 1.05])
+            plt.xlabel('Taxa de Falso Positivo')
+            plt.ylabel('Taxa de Verdadeiro Positivo')
+            plt.title('Receiver Operating Characteristic (ROC)')
+            plt.legend(loc="lower right")
+
+            filename = self.folder_path + self.prefix + "roc.png"
+            plt.savefig(filename)
+            plt.close()
+
+        if self.view_plots:
+            fpr, tpr, _ = roc_curve(y, pred)
+            roc_auc = auc(fpr, tpr)
+
+            plt.figure()
+            plt.plot(fpr, tpr, label='Curva ROC (area = %0.2f)' % roc_auc)
+            plt.plot([0, 1], [0, 1], 'k--')
+            plt.xlim([0.0, 1.0])
+            plt.ylim([0.0, 1.05])
+            plt.xlabel('Taxa de Falso Positivo')
+            plt.ylabel('Taxa de Verdadeiro Positivo')
+            plt.title('Receiver Operating Characteristic (ROC)')
+            plt.legend(loc="lower right")
+            plt.show()
 
         return True
 
@@ -255,8 +290,8 @@ class DataPlotting:
 
         # loss value x epochs
         if loss:
-            plt.plot(history.history['loss'])
-            plt.plot(history.history['val_loss'])
+            plt.plot(history._history['loss'])
+            plt.plot(history._history['val_loss'])
             plt.title('Model loss')
             plt.ylabel('Loss')
             plt.xlabel('Epoch')
@@ -264,8 +299,8 @@ class DataPlotting:
             plt.show()
 
         if accuracy:
-            plt.plot(history.history['sparse_categorical_accuracy'])
-            plt.plot(history.history['val_sparse_categorical_accuracy'])
+            plt.plot(history._history['sparse_categorical_accuracy'])
+            plt.plot(history._history['val_sparse_categorical_accuracy'])
             plt.title('Model accuracy')
             plt.ylabel('Accuracy')
             plt.xlabel('Epoch')
