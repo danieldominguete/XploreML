@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
 
-class XRandomForestRegressionParameters(BaseModel):
+class XRandomForestParameters(BaseModel):
 
     # random state
     random_state: int = 0

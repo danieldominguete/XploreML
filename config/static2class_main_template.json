@@ -19,11 +19,11 @@
     "numerical_inputs":["x_1_num", "y_1_value"],
     "categorical_inputs":["x_2_cat"],
     "txt_inputs":[],
-    "output_target":["y_2_class"],
-    "classification_type": "multi_category_unilabel",
+    "output_target":["y_4_bin"],
+    "classification_type": "binary_category",
     "scale_numerical_inputs": "min_max",
     "encode_categorical_inputs": "one_hot",
-    "model_type": "decision_tree"
+    "model_type": "svm"
   },
 
   "logistic_regression_parameters": {

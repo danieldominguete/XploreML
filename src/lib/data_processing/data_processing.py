@@ -14,7 +14,7 @@ from sklearn.preprocessing import (
     MinMaxScaler,
     OneHotEncoder,
     OrdinalEncoder,
-    LabelEncoder,
+    LabelBinarizer,
 )
 import logging
 import sys
@@ -682,6 +682,7 @@ class DataProcessing:
         val_working = []
         encoders_int = []
         encoders_hot = []
+        encoders_bin = []
         int_to_cat_dict_list = []
         cat_to_int_dict_list = []
 
@@ -734,6 +735,32 @@ class DataProcessing:
                 # decoding one hot code vector
                 # test = encoder_hot.inverse_transform(ohe_df)
 
+            if type == "binarizer":
+
+                # variable reference
+                var_list.append(var)
+
+                # Encoding with integer identification
+                col_bin = []
+                encoder_bin = LabelBinarizer()
+                transf_int = encoder_bin.fit_transform(data[var].to_numpy().reshape(-1, 1))
+                col_bin.append(var + "_" + "bin")
+                val_working.append(var + "_" + "bin")
+                bin_df = pd.DataFrame(transf_int, columns=col_bin)
+                data = pd.concat([data, bin_df], axis=1)
+                encoders_bin.append(encoder_bin)
+
+                # Decoding example
+                # test = encoder_int.inverse_transform(bin_df)
+
+                # Creating dictionaries convertion
+                categories = encoder_bin.classes_[0]
+                int_to_cat = {i: categories[i] for i in range(0, len(categories))}
+                cat_to_int = {categories[i]: i for i in range(0, len(categories))}
+
+                int_to_cat_dict_list.append(int_to_cat)
+                cat_to_int_dict_list.append(cat_to_int)
+
             else:
                 logging.error("Categorical encoder not valid")
 
@@ -743,6 +770,7 @@ class DataProcessing:
             var_list,
             encoders_int,
             encoders_hot,
+            encoders_bin,
             int_to_cat_dict_list,
             cat_to_int_dict_list,
         )
@@ -825,6 +853,7 @@ class DataProcessing:
                     _,
                     encoders_int,
                     encoders_hot,
+                    encoders_bin,
                     int_to_cat_dict_list_input,
                     cat_to_int_dict_list_input,
                 ) = self.fit_encode_categorical_variable(
@@ -905,8 +934,7 @@ class DataProcessing:
             elif self.param.application == "classification":
 
                 if (
-                    self.param.classification_type == "binary_category"
-                    or self.param.classification_type == "multi_category_unilabel"
+                 self.param.classification_type == "multi_category_unilabel"
                 ):
 
                     logging.info(
@@ -922,6 +950,7 @@ class DataProcessing:
                             _,
                             encoders_int,
                             encoders_hot,
+                            encoders_bin,
                             int_to_cat_dict_list_target,
                             cat_to_int_dict_list_target,
                         ) = self.fit_encode_categorical_variable(
@@ -936,6 +965,40 @@ class DataProcessing:
                         encoder_hot=encoders_hot,
                         encoder_int=encoders_int,
                     )
+
+                if (
+                        self.param.classification_type == "binary_category"
+                ):
+
+                    logging.info(
+                        "======================================================================"
+                    )
+                    logging.info("Classification problem with categorical output encoded")
+                    logging.info("Encoding output target with: " + "one hot coding")
+
+                    if self.param.encode_categorical_inputs is not None:
+                        (
+                            data_train_target,
+                            var_target,
+                            _,
+                            encoders_int,
+                            encoders_hot,
+                            encoders_bin,
+                            int_to_cat_dict_list_target,
+                            cat_to_int_dict_list_target,
+                        ) = self.fit_encode_categorical_variable(
+                            data=data_train_target,
+                            columns=self.param.output_target,
+                            type="binarizer",
+                        )
+
+                    data_test_target = self.encode_one_hot_categorical_variable(
+                        data=data_test_target,
+                        columns=self.param.output_target,
+                        encoder_hot=encoders_hot,
+                        encoder_int=encoders_int,
+                    )
+
 
             else:
                 logging.error("Application type is not valid")

@@ -28,8 +28,8 @@ from src.lib.data_schemas.svm_parameters import XSVMParameters
 from src.lib.model.svm import XSVM
 from src.lib.data_schemas.decision_tree_parameters import XDecisionTreeParameters
 from src.lib.model.decision_tree import XDecisionTree
-from src.lib.data_schemas.random_forest_regression_parameters import XRandomForestRegressionParameters
-from src.lib.model.random_forest_regression import XRandomForesteRegression
+from src.lib.data_schemas.random_forest_parameters import XRandomForestParameters
+from src.lib.model.random_forest import XRandomForest
 from src.lib.model.model_evaluation import RegressionModelEvaluation
 
 
@@ -67,10 +67,10 @@ class BuildStatic2ValueMain:
             model = XDecisionTree(param=model_param, application=data_param.application)
 
         elif data_param.model_type == "random_forest":
-            model_param = XRandomForestRegressionParameters(
+            model_param = XRandomForestParameters(
                 **data_config.get("random_forest_parameters")
             )
-            model = XRandomForesteRegression(param=model_param, application=data_param.application)
+            model = XRandomForest(param=model_param, application=data_param.application)
 
         else:
             logging.error('Model type not valid.')

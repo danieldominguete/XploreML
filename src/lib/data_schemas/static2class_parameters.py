@@ -28,7 +28,7 @@ class ModeLoad(str, Enum):
 
 class ModelType(str, Enum):
     '''
-        'linear regression':
+
     '''
     k_nearest_neighbors = 'k_nearest_neighbors'
     naive_bayes = 'naive_bayes'
