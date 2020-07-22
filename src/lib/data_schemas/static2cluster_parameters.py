@@ -1,6 +1,6 @@
 '''
 ===========================================================================================
-Static2Class Model Building Parameters Class
+Static2Cluster Model Building Parameters Class
 ===========================================================================================
 Script by COGNAS
 ===========================================================================================
@@ -30,12 +30,7 @@ class ModelType(str, Enum):
     '''
 
     '''
-    logistic_regression = 'logistic_regression'
-    k_nearest_neighbors = 'k_nearest_neighbors'
-    naive_bayes = 'naive_bayes'
-    svm = 'svm'
-    decision_tree = 'decision_tree'
-    random_forest = 'random_forest'
+    k_means = 'k_means'
 
 
 class ScaleNumericalVariables(str, Enum):
@@ -59,18 +54,10 @@ class EncodingCategoricalVariables(str, Enum):
     one_hot = "one_hot"
     int = "int"
 
-class ClassificationType(str, Enum):
-    '''
-        "":
-    '''
-    binary_category = "binary_category"
-    multi_category_unilabel = "multi_category_unilabel"
-    multi_category_multilabel = "multi_category_multilabel"  # not implemented
-
-class Static2ClassParameters(BaseModel):
+class Static2ClusterParameters(BaseModel):
 
     # application
-    application = 'classification'
+    application = 'clustering'
 
     # data source
     data_source: DataSource
@@ -99,12 +86,6 @@ class Static2ClassParameters(BaseModel):
     # list of txt variables
     txt_inputs: list
 
-    # output target classes - support only one column
-    output_target: list
-
-    # classification type
-    classification_type: ClassificationType = None
-
     # scaling numerical inputs
     scale_numerical_inputs: ScaleNumericalVariables = ''
 
@@ -113,3 +94,6 @@ class Static2ClassParameters(BaseModel):
 
     # type of modeling technique
     model_type: ModelType
+
+    # output dummy
+    output_target: list = []

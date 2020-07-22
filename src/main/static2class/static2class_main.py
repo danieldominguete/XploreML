@@ -21,7 +21,9 @@ from src.lib.data_schemas.environment_parameters import EnvironmentParameters
 from src.lib.data_processing.data_processing import DataProcessing
 from src.lib.environment.environment import Environment
 from src.lib.data_schemas.k_nearest_neighbors_parameters import XKNearestNeighborsParameters
-from src.lib.model.k_nearest_neighbors_classification import XKNearestNeighbors
+from src.lib.model.k_nearest_neighbors import XKNearestNeighbors
+from src.lib.data_schemas.logistic_regression_parameters import XLogisticRegressionParameters
+from src.lib.model.logistic_regression import XLogisticRegression
 from src.lib.data_schemas.svm_parameters import XSVMParameters
 from src.lib.model.svm import XSVM
 from src.lib.data_schemas.decision_tree_parameters import XDecisionTreeParameters
@@ -45,6 +47,13 @@ class BuildStatic2ValueMain:
                 **data_config.get("k_nearest_neighbors_parameters")
             )
             model = XKNearestNeighbors(param=model_param, application=data_param.application, application_type=data_param.classification_type)
+
+        elif data_param.model_type == "logistic_regression":
+            model_param = XLogisticRegressionParameters(
+                **data_config.get("logistic_regression_parameters")
+            )
+            model = XLogisticRegression(param=model_param, application=data_param.application, application_type=data_param.classification_type)
+
 
         elif data_param.model_type == "svm":
             model_param = XSVMParameters(

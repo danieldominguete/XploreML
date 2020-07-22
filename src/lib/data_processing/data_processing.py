@@ -735,7 +735,7 @@ class DataProcessing:
                 # decoding one hot code vector
                 # test = encoder_hot.inverse_transform(ohe_df)
 
-            if type == "binarizer":
+            elif type == "binarizer":
 
                 # variable reference
                 var_list.append(var)
@@ -813,16 +813,18 @@ class DataProcessing:
 
     def prepare_train_test_data(
         self,
-        data_train_input: pd,
-        data_train_target: pd,
-        data_test_input: pd,
-        data_test_target: pd,
+        data_train_input: pd = None,
+        data_train_target: pd = None,
+        data_test_input: pd = None,
+        data_test_target: pd = None,
     ) -> pd:
 
         logging.info("======================================================================")
         logging.info("Starting data training processing ...")
         input_var_list = []
         target_var_list = []
+        int_to_cat_dict_list_target = {}
+        cat_to_int_dict_list_target = {}
 
         # ========================================
         # Scale data processing
@@ -1021,7 +1023,7 @@ class DataProcessing:
                 target_var_list.append(var)
 
         else:
-            logging.error("Output target not valid")
+            logging.error("Output target not valid or not informed")
 
         return (
             data_train_input,
