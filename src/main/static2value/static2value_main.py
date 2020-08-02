@@ -30,6 +30,8 @@ from src.lib.data_schemas.decision_tree_parameters import XDecisionTreeParameter
 from src.lib.model.decision_tree import XDecisionTree
 from src.lib.data_schemas.random_forest_parameters import XRandomForestParameters
 from src.lib.model.random_forest import XRandomForest
+from src.lib.data_schemas.neural_DNN_parameters import XNeuralDenseParameters
+from src.lib.model.neural_DNN import XNeuralDense
 from src.lib.model.model_evaluation import RegressionModelEvaluation
 
 
@@ -39,7 +41,7 @@ class BuildStatic2ValueMain:
         """Constructor for this class"""
         self.parameters_file = parameters_file
 
-    def model_selection(self, data_config, data_param):
+    def model_selection(self, data_config, data_param, environment):
 
         # Validade and load model hyperparameters
         if data_param.model_type == "linear_regression":
@@ -71,6 +73,15 @@ class BuildStatic2ValueMain:
                 **data_config.get("random_forest_parameters")
             )
             model = XRandomForest(param=model_param, application=data_param.application)
+
+        elif data_param.model_type == "neural_dense":
+            model_param = XNeuralDenseParameters(
+                **data_config.get("neural_dense_parameters")
+            )
+            model = XNeuralDense(param=model_param,
+                                 application=data_param.application,
+                                 application_type=None,
+                                 env=environment)
 
         else:
             logging.error('Model type not valid.')
@@ -130,7 +141,7 @@ class BuildStatic2ValueMain:
         logging.info("======================================================================")
         logging.info("Building Model:")
 
-        model = self.model_selection(data_config=data_config, data_param=data_param)
+        model = self.model_selection(data_config=data_config, data_param=data_param, environment=env)
 
         model.fit(
             data_input=data_train_input[variables_input],

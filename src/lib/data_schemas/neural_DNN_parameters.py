@@ -29,7 +29,7 @@ class LossesOptim(str, Enum):
     binary_crossentropy = "binary_crossentropy"
     categorical_crossentropy = "categorical_crossentropy"
     sparse_categorical_crossentropy = "sparse_categorical_crossentropy"
-    mean_square_error = "mean_square_error"
+    mean_squared_error = "mean_squared_error"
 
 class ActivationFunctions(str, Enum):
     '''
@@ -68,7 +68,7 @@ class XNeuralDenseParameters(BaseModel):
     save_checkpoints: bool = True
 
     # loss
-    loss_optim: LossesOptim = "mean_square_error"
+    loss_optim: LossesOptim = "mean_squared_error"
 
     # optimizer
     optimizer: Optimizers = "rmsprop"
