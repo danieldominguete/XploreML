@@ -1,5 +1,5 @@
 # XploreML
-Machine Learning Tools with Best Practices and Frameworks (Python 3.8)
+Machine Learning Tools with Best Practices and Frameworks (Python 3.7)
 
 ## Setup and Execution 
 

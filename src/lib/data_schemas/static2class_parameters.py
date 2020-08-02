@@ -36,6 +36,7 @@ class ModelType(str, Enum):
     svm = 'svm'
     decision_tree = 'decision_tree'
     random_forest = 'random_forest'
+    neural_dense = 'neural_dense'
 
 
 class ScaleNumericalVariables(str, Enum):

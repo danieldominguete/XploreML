@@ -10,15 +10,18 @@ from abc import ABC, abstractmethod
 import logging
 import pandas as pd
 import numpy as np
-
+from src.lib.environment.environment import Environment
 
 class XModel(ABC):
-    def __init__(self, param: dict, application: str, application_type: str = None):
+    def __init__(self, param: dict, application: str, application_type: str = None, env: Environment = None):
         self._param = param
         self._application = application
         self._application_type = application_type
+        self._run_folder_path = env.run_folder
+        self._prefix_name = env.prefix_name
         self._model = None
         self._history = {}
+
         super().__init__()
 
     @abstractmethod
