@@ -4,9 +4,9 @@
     "environment_id" : "console_localhost",
     "output_folder": "outputs",
     "logging_level" : "info",
-    "view_plots" : true,
+    "view_plots" : false,
     "save_plots" : true,
-    "tracking": true
+    "tracking": false
   },
 
   "static2value_parameters": {
@@ -49,7 +49,7 @@
 
   "neural_dense_parameters": {
     "framework": "tensorflow",
-    "hidden_nodes": [25, 20],
+    "hidden_nodes": [5, 2],
     "hidden_func_nodes": ["relu", "relu"],
     "hidden_dropout": [0.1 , 0.1],
     "output_func_nodes": "softmax",
@@ -59,7 +59,7 @@
     "loss_optim": "mean_squared_error",
     "optimizer": "adam",
     "metrics": ["mse"],
-    "batch_size": 2,
+    "batch_size": 3,
     "epochs": 50,
     "validation_split": 0.2,
     "verbose": 1,

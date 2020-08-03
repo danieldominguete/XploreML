@@ -19,6 +19,7 @@ class XModel(ABC):
         self._application_type = application_type
         self._run_folder_path = env.run_folder
         self._prefix_name = env.prefix_name
+        self._tracking = env.tracking
         self._model = None
         self._history = {}
 

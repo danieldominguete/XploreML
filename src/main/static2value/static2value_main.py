@@ -168,7 +168,8 @@ class BuildStatic2ValueMain:
         )
 
         model_eval_train.print_evaluation_scores()
-        env.tracking.publish_regression_eval(model_eval=model_eval_train, mode="train")
+        if env.tracking:
+            env.tracking.publish_regression_eval(model_eval=model_eval_train, mode="train")
 
         if env_param.view_plots or env_param.save_plots:
             logging.info("======================================================================")
@@ -199,7 +200,8 @@ class BuildStatic2ValueMain:
         )
 
         model_eval_test.print_evaluation_scores()
-        env.tracking.publish_regression_eval(model_eval=model_eval_test, mode="test")
+        if env.tracking:
+            env.tracking.publish_regression_eval(model_eval=model_eval_test, mode="test")
 
         if env_param.view_plots or env_param.save_plots:
             logging.info("======================================================================")

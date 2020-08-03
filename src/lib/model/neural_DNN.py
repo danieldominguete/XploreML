@@ -22,6 +22,7 @@ class XNeuralDense(XModel):
             self._model.set_topology_id("DNN-DENSE")
             self._model.set_run_folder_path(path=self._run_folder_path)
             self._model.set_prefix_name(prefix=self._prefix_name)
+            self._model.set_tracking(value=self._tracking)
         else:
             logging.error("Framework not valid")
 

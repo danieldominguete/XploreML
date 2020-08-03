@@ -8,6 +8,8 @@ Script Reviewed by COGNAS
 
 import os
 from tensorflow import keras as k
+import mlflow
+import mlflow.tensorflow
 
 
 class XTensorFlowModel:
@@ -21,6 +23,7 @@ class XTensorFlowModel:
         self._topology_id = None
         self._run_folder_path = None
         self._prefix_name = None
+        self._tracking = False
 
     def set_topology_id(self, topology: str) -> bool:
         self._topology_id = topology
@@ -34,7 +37,15 @@ class XTensorFlowModel:
         self._prefix_name = prefix
         return True
 
+    def set_tracking(self, value: bool) -> bool:
+        self._tracking = value
+        return True
+
     def fit(self, X, Y):
+
+        # Enable auto-logging to MLflow to capture TensorBoard metrics.
+        if self._tracking:
+            mlflow.tensorflow.autolog()
 
         # Build architeture
         self.set_architeture(input_shape=X.shape, output_shape=Y.shape)
