@@ -10,6 +10,7 @@ import os
 from tensorflow import keras as k
 import mlflow
 import mlflow.tensorflow
+import tensorflow as tf
 
 
 class XTensorFlowModel:
@@ -44,8 +45,9 @@ class XTensorFlowModel:
     def fit(self, X, Y):
 
         # Enable auto-logging to MLflow to capture TensorBoard metrics.
-        if self._tracking:
-            mlflow.tensorflow.autolog()
+        # Its not working with tensorflow together (training details will be saved in tensorboard)
+        #if self._tracking:
+        #    mlflow.tensorflow.autolog()
 
         # Build architeture
         self.set_architeture(input_shape=X.shape, output_shape=Y.shape)
@@ -435,6 +437,14 @@ class XTensorFlowModel:
         else:
             raise ValueError("This topology_id is not valid")
 
+        # Set callbacks for training
+
+        # Enable tensorboard tracking
+        if self._tracking:
+            logdir = "tbruns/scalars/" + self._prefix_name + "log"
+            tensorboard_callback = k.callbacks.TensorBoard(log_dir=logdir)
+            self._callbacks.append(tensorboard_callback)
+
         if self._model_parameters.reduce_lr:
             # Learning rate adjustment after patient epochs on constant val_loss (factor * original) return to original
             # value after cooldown epochs
@@ -447,7 +457,7 @@ class XTensorFlowModel:
                 mode="auto",
                 cooldown=10,
             )
-            self._callbacks = [reduce_lr]
+            self._callbacks.append(reduce_lr)
 
         if self._model_parameters.early_stopping:
             # Early stopping with validation perfomance (save best model)

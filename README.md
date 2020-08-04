@@ -38,6 +38,11 @@ Start server: `mlflow ui --port PORTNUMBER`
 
 Access website: `http://localhost:PORTNUMBER`
 
+For tensorflow models, this framework uses tensorboard to register training details.
+
+Start server: `tensorboard --logdir tbruns/scalars`
+
+Access website: `http://localhost:PORTNUMBER`
 
 ## Pipeline Overview and Project Tools 
 

@@ -6,7 +6,7 @@
     "logging_level" : "info",
     "view_plots" : false,
     "save_plots" : true,
-    "tracking": false
+    "tracking": true
   },
 
   "static2value_parameters": {

@@ -128,12 +128,10 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Temporary files
+# Working files
 _repository
 guides/_templates.txt
 outputs
 static/working
 mlruns
-
-# Datasets
-static/raw_data
+tbruns
