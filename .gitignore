@@ -133,5 +133,7 @@ _repository
 guides/_templates.txt
 outputs
 static/working
+config/working
 mlruns
 tbruns
+src/lab

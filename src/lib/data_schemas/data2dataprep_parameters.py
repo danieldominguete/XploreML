@@ -91,6 +91,15 @@ class Data2DataprepParameters(BaseModel):
     delete_repeated_samples: bool
 
     # ==================================
+    # categorical specific preprocessing parameters
+    # ==================================
+    # list of list of variables values to maintain (following the categorical variables sequence)
+    categorical_variables_include: list = []
+
+    # list of list of variables values to exclude (following the categorical variables sequence)
+    categorical_variables_exclude: list = []
+
+    # ==================================
     # numerical specific preprocessing parameters
     # ==================================
     # remove outliers from numerical features

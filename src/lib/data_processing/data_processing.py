@@ -213,6 +213,14 @@ class DataProcessing:
 
         return data
 
+    def filter_maintain_values(self, data:pd=None, col:str=None, values:list = []):
+        data_filtered = data[data[col].isin(values)]
+        return data_filtered
+
+    def filter_exclude_values(self, data:pd=None, col:str=None, values:list = []):
+        data_filtered = data[~data[col].isin(values)]
+        return data_filtered
+
     def prep_rawdata(self, data: pd) -> pd:
 
         logging.info("======================================================================")
@@ -226,6 +234,44 @@ class DataProcessing:
         # flatting txt columns - concatenated selection cleaning
         input_txt_features_flat = Util.flat_lists(sublist=self.param.txt_variables)
         input_txt_features_flat = Util.get_unique_list(input_txt_features_flat)
+
+        # ========================================
+        # Delete repeated samples
+        # ========================================
+        if self.param.delete_repeated_samples:
+            logging.info("======================================================================")
+            logging.info("Deleting repeated samples")
+            data = self.delete_repeated_rows(data=data)
+            logging.info("Dataframe shape = " + str(data.shape))
+            self.samples_lifecycle.append(data.shape[0])
+
+        # ========================================
+        # Categorical filter samples (include filter)
+        # ========================================
+        if len(self.param.categorical_variables_include) > 0:
+            logging.info("======================================================================")
+            for i in range(len(self.param.categorical_variables_include)):
+                logging.info(
+                    "Filter include categorical values of variable: " + str(self.param.categorical_variables[i]))
+                logging.info("Valid values to maintain: " + str(len(self.param.categorical_variables_include[i])))
+                data = self.filter_maintain_values(data=data, col=self.param.categorical_variables[i],
+                                                   values=self.param.categorical_variables_include[i])
+                logging.info("Dataframe shape = " + str(data.shape))
+
+        # ========================================
+        # Categorical filter samples (exclude filter)
+        # ========================================
+        if len(self.param.categorical_variables_exclude) > 0:
+            logging.info("======================================================================")
+            for i in range(len(self.param.categorical_variables_exclude)):
+                logging.info(
+                    "Filter exclude categorical values of variable: " + str(
+                        self.param.categorical_variables[i]))
+                logging.info(
+                    "Values to exclude: " + str(len(self.param.categorical_variables_exclude[i])))
+                data = self.filter_exclude_values(data=data, col=self.param.categorical_variables[i],
+                                                   values=self.param.categorical_variables_exclude[i])
+                logging.info("Dataframe shape = " + str(data.shape))
 
         # ========================================
         # Missing data processing
@@ -291,15 +337,6 @@ class DataProcessing:
             logging.info("Dataframe shape = " + str(data.shape))
             self.samples_lifecycle.append(data.shape[0])
 
-        # ========================================
-        # Delete repeated samples
-        # ========================================
-        if self.param.delete_repeated_samples:
-            logging.info("======================================================================")
-            logging.info("Deleting repeated samples")
-            data = self.delete_repeated_rows(data=data)
-            logging.info("Dataframe shape = " + str(data.shape))
-            self.samples_lifecycle.append(data.shape[0])
 
         # ========================================
         # Delete outliers samples
@@ -342,6 +379,10 @@ class DataProcessing:
             # exclude special chars
             logging.info("Excluding special chars...")
             data = NLPUtils.clean_special_char(dataframe=data, columns=input_txt_features_flat)
+
+            # split units from numbers
+            logging.info("Split units from numbers...")
+            data = NLPUtils.split_units_from_numbers(dataframe=data, columns=input_txt_features_flat)
 
         # ========================================
         # Registering infos for tracking
@@ -432,103 +473,109 @@ class DataProcessing:
 
         # ----------------------------------------------------------
         # numerical features analysis
-        num_feat_analysis = pd.DataFrame(
-            index=self.param.numerical_variables, columns=["Mean", "Std", "Min", "Max"]
-        )
-        for feat in self.param.numerical_variables:
-            # average
-            mean = data[feat].mean()
-            logging.info("Var: " + str(feat) + " Mean: " + str(mean))
-            num_feat_analysis["Mean"].loc[feat] = mean
-
-            # std
-            std = data[feat].std()
-            logging.info("Var: " + str(feat) + " Std: " + str(std))
-            num_feat_analysis["Std"].loc[feat] = std
-
-            # min
-            min = data[feat].min()
-            logging.info("Var: " + str(feat) + " Min: " + str(min))
-            num_feat_analysis["Min"].loc[feat] = min
-
-            # max
-            max = data[feat].max()
-            logging.info("Var: " + str(feat) + " Max: " + str(max))
-            num_feat_analysis["Max"].loc[feat] = max
-
-        if save_analysis:
-            filename = prefix + "num_variables.tsv"
-            full_path = folder_path + prefix + "num_variables.tsv"
-            num_feat_analysis.to_csv(full_path, index=True, sep="\t", encoding="utf-8")
-            logging.info(
-                "Numerical descriptive analysis saved in: "
-                + folder_path
-                + prefix
-                + "num_features.tsv"
-            )
-            self.include_files_history({filename: full_path})
-
-        if save_plots:
-            dv = DataPlotting(
-                dataframe=data,
-                view_plots=view_plots,
-                save_plots=save_plots,
-                folder_path=folder_path,
-                prefix=prefix,
+        if len(self.param.numerical_variables) > 0:
+            num_feat_analysis = pd.DataFrame(
+                index=self.param.numerical_variables, columns=["Mean", "Std", "Min", "Max"]
             )
             for feat in self.param.numerical_variables:
-                src = dv.plot_line_steps(y_column=feat)
-                self.include_files_history({src: src})
+                # average
+                mean = data[feat].mean()
+                logging.info("Var: " + str(feat) + " Mean: " + str(mean))
+                num_feat_analysis["Mean"].loc[feat] = mean
 
-                src = dv.plot_numerical_histogram(y_column=feat)
-                self.include_files_history({src: src})
+                # std
+                std = data[feat].std()
+                logging.info("Var: " + str(feat) + " Std: " + str(std))
+                num_feat_analysis["Std"].loc[feat] = std
+
+                # min
+                min = data[feat].min()
+                logging.info("Var: " + str(feat) + " Min: " + str(min))
+                num_feat_analysis["Min"].loc[feat] = min
+
+                # max
+                max = data[feat].max()
+                logging.info("Var: " + str(feat) + " Max: " + str(max))
+                num_feat_analysis["Max"].loc[feat] = max
+
+            if save_analysis:
+                filename = prefix + "num_variables.tsv"
+                full_path = folder_path + prefix + "num_variables.tsv"
+                num_feat_analysis.to_csv(full_path, index=True, sep="\t", encoding="utf-8")
+                logging.info(
+                    "Numerical descriptive analysis saved in: "
+                    + folder_path
+                    + prefix
+                    + "num_features.tsv"
+                )
+                self.include_files_history({filename: full_path})
+
+            if save_plots:
+                dv = DataPlotting(
+                    dataframe=data,
+                    view_plots=view_plots,
+                    save_plots=save_plots,
+                    folder_path=folder_path,
+                    prefix=prefix,
+                )
+                for feat in self.param.numerical_variables:
+                    src = dv.plot_line_steps(y_column=feat)
+                    self.include_files_history({src: src})
+
+                    src = dv.plot_numerical_histogram(y_column=feat)
+                    self.include_files_history({src: src})
 
         # ----------------------------------------------------------
         # categorical features
-        cat_feat_analysis = pd.DataFrame(
-            index=self.param.categorical_variables, columns=["Count", "Unique", "Top"]
-        )
-
-        for feat in self.param.categorical_variables:
-            # count
-            count = data[feat].count()
-            logging.info("Var: " + str(feat) + " Count: " + str(count))
-            cat_feat_analysis["Count"].loc[feat] = count
-
-            # unique
-            unique = len(data[feat].unique())
-            logging.info("Var: " + str(feat) + " Unique: " + str(unique))
-            cat_feat_analysis["Unique"].loc[feat] = unique
-
-            # top
-            top = Util.get_top_categorical_feature(data=data, column=feat)
-            logging.info("Var: " + str(feat) + " Top: " + str(top))
-            cat_feat_analysis["Top"].loc[feat] = top
-
-        if save_analysis:
-            filename = prefix + "cat_variables.tsv"
-            full_path = folder_path + prefix + "cat_variables.tsv"
-            cat_feat_analysis.to_csv(full_path, index=True, sep="\t", encoding="utf-8")
-            logging.info(
-                "Categorical descriptive analysis saved in: "
-                + folder_path
-                + prefix
-                + "cat_features.tsv"
+        if len(self.param.categorical_variables) > 0:
+            cat_feat_analysis = pd.DataFrame(
+                index=self.param.categorical_variables, columns=["Count", "Unique", "Top"]
             )
-            self.include_files_history({filename: full_path})
 
-        if save_plots:
-            dv = DataPlotting(
-                dataframe=data,
-                view_plots=view_plots,
-                save_plots=save_plots,
-                folder_path=folder_path,
-                prefix=prefix,
-            )
             for feat in self.param.categorical_variables:
-                src = dv.plot_count_cat_histogram(y_column=feat)
-                if src is not False:
-                    self.include_files_history({src: src})
+                # count
+                count = data[feat].count()
+                logging.info("Var: " + str(feat) + " Count: " + str(count))
+                cat_feat_analysis["Count"].loc[feat] = count
+
+                # unique
+                unique = len(data[feat].unique())
+                logging.info("Var: " + str(feat) + " Unique: " + str(unique))
+                cat_feat_analysis["Unique"].loc[feat] = unique
+
+                # top
+                top = Util.get_top_categorical_feature(data=data, column=feat)
+                logging.info("Var: " + str(feat) + " Top: " + str(top))
+                cat_feat_analysis["Top"].loc[feat] = top
+
+            if save_analysis:
+                filename = prefix + "cat_variables.tsv"
+                full_path = folder_path + prefix + "cat_variables.tsv"
+                cat_feat_analysis.to_csv(full_path, index=True, sep="\t", encoding="utf-8")
+                logging.info(
+                    "Categorical descriptive analysis saved in: "
+                    + folder_path
+                    + prefix
+                    + "cat_features.tsv"
+                )
+                self.include_files_history({filename: full_path})
+
+            if save_plots:
+                dv = DataPlotting(
+                    dataframe=data,
+                    view_plots=view_plots,
+                    save_plots=save_plots,
+                    folder_path=folder_path,
+                    prefix=prefix,
+                )
+                for feat in self.param.categorical_variables:
+                    src = dv.plot_count_cat_histogram(y_column=feat)
+                    if src is not False:
+                        self.include_files_history({src: src})
+
+        # ----------------------------------------------------------
+        # categorical features
+        if len(self.param.txt_variables) > 0:
 
         return True
 

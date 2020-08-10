@@ -7,6 +7,7 @@ Script Reviewed by COGNAS
 '''
 from bs4 import BeautifulSoup
 import unidecode
+import re
 import numpy as np
 import pandas as pd
 import logging
@@ -50,6 +51,21 @@ class NLPUtils:
     @staticmethod
     def convert_to_lower_pandas_apply(txt:str) -> str:
         txt = txt.lower()
+        return txt
+
+    @staticmethod
+    def split_units_from_numbers(dataframe: pd = None, columns: list = None) -> pd:
+        for col in columns:
+            dataframe[col] = dataframe[col].apply(NLPUtils.split_units_from_numbers_pandas_apply)
+        return dataframe
+
+    @staticmethod
+    def split_units_from_numbers_pandas_apply(txt: str) -> str:
+        # https://en.wikipedia.org/wiki/Metric_units
+        pattern = re.compile(
+            '(\d+)(litros|ml|l|hz|mhz|ghz|hp|ph|kb|mb|gb|tb|kbps|mbps|bps|bar|mmhg|pa|mwh|kwh|kw|w|va|kva|k|kg|g|gr|pol|km|m|cm|mm|km2|m2|cm2|mm2|km3|m3|cm3|mm3|in|ft|rad|rads|db|v|volts|dpi|h|seg)(?![A-zÀ-ÿ0-9])',
+            re.S)
+        txt = re.sub(pattern, r'\1 \2 ', txt)
         return txt
 
     @staticmethod
