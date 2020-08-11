@@ -16,6 +16,7 @@ from sklearn.preprocessing import (
     OrdinalEncoder,
     LabelBinarizer,
 )
+
 import logging
 import sys
 from src.lib.nlp.nlp_util import NLPUtils
@@ -246,32 +247,36 @@ class DataProcessing:
             self.samples_lifecycle.append(data.shape[0])
 
         # ========================================
-        # Categorical filter samples (include filter)
+        # Categorical filter samples
         # ========================================
-        if len(self.param.categorical_variables_include) > 0:
-            logging.info("======================================================================")
-            for i in range(len(self.param.categorical_variables_include)):
-                logging.info(
-                    "Filter include categorical values of variable: " + str(self.param.categorical_variables[i]))
-                logging.info("Valid values to maintain: " + str(len(self.param.categorical_variables_include[i])))
-                data = self.filter_maintain_values(data=data, col=self.param.categorical_variables[i],
-                                                   values=self.param.categorical_variables_include[i])
-                logging.info("Dataframe shape = " + str(data.shape))
+        if len(self.param.categorical_variables)> 0:
+            # ========================================
+            # Categorical filter samples (include filter)
+            # ========================================
+            if len(self.param.categorical_variables_include) > 0:
+                logging.info("======================================================================")
+                for i in range(len(self.param.categorical_variables_include)):
+                    logging.info(
+                        "Filter include categorical values of variable: " + str(self.param.categorical_variables[i]))
+                    logging.info("Valid values to maintain: " + str(len(self.param.categorical_variables_include[i])))
+                    data = self.filter_maintain_values(data=data, col=self.param.categorical_variables[i],
+                                                       values=self.param.categorical_variables_include[i])
+                    logging.info("Dataframe shape = " + str(data.shape))
 
-        # ========================================
-        # Categorical filter samples (exclude filter)
-        # ========================================
-        if len(self.param.categorical_variables_exclude) > 0:
-            logging.info("======================================================================")
-            for i in range(len(self.param.categorical_variables_exclude)):
-                logging.info(
-                    "Filter exclude categorical values of variable: " + str(
-                        self.param.categorical_variables[i]))
-                logging.info(
-                    "Values to exclude: " + str(len(self.param.categorical_variables_exclude[i])))
-                data = self.filter_exclude_values(data=data, col=self.param.categorical_variables[i],
-                                                   values=self.param.categorical_variables_exclude[i])
-                logging.info("Dataframe shape = " + str(data.shape))
+            # ========================================
+            # Categorical filter samples (exclude filter)
+            # ========================================
+            if len(self.param.categorical_variables_exclude) > 0:
+                logging.info("======================================================================")
+                for i in range(len(self.param.categorical_variables_exclude)):
+                    logging.info(
+                        "Filter exclude categorical values of variable: " + str(
+                            self.param.categorical_variables[i]))
+                    logging.info(
+                        "Values to exclude: " + str(len(self.param.categorical_variables_exclude[i])))
+                    data = self.filter_exclude_values(data=data, col=self.param.categorical_variables[i],
+                                                       values=self.param.categorical_variables_exclude[i])
+                    logging.info("Dataframe shape = " + str(data.shape))
 
         # ========================================
         # Missing data processing
@@ -474,6 +479,8 @@ class DataProcessing:
         # ----------------------------------------------------------
         # numerical features analysis
         if len(self.param.numerical_variables) > 0:
+            logging.info("----------------------------------------------------------------------")
+            logging.info("Numerical variables infos")
             num_feat_analysis = pd.DataFrame(
                 index=self.param.numerical_variables, columns=["Mean", "Std", "Min", "Max"]
             )
@@ -528,6 +535,8 @@ class DataProcessing:
         # ----------------------------------------------------------
         # categorical features
         if len(self.param.categorical_variables) > 0:
+            logging.info("----------------------------------------------------------------------")
+            logging.info("Categorical variables infos")
             cat_feat_analysis = pd.DataFrame(
                 index=self.param.categorical_variables, columns=["Count", "Unique", "Top"]
             )
@@ -556,7 +565,7 @@ class DataProcessing:
                     "Categorical descriptive analysis saved in: "
                     + folder_path
                     + prefix
-                    + "cat_features.tsv"
+                    + "cat_variables.tsv"
                 )
                 self.include_files_history({filename: full_path})
 
@@ -574,8 +583,183 @@ class DataProcessing:
                         self.include_files_history({src: src})
 
         # ----------------------------------------------------------
-        # categorical features
+        # txt features
         if len(self.param.txt_variables) > 0:
+            logging.info("----------------------------------------------------------------------")
+            logging.info("Txt variables infos")
+            txt_feat_analysis = pd.DataFrame(columns=["Variable",
+                                                      "Sentences_Total",
+                                                      "Sentences_Mean",
+                                                      "Sentences_Std",
+                                                      "Sentences_Max",
+                                                      "Sentences_Min",
+                                                      "Tokens_Total",
+                                                      "Tokens_Mean",
+                                                      "Tokens_Std",
+                                                      "Tokens_Max",
+                                                      "Tokens_Min",
+                                                      "Tokens_Unique"
+                                                      ]
+            )
+
+            for feat in self.param.txt_variables:
+
+                if len(feat) > 1:
+                    name_col = '_'.join(feat)
+                    data[name_col] = Util.concatenate_pandas_columns(dataframe=data, columns=feat, conc_str=" ")
+                    logging.info("Var: " + str(feat) + " Total of documents: " + str(len(data[name_col])))
+
+                    # sentences of each document
+                    data, sent_col_name = NLPUtils.build_sentence_tokenizer(dataframe=data, column=name_col)
+                    data, count_col_name = Util.count_lists_pandas(dataframe=data, column=sent_col_name)
+
+                    value_sentence_sum = data[count_col_name].sum()
+                    logging.info("Var: " + str(feat) + " Total of sentences: " + str(value_sentence_sum))
+                    value_sentence_mean = data[count_col_name].mean()
+                    logging.info("Var: " + str(feat) + " Mean of sentences: " + str(value_sentence_mean))
+                    value_sentence_std = data[count_col_name].std()
+                    logging.info("Var: " + str(feat) + " Std of sentences: " + str(value_sentence_std))
+                    value_sentence_max = data[count_col_name].max()
+                    logging.info("Var: " + str(feat) + " Max of sentences: " + str(value_sentence_max))
+                    value_sentence_min = data[count_col_name].min()
+                    logging.info("Var: " + str(feat) + " Min of sentences: " + str(value_sentence_min))
+
+                    # tokens of each document
+                    data, token_col_name = NLPUtils.build_word_tokenizer(dataframe=data, column=name_col)
+                    data, tk_count_col_name = Util.count_lists_pandas(dataframe=data, column=token_col_name)
+
+                    value_tk_sum = data[tk_count_col_name].sum()
+                    logging.info("Var: " + str(feat) + " Total of tokens: " + str(value_tk_sum))
+                    value_tk_mean = data[tk_count_col_name].mean()
+                    logging.info("Var: " + str(feat) + " Mean of tokens: " + str(value_tk_mean))
+                    value_tk_std = data[tk_count_col_name].std()
+                    logging.info("Var: " + str(feat) + " Std of tokens: " + str(value_tk_std))
+                    value_tk_max = data[tk_count_col_name].max()
+                    logging.info("Var: " + str(feat) + " Max of tokens: " + str(value_tk_max))
+                    value_tk_min = data[tk_count_col_name].min()
+                    logging.info("Var: " + str(feat) + " Min of tokens: " + str(value_tk_min))
+
+                    # tokens of corpus
+                    tk_freq_dist = NLPUtils.build_freqdist_tokens(dataframe=data, column=token_col_name)
+                    value_tk_unique = len(tk_freq_dist)
+                    logging.info("Var: " + str(feat) + " Total of unique tokens: " + str(value_tk_unique))
+
+
+                    txt_feat_analysis = txt_feat_analysis.append({"Variable": name_col,
+                                                                  "Sentences_Total": value_sentence_sum,
+                                                                  "Sentences_Mean": value_sentence_mean,
+                                                                  "Sentences_Std": value_sentence_std,
+                                                                  "Sentences_Max": value_sentence_max,
+                                                                  "Sentences_Min": value_sentence_min,
+                                                                  "Tokens_Total": value_tk_sum,
+                                                                  "Tokens_Mean": value_tk_mean,
+                                                                  "Tokens_Std": value_tk_std,
+                                                                  "Tokens_Max": value_tk_max,
+                                                                  "Tokens_Min": value_tk_min,
+                                                                  "Tokens_Unique": value_tk_unique
+                                                                  },
+                                                                 ignore_index=True)
+
+                    if save_plots:
+                        dv = DataPlotting(
+                            dataframe=data,
+                            view_plots=view_plots,
+                            save_plots=save_plots,
+                            folder_path=folder_path,
+                            prefix=prefix,
+                        )
+
+                        src = dv.plot_tokens_freq(frequency_dist=tk_freq_dist)
+                        if src is not False:
+                            self.include_files_history({src: src})
+
+                        src = dv.plot_tokens_cloud(frequency_dist=tk_freq_dist)
+                        if src is not False:
+                            self.include_files_history({src: src})
+
+
+
+                else:
+                    logging.info("Var: " + str(feat) + " Total of documents: " + str(len(data[feat[0]])))
+
+                    # sentences of each document
+                    data, sent_col_name = NLPUtils.build_sentence_tokenizer(dataframe=data, column = feat[0])
+                    data, count_col_name = Util.count_lists_pandas(dataframe=data, column=sent_col_name)
+
+                    value_sentence_sum = data[count_col_name].sum()
+                    logging.info("Var: " + str(feat) + " Total of sentences: " + str(value_sentence_sum))
+                    value_sentence_mean = data[count_col_name].mean()
+                    logging.info("Var: " + str(feat) + " Mean of sentences: " + str(value_sentence_mean))
+                    value_sentence_std = data[count_col_name].std()
+                    logging.info("Var: " + str(feat) + " Std of sentences: " + str(value_sentence_std))
+                    value_sentence_max = data[count_col_name].max()
+                    logging.info("Var: " + str(feat) + " Max of sentences: " + str(value_sentence_max))
+                    value_sentence_min = data[count_col_name].min()
+                    logging.info("Var: " + str(feat) + " Min of sentences: " + str(value_sentence_min))
+
+                    # tokens of each document
+                    data, token_col_name = NLPUtils.build_word_tokenizer(dataframe=data, column=feat[0])
+                    data, tk_count_col_name = Util.count_lists_pandas(dataframe=data, column=token_col_name)
+
+                    value_tk_sum = data[tk_count_col_name].sum()
+                    logging.info("Var: " + str(feat) + " Total of tokens: " + str(value_tk_sum))
+                    value_tk_mean = data[tk_count_col_name].mean()
+                    logging.info("Var: " + str(feat) + " Mean of tokens: " + str(value_tk_mean))
+                    value_tk_std = data[tk_count_col_name].std()
+                    logging.info("Var: " + str(feat) + " Std of tokens: " + str(value_tk_std))
+                    value_tk_max = data[tk_count_col_name].max()
+                    logging.info("Var: " + str(feat) + " Max of tokens: " + str(value_tk_max))
+                    value_tk_min = data[tk_count_col_name].min()
+                    logging.info("Var: " + str(feat) + " Min of tokens: " + str(value_tk_min))
+
+                    # tokens of corpus
+                    tk_freq_dist = NLPUtils.build_freqdist_tokens(dataframe=data, column=token_col_name)
+                    value_tk_unique = len(tk_freq_dist)
+                    logging.info("Var: " + str(feat) + " Total of unique tokens: " + str(value_tk_unique))
+
+                    txt_feat_analysis = txt_feat_analysis.append({"Variable": feat[0],
+                                                                  "Sentences_Total": value_sentence_sum,
+                                                                  "Sentences_Mean": value_sentence_mean,
+                                                                  "Sentences_Std": value_sentence_std,
+                                                                  "Sentences_Max": value_sentence_max,
+                                                                  "Sentences_Min": value_sentence_min,
+                                                                  "Tokens_Total": value_tk_sum,
+                                                                  "Tokens_Mean": value_tk_mean,
+                                                                  "Tokens_Std": value_tk_std,
+                                                                  "Tokens_Max": value_tk_max,
+                                                                  "Tokens_Min": value_tk_min,
+                                                                  "Tokens_Unique": value_tk_unique
+                                                                  },
+                                                                 ignore_index=True)
+
+                    if save_plots:
+                        dv = DataPlotting(
+                            dataframe=data,
+                            view_plots=view_plots,
+                            save_plots=save_plots,
+                            folder_path=folder_path,
+                            prefix=prefix,
+                        )
+
+                        src = dv.plot_tokens_freq(frequency_dist=tk_freq_dist)
+                        if src is not False:
+                            self.include_files_history({src: src})
+
+                        src = dv.plot_tokens_cloud(frequency_dist=tk_freq_dist)
+                        if src is not False:
+                            self.include_files_history({src: src})
+
+            if save_analysis:
+                filename = prefix + "txt_variables.tsv"
+                full_path = folder_path + prefix + "txt_variables.tsv"
+                txt_feat_analysis.to_csv(full_path, index=True, sep="\t", encoding="utf-8")
+                logging.info(
+                    "Txt descriptive analysis saved in: "
+                    + folder_path
+                    + prefix
+                    + "txt_variables.tsv"
+                )
+                self.include_files_history({filename: full_path})
 
         return True
 

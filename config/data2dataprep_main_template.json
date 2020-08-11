@@ -25,6 +25,8 @@
     "delete_repeated_samples": true,
     "remove_outliers": true,
     "outliers_method": "k_std",
-    "k_numerical_outlier_factor": 3.5
+    "k_numerical_outlier_factor": 3.5,
+    "categorical_variables_include": [[""]],
+    "categorical_variables_exclude": [[""]],
     }
 }

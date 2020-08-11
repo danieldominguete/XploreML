@@ -1,15 +1,13 @@
 """
 ===========================================================================================
-Data Plotting Package
+Data Visualization with Streamlit Package
 ===========================================================================================
 Script Reviewed by COGNAS
 ===========================================================================================
 """
-import numpy as np
-import logging
+
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import roc_curve, auc
 import streamlit as st
 
 sns.set(color_codes=True)

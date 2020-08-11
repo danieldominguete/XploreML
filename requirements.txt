@@ -12,3 +12,5 @@ matplotlib==3.1.3
 seaborn==0.10.0
 mlflow==1.6.0
 streamlit==0.57.3
+nltk==3.5
+wordcloud==1.7.0

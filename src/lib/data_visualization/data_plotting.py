@@ -284,8 +284,6 @@ class DataPlotting:
 
         return True
 
-    #TODO Plot time x pred x target for forecast (index colum)
-
     def plot_history_training(self, history=None, loss=True, accuracy=False):
 
         # loss value x epochs
@@ -308,3 +306,33 @@ class DataPlotting:
             plt.show()
 
         return True
+
+    def plot_tokens_freq(self, frequency_dist) -> bool:
+
+        #if self.save_plots:
+
+        if self.view_plots:
+            frequency_dist.plot(50, cumulative=False)
+
+        return True
+
+    def plot_tokens_cloud(self, frequency_dist) -> bool:
+        from wordcloud import WordCloud
+        wcloud = WordCloud().generate_from_frequencies(frequencies=frequency_dist)
+
+        if self.save_plots:
+            plt.figure()
+            plt.imshow(wcloud, interpolation='bilinear')
+            plt.axis("off")
+
+            filename = self.folder_path + self.prefix + "tk_cloud.png"
+            plt.savefig(filename)
+            plt.close()
+
+        if self.view_plots:
+            plt.figure()
+            plt.imshow(wcloud, interpolation='bilinear')
+            plt.axis("off")
+            plt.show()
+
+        return filename

@@ -10,7 +10,9 @@ import unidecode
 import re
 import numpy as np
 import pandas as pd
+import nltk
 import logging
+from src.lib.utils.util import Util
 
 TXT_TOKENIZATION_COLUMN = 'TXT_TOKENS'
 
@@ -85,28 +87,64 @@ class NLPUtils:
 
         return txt
 
-    def build_word_tokenizer(self, dataframe=None, txt_inputs=None):
+    @staticmethod
+    def build_sentence_tokenizer(dataframe:pd = None, column:str = None) -> pd:
 
-        i = 0
-        for txt_feat in txt_inputs:
-            logging.info('Processing txt feature ' +  str(txt_feat))
+        name_col = column + "_sent"
+        dataframe[name_col] = dataframe[column].apply(NLPUtils.build_sentence_tokenizer_pandas_apply)
 
-            #concatenate columns
-            dataframe["_temp"] = dataframe[txt_feat].apply(lambda x: ' '.join(x.astype(str)), axis=1)
+        return dataframe,name_col
 
-            # tokenizate to list
-            dataframe[TXT_TOKENIZATION_COLUMN + '_' + str(i)] = dataframe["_temp"].apply(self.build_word_tokenizer_pandas_apply)
+    @staticmethod
+    def build_sentence_tokenizer_pandas_apply(txt:str) -> list:
+        sentences = nltk.tokenize.sent_tokenize(txt)
+        return sentences
 
-            # excluding temp column
-            dataframe.drop("_temp", axis=1, inplace=True)
-            i = i + 1
+    @staticmethod
+    def build_word_tokenizer(dataframe:pd=None, column:str=None) -> pd:
+
+        # tokenizate to list
+        name_col = column + "_tk"
+        dataframe[name_col] = dataframe[column].apply(NLPUtils.build_word_tokenizer_pandas_apply)
             
-        return dataframe
+        return dataframe, name_col
 
-    def build_word_tokenizer_pandas_apply(self, txt):
+    @staticmethod
+    def build_word_tokenizer_pandas_apply(txt:str)->list:
+
+        # tokenizer with whitespace
         tokens = txt.split()
-        tokens = ' '.join(tokens)
+
+        # Excluding special chars at the ending
+        tokens = [word[:-2] if word.endswith('.,') else word for word in tokens]
+        tokens = [word[:-1] if word.endswith('.') else word for word in tokens]
+        tokens = [word[:-1] if word.endswith(',') else word for word in tokens]
+        #tokens = [word[:-1] if word.endswith('-') else word for word in tokens]
+
+        # change , for . for numbers
+        tokens = [re.sub('(\d+),(\d+)', r'\1.\2', word) for word in tokens]
+
+        # number to digits
+        tokens = [re.sub('(\d)', r' \1 ', word) for word in tokens]
+
+        # ??
+        tokens = [re.sub('^(\d+)$', r' \1 ', word) for word in tokens]
+
+        # joining post processing
+        txt = " ".join(tokens)
+
+        # tokenizer refactor
+        tokens = txt.split()
+
         return tokens
+
+    @staticmethod
+    def build_freqdist_tokens(dataframe:pd=None, column:str=None):
+        tokens_all = Util.get_list_from_pandas_list_rows(dataframe=dataframe, column=column)
+        freqdist = nltk.FreqDist(tokens_all)
+        #freqdist = freqdist.most_common()
+        return freqdist
+
 
     def encode_word2int(self, dataframe=None, column=None, max_length=0):
 
