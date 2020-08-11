@@ -77,9 +77,9 @@ class BuildDataprepMain:
                                 prefix=env.prefix_name)
 
         # ===========================================================================================
-        # Saving dataset
+        # Saving data
         logging.info("======================================================================")
-        logging.info('Saving Datasets:')
+        logging.info('Saving preprocessed data:')
         ds.save_dataframe(data=data,
                           folder_path=env.run_folder,
                           prefix=env.prefix_name)

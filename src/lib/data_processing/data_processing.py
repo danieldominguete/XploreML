@@ -253,30 +253,40 @@ class DataProcessing:
             # ========================================
             # Categorical filter samples (include filter)
             # ========================================
-            if len(self.param.categorical_variables_include) > 0:
+            if len(self.param.categorical_variables_include) == len(self.param.categorical_variables):
                 logging.info("======================================================================")
                 for i in range(len(self.param.categorical_variables_include)):
-                    logging.info(
-                        "Filter include categorical values of variable: " + str(self.param.categorical_variables[i]))
-                    logging.info("Valid values to maintain: " + str(len(self.param.categorical_variables_include[i])))
-                    data = self.filter_maintain_values(data=data, col=self.param.categorical_variables[i],
-                                                       values=self.param.categorical_variables_include[i])
-                    logging.info("Dataframe shape = " + str(data.shape))
+                    if self.param.categorical_variables_include[i] != [""]:
+                        logging.info(
+                            "Filter include categorical values of variable: " + str(self.param.categorical_variables[i]))
+                        logging.info("Valid values to maintain: " + str(len(self.param.categorical_variables_include[i])))
+                        data = self.filter_maintain_values(data=data, col=self.param.categorical_variables[i],
+                                                           values=self.param.categorical_variables_include[i])
+                        logging.info("Dataframe shape = " + str(data.shape))
+                    else:
+                        logging.info("Categorical include filter is empty.")
+            else:
+                logging.error("Categorical include filter length is not valid. Filter not applied")
 
             # ========================================
             # Categorical filter samples (exclude filter)
             # ========================================
-            if len(self.param.categorical_variables_exclude) > 0:
+            if len(self.param.categorical_variables_exclude) == len(self.param.categorical_variables):
                 logging.info("======================================================================")
                 for i in range(len(self.param.categorical_variables_exclude)):
-                    logging.info(
-                        "Filter exclude categorical values of variable: " + str(
-                            self.param.categorical_variables[i]))
-                    logging.info(
-                        "Values to exclude: " + str(len(self.param.categorical_variables_exclude[i])))
-                    data = self.filter_exclude_values(data=data, col=self.param.categorical_variables[i],
-                                                       values=self.param.categorical_variables_exclude[i])
-                    logging.info("Dataframe shape = " + str(data.shape))
+                    if self.param.categorical_variables_exclude[i] != [""]:
+                        logging.info(
+                            "Filter exclude categorical values of variable: " + str(
+                                self.param.categorical_variables[i]))
+                        logging.info(
+                            "Values to exclude: " + str(len(self.param.categorical_variables_exclude[i])))
+                        data = self.filter_exclude_values(data=data, col=self.param.categorical_variables[i],
+                                                           values=self.param.categorical_variables_exclude[i])
+                        logging.info("Dataframe shape = " + str(data.shape))
+                    else:
+                        logging.info("Categorical exclude filter is empty.")
+            else:
+                logging.error("Categorical exclude filter length is not valid. Filter not applied")
 
         # ========================================
         # Missing data processing
@@ -362,6 +372,15 @@ class DataProcessing:
 
             logging.info("Dataframe shape = " + str(data.shape))
             self.samples_lifecycle.append(data.shape[0])
+
+        # ========================================
+        # Processing txt dict fields
+        if len(self.param.txt_dict_processing_variables)>0:
+            logging.info("======================================================================")
+            logging.info("Processing txt dict variables...")
+            for var in self.param.txt_dict_processing_variables:
+                logging.info("Convert dict variable: " + str(var))
+                data = NLPUtils.convert_json_to_txt(dataframe=data, column=var)
 
         # ========================================
         # Processing txt features
@@ -527,10 +546,14 @@ class DataProcessing:
                 )
                 for feat in self.param.numerical_variables:
                     src = dv.plot_line_steps(y_column=feat)
-                    self.include_files_history({src: src})
+                    if src is not None:
+                        file = Util.get_filename_from_path(src)
+                        self.include_files_history({file: src})
 
                     src = dv.plot_numerical_histogram(y_column=feat)
-                    self.include_files_history({src: src})
+                    if src is not None:
+                        file = Util.get_filename_from_path(src)
+                        self.include_files_history({file: src})
 
         # ----------------------------------------------------------
         # categorical features
@@ -579,8 +602,9 @@ class DataProcessing:
                 )
                 for feat in self.param.categorical_variables:
                     src = dv.plot_count_cat_histogram(y_column=feat)
-                    if src is not False:
-                        self.include_files_history({src: src})
+                    if src is not None:
+                        file = Util.get_filename_from_path(src)
+                        self.include_files_history({file: src})
 
         # ----------------------------------------------------------
         # txt features
@@ -669,13 +693,15 @@ class DataProcessing:
                             prefix=prefix,
                         )
 
-                        src = dv.plot_tokens_freq(frequency_dist=tk_freq_dist)
-                        if src is not False:
-                            self.include_files_history({src: src})
+                        src = dv.plot_tokens_freq(frequency_dist=tk_freq_dist, var=name_col)
+                        if src is not None:
+                            file = Util.get_filename_from_path(src)
+                            self.include_files_history({file: src})
 
                         src = dv.plot_tokens_cloud(frequency_dist=tk_freq_dist)
-                        if src is not False:
-                            self.include_files_history({src: src})
+                        if src is not None:
+                            file = Util.get_filename_from_path(src)
+                            self.include_files_history({file: src})
 
 
 
@@ -741,13 +767,15 @@ class DataProcessing:
                             prefix=prefix,
                         )
 
-                        src = dv.plot_tokens_freq(frequency_dist=tk_freq_dist)
-                        if src is not False:
-                            self.include_files_history({src: src})
+                        src = dv.plot_tokens_freq(frequency_dist=tk_freq_dist, var=feat[0])
+                        if src is not None:
+                            file = Util.get_filename_from_path(src)
+                            self.include_files_history({file: src})
 
                         src = dv.plot_tokens_cloud(frequency_dist=tk_freq_dist)
-                        if src is not False:
-                            self.include_files_history({src: src})
+                        if src is not None:
+                            file = Util.get_filename_from_path(src)
+                            self.include_files_history({file: src})
 
             if save_analysis:
                 filename = prefix + "txt_variables.tsv"
@@ -808,8 +836,11 @@ class DataProcessing:
                     usecols=selected_columns,
                     skiprows=lines2skip,
                     encoding="utf-8",
+                    quotechar='"',
+                    escapechar='\\',
                     low_memory=True,
-                    quoting=csv.QUOTE_NONE,
+                    #engine='python',
+                    #quoting=csv.QUOTE_NONE,
                     warn_bad_lines=True,
                     skipinitialspace=True,
                 )
@@ -820,8 +851,10 @@ class DataProcessing:
                     sep=separator,
                     skiprows=lines2skip,
                     encoding="utf-8",
+                    quotechar='"',
+                    escapechar='\\',
                     low_memory=True,
-                    quoting=csv.QUOTE_NONE,
+                    #quoting=csv.QUOTE_NONE,
                     warn_bad_lines=True,
                     skipinitialspace=True,
                 )
@@ -834,8 +867,10 @@ class DataProcessing:
                     sep=separator,
                     usecols=selected_columns,
                     encoding="utf-8",
+                    quotechar='"',
+                    escapechar='\\',
                     low_memory=True,
-                    quoting=csv.QUOTE_NONE,
+                    #quoting=csv.QUOTE_NONE,
                     warn_bad_lines=True,
                     skipinitialspace=True,
                 )
@@ -845,8 +880,9 @@ class DataProcessing:
                     header=0,
                     sep=separator,
                     encoding="utf-8",
+                    quotechar='"',
+                    escapechar='\\',
                     low_memory=True,
-                    quoting=csv.QUOTE_NONE,
                     warn_bad_lines=True,
                     skipinitialspace=True,
                 )

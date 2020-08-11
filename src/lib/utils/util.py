@@ -125,6 +125,11 @@ class Util:
         return os.path.splitext(filename)
 
     @staticmethod
+    def get_filename_from_path(path:str) -> str:
+        from pathlib import Path
+        return Path(path).name
+
+    @staticmethod
     def get_list_from_pandas_list_rows(dataframe:pd = None, column:str=None)-> list:
         tks_list = []
         for index, row in dataframe.iterrows():

@@ -51,26 +51,30 @@ class DataPlotting:
 
     def plot_count_cat_histogram(self, y_column):
 
-        if self.data[y_column].unique().shape[0] < MAX_CATEGORIES_FOR_PLOT:
-            # fig with single axes
-            fig, ax = plt.subplots(figsize=(12,7))
-            ax = sns.catplot(data=self.data, x=y_column, kind="count")
-            plt.tight_layout()
+        full_path = None
 
-            # registering results
-            full_path=None
-            if self.save_plots:
+        if self.save_plots:
+            if self.data[y_column].unique().shape[0] < MAX_CATEGORIES_FOR_PLOT:
+                # fig with single axes
+                fig, ax = plt.subplots(figsize=(12,7))
+                ax = sns.catplot(data=self.data, x=y_column, kind="count")
+                plt.tight_layout()
+
                 full_path= self.folder_path + self.prefix + y_column + '_count_cat.png'
                 plt.savefig(full_path)
+                plt.close()
+            else:
+                logging.info('Count categorical histogram to ' + y_column + ' exceed the maximum limit of ' + str(MAX_CATEGORIES_FOR_PLOT) + ' categories.')
 
-            if self.view_plots:
+        if self.view_plots:
+            if self.data[y_column].unique().shape[0] < MAX_CATEGORIES_FOR_PLOT:
+                # fig with single axes
+                fig, ax = plt.subplots(figsize=(12, 7))
+                ax = sns.catplot(data=self.data, x=y_column, kind="count")
+                plt.tight_layout()
                 plt.show()
 
-            plt.close()
-            return full_path
-        else:
-            logging.info('Count categorical histogram to ' + y_column + ' exceed the maximum limit of ' + str(MAX_CATEGORIES_FOR_PLOT) + ' categories.')
-            return False
+        return full_path
 
     def plot_numerical_histogram(self, y_column):
 
@@ -307,18 +311,27 @@ class DataPlotting:
 
         return True
 
-    def plot_tokens_freq(self, frequency_dist) -> bool:
+    def plot_tokens_freq(self, frequency_dist, var:str=None) -> bool:
 
-        #if self.save_plots:
+        filename = None
+        if self.save_plots:
+            frequency_list = frequency_dist.most_common()
+            # file histogram
+            filename = self.folder_path + self.prefix + var + "_tks_hist.csv"
+            with open(filename, 'w') as f:
+                f.write('token; samples\n')
+                for token, frequency in frequency_list:
+                    f.write("%s;%s\n" % (token, frequency))
 
         if self.view_plots:
             frequency_dist.plot(50, cumulative=False)
 
-        return True
+        return filename
 
     def plot_tokens_cloud(self, frequency_dist) -> bool:
         from wordcloud import WordCloud
         wcloud = WordCloud().generate_from_frequencies(frequencies=frequency_dist)
+        filename = None
 
         if self.save_plots:
             plt.figure()

@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import nltk
 import logging
+import json
 from src.lib.utils.util import Util
 
 TXT_TOKENIZATION_COLUMN = 'TXT_TOKENS'
@@ -144,6 +145,35 @@ class NLPUtils:
         freqdist = nltk.FreqDist(tokens_all)
         #freqdist = freqdist.most_common()
         return freqdist
+
+
+    @staticmethod
+    def convert_json_to_txt(dataframe:pd=None, column:str=None) -> pd:
+        dataframe[column] = dataframe[column].apply(NLPUtils.convert_json_to_txt_pandas_apply)
+        return dataframe
+
+    @staticmethod
+    def convert_json_to_txt_pandas_apply(txt: str = None):
+
+        txt_data = ""
+        empty_values = ['-', 'nan']
+
+        try:
+            data = json.loads(txt)
+            for key in data:
+                value = data.get(key)
+
+                # normalize empty values
+                if value in empty_values:
+                    value = ""
+
+                # maximum char
+                if len(str(value))<100:
+                    txt_data = txt_data + " " + str(key) + " " + str(value)
+        except:
+            logging.error("Invalid json")
+
+        return txt_data
 
 
     def encode_word2int(self, dataframe=None, column=None, max_length=0):
