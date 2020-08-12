@@ -89,7 +89,7 @@ class DataProcessing:
 
         # flatting txt columns
         if len(self.param.txt_inputs) > 0:
-            txt_variables_flat = Util.flat_lists(sublist=self.param.txt_variables)
+            txt_variables_flat = Util.flat_lists(sublist=self.param.txt_inputs)
         else:
             txt_variables_flat = []
 
@@ -115,6 +115,7 @@ class DataProcessing:
             )
         else:
             columns = txt_variables_flat
+            columns_input = txt_variables_flat
 
         # exclude duplicate variables
         columns = Util.get_unique_list(columns)
@@ -137,7 +138,11 @@ class DataProcessing:
                 raise
 
         data_input = data[columns_input]
-        data_target = data[self.param.output_target]
+
+        if len(self.param.output_target)>0:
+            data_target = data[self.param.output_target]
+        else:
+            data_target = None
 
         return data_input, data_target
 
@@ -1161,7 +1166,7 @@ class DataProcessing:
         #     logging.info(
         #         "======================================================================"
         #     )
-        #     logging.info("Processing vectorization txt features...")
+        #     logging.info("Processing txt features...")
         #     nlp = NLPProcessing()
         #
         #     # convert tokens to embedding random int values
@@ -1290,7 +1295,7 @@ class DataProcessing:
                 target_var_list.append(var)
 
         else:
-            logging.error("Output target not valid or not informed")
+            logging.info("Output target not valid or not informed")
 
         return (
             data_train_input,
@@ -1301,4 +1306,44 @@ class DataProcessing:
             target_var_list,
             int_to_cat_dict_list_target,
             cat_to_int_dict_list_target,
+        )
+
+
+    def prepare_corpus_data( self, data: pd = None) -> pd:
+
+        logging.info("======================================================================")
+        logging.info("Starting data corpus processing ...")
+        input_var_list = []
+
+        # ========================================
+        # Processing txt features
+        if len(self.param.txt_inputs) > 0:
+            logging.info(
+                "======================================================================"
+            )
+
+            for feat in self.param.txt_inputs:
+
+                if len(feat) > 1:
+                    name_col = '_'.join(feat)
+                    data[name_col] = Util.concatenate_pandas_columns(dataframe=data, columns=feat, conc_str=" ")
+
+                    # tokens of each document
+                    data, token_col_name = NLPUtils.build_word_tokenizer(dataframe=data, column=name_col, return_list=False)
+
+                    input_var_list.append(token_col_name)
+
+                else:
+                    logging.info("Var: " + str(feat) + " Total of documents: " + str(len(data[feat[0]])))
+
+                    # tokens of each document
+                    data, token_col_name = NLPUtils.build_word_tokenizer(dataframe=data, column=feat[0], return_list=False)
+
+                    input_var_list.append(token_col_name)
+        else:
+            logging.info("Txt inputs not informed ")
+
+        return (
+            data,
+            input_var_list
         )

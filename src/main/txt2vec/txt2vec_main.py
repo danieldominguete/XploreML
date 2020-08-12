@@ -16,8 +16,13 @@ parentdir = os.path.dirname(os.path.dirname(os.path.dirname(currentdir)))
 sys.path.insert(0, parentdir)
 
 from src.lib.utils.util import Util
-from src.lib.data_schemas.static2class_parameters import Static2ClassParameters
+from src.lib.data_schemas.txt2vec_parameters import Txt2VecParameters
 from src.lib.data_schemas.environment_parameters import EnvironmentParameters
+from src.lib.environment.environment import Environment
+from src.lib.data_processing.data_processing import DataProcessing
+from src.lib.data_schemas.word2vec_parameters import XWord2VecParameters
+from src.lib.nlp.word2vec import XWord2Vec
+
 
 
 class BuildTxt2VecMain:
@@ -29,20 +34,11 @@ class BuildTxt2VecMain:
     def model_selection(self, data_config, data_param, environment):
 
         # Validade and load model hyperparameters
-        if data_param.model_type == "k_nearest_neighbors":
-            model_param = XKNearestNeighborsParameters(
-                **data_config.get("k_nearest_neighbors_parameters")
+        if data_param.model_type == "word2vec":
+            model_param = XWord2VecParameters(
+                **data_config.get("word2vec_parameters")
             )
-            model = XKNearestNeighbors(param=model_param, application=data_param.application, application_type=data_param.classification_type)
-
-        elif data_param.model_type == "logistic_regression":
-            model_param = XLogisticRegressionParameters(
-                **data_config.get("logistic_regression_parameters")
-            )
-            model = XLogisticRegression(param=model_param, application=data_param.application, application_type=data_param.classification_type)
-
-
-
+            model = XWord2Vec(param=model_param, application=data_param.application, application_type=data_param.application_type, env=environment)
         else:
             logging.error('Language model type not valid.')
 
@@ -66,7 +62,7 @@ class BuildTxt2VecMain:
         env = Environment(param=env_param)
 
         # Validade parameters and load data processing class
-        data_param = Static2ClassParameters(**data_config.get("static2class_parameters"))
+        data_param = Txt2VecParameters(**data_config.get("txt2vec_parameters"))
         ds = DataProcessing(param=data_param)
 
         # ===========================================================================================
@@ -78,57 +74,41 @@ class BuildTxt2VecMain:
         logging.info("======================================================================")
         logging.info("Loading Training and Test Data:")
         data_train_input, data_train_target = ds.load_train_data()
-        data_test_input, data_test_target = ds.load_test_data()
 
         logging.info("======================================================================")
         logging.info("Preprocessing Training Data:")
         (
             data_train_input,
-            data_train_target,
-            data_test_input,
-            data_test_target,
-            variables_input,
-            variables_target,
-            int_to_cat_dict_list_target,
-            cat_to_int_dict_list_target,
-        ) = ds.prepare_train_test_data(
-            data_train_input=data_train_input,
-            data_train_target=data_train_target,
-            data_test_input=data_test_input,
-            data_test_target=data_test_target,
-        )
+            variables_input
+        ) = ds.prepare_corpus_data(data=data_train_input)
 
         logging.info("======================================================================")
         logging.info("Building Model:")
 
+        # select model technology
         model = self.model_selection(data_config=data_config, data_param=data_param, environment=env)
 
+        # build model
         model.fit(
-            data_input=data_train_input[variables_input],
-            data_target=data_train_target[variables_target],
+            dataframe= data_train_input,
+            corpus_col=variables_input[0]
         )
-
-        logging.info("======================================================================")
-        logging.info("Building predictions:")
-
-        data_train_predict = model.eval_predict(
-            data_input=data_train_input[variables_input],
-            int_to_cat_dict_target=int_to_cat_dict_list_target[0])
 
         logging.info("======================================================================")
         logging.info("Training Results")
 
-        model_eval_train = ClassificationModelEvaluation(
-            Y_target=data_train_target[data_param.output_target],
-            Y_predict=data_train_predict[['predict']],
-            subset_label="Train",
-            classification_type=data_param.classification_type,
-            Y_int_to_cat_labels=int_to_cat_dict_list_target,
-            Y_cat_to_int_labels=cat_to_int_dict_list_target,
-            history=None,
-        )
+        # todo a embedding evaluation
+        # model_eval_train = ClassificationModelEvaluation(
+        #     Y_target=data_train_target[data_param.output_target],
+        #     Y_predict=data_train_predict[['predict']],
+        #     subset_label="Train",
+        #     classification_type=data_param.classification_type,
+        #     Y_int_to_cat_labels=int_to_cat_dict_list_target,
+        #     Y_cat_to_int_labels=cat_to_int_dict_list_target,
+        #     history=None,
+        # )
 
-        model_eval_train.print_evaluation_scores()
+        #model_eval_train.print_evaluation_scores()
         #env.tracking.publish_c_eval(model_eval=model_eval_train, mode="train")
 
         if env_param.view_plots or env_param.save_plots:
@@ -141,51 +121,19 @@ class BuildTxt2VecMain:
             if env_param.view_plots:
                 logging.info("Plots will view in window popup")
 
-            model_eval_train.plot_evaluation_scores(
-                view=env_param.view_plots,
-                save=env_param.save_plots,
-                path=env.run_folder,
-                prefix=env.prefix_name + "train_",
-            )
-
-        logging.info("======================================================================")
-        logging.info("Test Results")
-        data_test_predict = model.eval_predict(data_input=data_test_input[variables_input],int_to_cat_dict_target=int_to_cat_dict_list_target[0])
-
-        model_eval_test = ClassificationModelEvaluation(
-            Y_target=data_test_target[data_param.output_target],
-            Y_predict=data_test_predict[['predict']],
-            subset_label="Test",
-            classification_type=data_param.classification_type,
-            Y_int_to_cat_labels=int_to_cat_dict_list_target,
-            Y_cat_to_int_labels=cat_to_int_dict_list_target,
-            history=None,
-        )
-
-        model_eval_test.print_evaluation_scores()
-        env.tracking.publish_regression_eval(model_eval=model_eval_test, mode="test")
-
-        if env_param.view_plots or env_param.save_plots:
-            logging.info("======================================================================")
-            logging.info("Plotting test result graphs")
-
-            if env_param.save_plots:
-                logging.info("Plots will save in " + env.run_folder)
-
-            if env_param.view_plots:
-                logging.info("Plots will view in window popup")
-
-            model_eval_test.plot_evaluation_scores(
-                view=env_param.view_plots,
-                save=env_param.save_plots,
-                path=env.run_folder,
-                prefix=env.prefix_name + "test_",
-            )
+            # model_eval_train.plot_evaluation_scores(
+            #     view=env_param.view_plots,
+            #     save=env_param.save_plots,
+            #     path=env.run_folder,
+            #     prefix=env.prefix_name + "train_",
+            # )
 
         # ===========================================================================================
         # Saving model
         logging.info("======================================================================")
         logging.info("Saving Results:")
+
+        model.save_model()
 
         # ===========================================================================================
         # Register tracking info
@@ -219,7 +167,7 @@ if __name__ == "__main__":
 
     # Running script main
     try:
-        processor = BuildStatic2ValueMain(parameters_file=args.config_file_json)
+        processor = BuildTxt2VecMain(parameters_file=args.config_file_json)
         processor.run()
     except:
         logging.error("Ops " + str(sys.exc_info()[0]) + " occured!")

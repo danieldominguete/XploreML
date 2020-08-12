@@ -97,7 +97,10 @@ class Util:
 
     @staticmethod
     def get_unique_list(input_list) -> list:
-        unique_list = reduce(lambda l, x: l.append(x) or l if x not in l else l, input_list, [])
+        if len(input_list)>1:
+            unique_list = reduce(lambda l, x: l.append(x) or l if x not in l else l, input_list, [])
+        else:
+            unique_list = input_list
         return unique_list
 
     @staticmethod

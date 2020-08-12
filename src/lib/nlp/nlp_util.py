@@ -102,18 +102,19 @@ class NLPUtils:
         return sentences
 
     @staticmethod
-    def build_word_tokenizer(dataframe:pd=None, column:str=None) -> pd:
+    def build_word_tokenizer(dataframe:pd=None, column:str=None, return_list:bool=True) -> pd:
 
         # tokenizate to list
         name_col = column + "_tk"
-        dataframe[name_col] = dataframe[column].apply(NLPUtils.build_word_tokenizer_pandas_apply)
+        dataframe[name_col] = dataframe[column].apply(NLPUtils.build_word_tokenizer_pandas_apply,args=(return_list,))
             
         return dataframe, name_col
 
     @staticmethod
-    def build_word_tokenizer_pandas_apply(txt:str)->list:
+    def build_word_tokenizer_pandas_apply(txt:str, return_list:bool)->list:
 
         # tokenizer with whitespace
+        txt = str(txt)
         tokens = txt.split()
 
         # Excluding special chars at the ending
@@ -134,10 +135,11 @@ class NLPUtils:
         # joining post processing
         txt = " ".join(tokens)
 
-        # tokenizer refactor
-        tokens = txt.split()
+        if return_list:
+            # tokenizer refactor to list
+            txt = txt.split()
 
-        return tokens
+        return txt
 
     @staticmethod
     def build_freqdist_tokens(dataframe:pd=None, column:str=None):
