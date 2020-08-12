@@ -152,7 +152,7 @@ class DataProcessing:
 
         # flatting txt columns
         if len(self.param.txt_inputs) > 0:
-            txt_variables_flat = Util.flat_lists(sublist=self.param.txt_variables)
+            txt_variables_flat = Util.flat_lists(sublist=self.param.txt_inputs)
         else:
             txt_variables_flat = []
 
@@ -178,6 +178,7 @@ class DataProcessing:
             )
         else:
             columns = txt_variables_flat
+            columns_input = txt_variables_flat
 
         # exclude duplicate variables
         columns = Util.get_unique_list(columns)
@@ -1162,31 +1163,37 @@ class DataProcessing:
 
         # ========================================
         # Processing txt features
-        # if len(self.param.input_txt_features) > 0:
-        #     logging.info(
-        #         "======================================================================"
-        #     )
-        #     logging.info("Processing txt features...")
-        #     nlp = NLPProcessing()
-        #
-        #     # convert tokens to embedding random int values
-        #     if self.param.input_txt_features_embedding == "word2int":
-        #         X_text = nlp.encode_word2int(
-        #             dataframe=self.data_train,
-        #             column=self.param.input_txt_features[0],
-        #             max_length=self.param.input_txt_max_seq,
-        #         )
-        #
-        #     if self.param.input_txt_features_embedding == "word2vec":
-        #         # load word dictionary
-        #         with open(self.param.embedding_word_map_file) as json_file:
-        #             self.embedding_word_map = json.load(json_file)
-        #
-        #         X_text = self.encode_txt2int_sequences_from_pandas(
-        #             dataframe=self.data_train,
-        #             column=self.param.input_txt_features[0],
-        #             max_seq_length=self.param.input_txt_max_seq,
-        #         )
+        if len(self.param.txt_inputs) > 0:
+            logging.info(
+                "======================================================================"
+            )
+            logging.info("Processing txt inputs...")
+
+            # Concatenated txt inputs
+            if len(self.param.txt_inputs[0])>0:
+                name_col = '_'.join(self.param.txt_inputs[0])
+                data_train_input[name_col] = Util.concatenate_pandas_columns(dataframe=data_train_input,columns=self.param.txt_inputs[0])
+            else:
+                name_col = self.param.txt_inputs[0]
+
+            # convert tokens to embedding random int values
+            if self.param.encode_txt_inputs == "int":
+                X_text = NLPUtils.encode_word2int(
+                    dataframe=data_train_input,
+                    column=name_col,
+                    max_length=self.param.txt_inputs_max_length,
+                )
+
+            # if self.param.input_txt_features_embedding == "word2vec":
+            #     # load word dictionary
+            #     with open(self.param.embedding_word_map_file) as json_file:
+            #         self.embedding_word_map = json.load(json_file)
+            #
+            #     X_text = self.encode_txt2int_sequences_from_pandas(
+            #         dataframe=self.data_train,
+            #         column=self.param.input_txt_features[0],
+            #         max_seq_length=self.param.input_txt_max_seq,
+            #     )
 
         # "https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html"
         # "https://www.depends-on-the-definition.com/guide-to-word-vectors-with-gensim-and-keras/"

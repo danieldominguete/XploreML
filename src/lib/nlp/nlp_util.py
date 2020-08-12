@@ -177,30 +177,24 @@ class NLPUtils:
 
         return txt_data
 
+    @staticmethod
+    def encode_word2int(dataframe=None, column=None, max_length=0):
 
-    def encode_word2int(self, dataframe=None, column=None, max_length=0):
+        from tensorflow.keras.preprocessing.sequence import pad_sequences
 
         # Count distinct words
-        dataframe[column].str.lower().str.split()
+        #dataframe[column] = dataframe[column].str.lower().str.split()
+        dataframe[column] = dataframe[column].apply(lambda x: str(x).lower())
         words = set()
-        dataframe[column].str.lower().str.split().swifter.apply(words.update)
+        dataframe[column].str.lower().str.split().apply(words.update)
         unique_words_count = len(words)
 
-        self.int2word_dict = dict((i, w) for i, w in enumerate(words))
-        self.word2int_dict = dict((w, i) for i, w in enumerate(words))
+        int2word_dict = dict((i, w) for i, w in enumerate(words))
+        word2int_dict = dict((w, i) for i, w in enumerate(words))
 
-        # Create a dictionary
-        #words = list(words)
-        #index = range(0,unique_words_count)
-
-        #zipbObj = zip(words, index)
-        #self.word2int_dict = dict(zipbObj)
-
-        #zipbObj = zip(index, words)
-        #self.int2word_dict = dict(zipbObj)
 
         # Hash each word in row
-        dataframe['txt_encoded'] = dataframe[column].swifter.apply(self.word2int_from_dict)
+        dataframe['txt_encoded'] = dataframe[column].apply(NLPUtils.word2int_from_dict,args=(word2int_dict,))
         encoded_samples = pad_sequences(dataframe['txt_encoded'], maxlen=max_length, padding='post')
 
         # Reshape for RNN [samples, time steps, features]
@@ -208,10 +202,11 @@ class NLPUtils:
 
         return encoded_samples
 
-    def word2int_from_dict(self, txt):
+    @staticmethod
+    def word2int_from_dict(txt,word2int_dict):
 
         txt_list = txt.split()
-        encoded = [self.word2int_dict[word] for word in txt_list]
+        encoded = [word2int_dict[word] for word in txt_list]
 
         return encoded
 

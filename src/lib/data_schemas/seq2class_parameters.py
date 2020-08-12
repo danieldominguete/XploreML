@@ -9,77 +9,107 @@ from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
 
-class TopologyId(str, Enum):
+class DataSource(str, Enum):
     '''
-        # name of topology
-        # 'RNN-EMB-FIX-LSTM-DENSE' : Recurrent network with Embedding layer not trainable + 1 LSTM layer + 1 DENSE layer
-        # 'RNN-EMB-TRAIN-LSTM-DENSE': Recurrent network with Embedding layer trainable + 1 LSTM layer + 1 DENSE layer
-        # 'DNN-DENSE-DENSE-DENSE-DENSE': Dense network with 4 DENSE layers
-        # 'RNN-LSTM-DENSE': Recurrent network with 1 LSTM layer + 1 DENSE layer
-        # "RNN-CONV1D-MAXP1D-LSTM-DENSE": Recurrent network with 1D CONVOLUTION + 1D MAXPOOLING + 1 LSTM layer + 1 DENSE Layer
-        # "RNN-LSTM-LSTM-DENSE": Recurrent network with 2 LSTM layers + 1 DENSE layer
-        # "RNN-LSTM-LSTM-DENSE-Statefull": Recurrent network with 1 LSTM layer statefull + 1 DENSE layer
+        'localhost_datafile': local file
     '''
-    RNN_EMB_FIX_LSTM_DENSE = "RNN-EMB-FIX-LSTM-DENSE"
+    localhost_datafile = 'localhost_datafile'
 
-class EmbeddingWordModelType(str, Enum):
+
+class ModeLoad(str, Enum):
     '''
-        'word2vec_gensim': word2vec from gensim package
+        'random':
+        'sequential':
     '''
-    word2vec_gensim = "word2vec_gensim"
+    random = 'random'
+    sequential = 'sequential'
+
+
+class ModelType(str, Enum):
+    '''
+
+    '''
+    neural_recurrent = 'neural_recurrent'
+
+
+class ScaleNumericalVariables(str, Enum):
+    '''
+        "":
+        "min_max":
+        "mean_std":
+    '''
+    none = ""
+    min_max = "min_max"
+    mean_std = "mean_std"
+
+
+class EncodingCategoricalVariables(str, Enum):
+    '''
+        "":
+        "one_hot":
+        "int":
+    '''
+    none = ""
+    one_hot = "one_hot"
+    int = "int"
+
+class ClassificationType(str, Enum):
+    '''
+        "":
+    '''
+    binary_category = "binary_category"
+    multi_category_unilabel = "multi_category_unilabel"
+    multi_category_multilabel = "multi_category_multilabel"  # not implemented
 
 class Seq2ClassParameters(BaseModel):
 
-    # neural architeture
-    topology_id : TopologyId
+    # application
+    application = 'classification'
 
-    # type of embedding model
-    embedding_word_model_type : EmbeddingWordModelType
+    # data source
+    data_source: DataSource
 
-    # path to word embedding file
-    embedding_word_model_file : str
+    # train data file source
+    data_train_file_path: Optional[str]
 
-    # nodes = number of neurons for each hidden layers
-    nodes : list
+    # test data file source
+    data_test_file_path: Optional[str]
 
-    # func = number of hidden layers + 1 (output function)
-    func : list
+    # data file separator
+    separator: str
 
-    # dropout tax for each layer
-    dropout : list
+    # percentual of data loading
+    perc_load: float
 
-    # size of batch data
-    batch_size: int
+    # mode of loading data
+    mode_load: ModeLoad = ModeLoad.random
 
-    # max epochs
-    epochs : int
+    # list of numerical variables
+    numerical_inputs: list
 
-    # percentage of validation subset
-    validation_split : float
+    # list of categorical variables
+    categorical_inputs: list
 
-    # loss criteria for optimization algorithm
-    loss : str
+    # list of txt variables
+    txt_inputs: list
 
-    # optimization algorithm
-    optimizer : str
+    # output target classes - support only one column
+    output_target: list
 
-    # monitoring metrics
-    metrics : list
+    # classification type
+    classification_type: ClassificationType = None
 
-    # verbose logging
-    # 0: no logging
-    # 1: print batch results and epoch results
-    # 2: print only epoch results
-    verbose : int
+    # scaling numerical inputs
+    scale_numerical_inputs: ScaleNumericalVariables = ''
 
-    # data selection for each epoch
-    shuffle : bool
+    # encoding categorical variables
+    encode_categorical_inputs: EncodingCategoricalVariables = ''
 
-    # temporary files saved during training progress
-    save_checkpoints : bool
+    # encoding txt variables
+    encode_txt_inputs: str = "int"
 
-    # early stopping criteria for regularization
-    early_stopping : bool
+    # max token
+    txt_inputs_max_length: int = 10
 
-
-
+    # type of modeling technique
+    model_type: ModelType
