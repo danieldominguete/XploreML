@@ -30,7 +30,7 @@ class XModel(ABC):
         pass
 
     @abstractmethod
-    def fit(self, data_input: pd, data_target: pd):
+    def fit(self, data_input: pd, data_target: pd, input_var_dict:dict, target_var_dict:dict):
         pass
 
     @abstractmethod

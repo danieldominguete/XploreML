@@ -78,24 +78,31 @@ class BuildSeq2ClassMain:
         logging.info("======================================================================")
         logging.info("Loading Training and Test Data:")
         data_train_input, data_train_target = ds.load_train_data()
-        data_test_input, data_test_target = ds.load_test_data()
 
         logging.info("======================================================================")
-        logging.info("Preprocessing Training Data:")
+        logging.info("Fit and Transform Training Data:")
         (
             data_train_input,
             data_train_target,
-            data_test_input,
-            data_test_target,
-            variables_input,
-            variables_target,
-            int_to_cat_dict_list_target,
-            cat_to_int_dict_list_target,
-        ) = ds.prepare_train_test_data(
+            input_var_dict,
+            target_var_dict,
+            numerical_input_encoder,
+            categorical_input_encoder_int,
+            categorical_input_encoder_hot,
+            categorical_input_encoder_bin,
+            categorical_int_to_cat_dict_list_input,
+            categorical_cat_to_int_dict_list_input,
+            txt_int_to_word_dict_list_input,
+            txt_word_to_int_dict_list_input,
+            numerical_output_encoder,
+            categorical_output_encoder_int,
+            categorical_output_encoder_hot,
+            categorical_output_encoder_bin,
+            int_to_cat_dict_list_output,
+            cat_to_int_dict_list_output,
+        ) = ds.fit_transform_train_data(
             data_train_input=data_train_input,
-            data_train_target=data_train_target,
-            data_test_input=data_test_input,
-            data_test_target=data_test_target,
+            data_train_target=data_train_target
         )
 
         logging.info("======================================================================")
@@ -104,8 +111,10 @@ class BuildSeq2ClassMain:
         model = self.model_selection(data_config=data_config, data_param=data_param, environment=env)
 
         model.fit(
-            data_input=data_train_input[variables_input],
-            data_target=data_train_target[variables_target],
+            data_input=data_train_input,
+            data_target=data_train_target,
+            input_var_dict=input_var_dict,
+            target_var_dict=target_var_dict,
         )
 
         logging.info("======================================================================")
@@ -147,6 +156,13 @@ class BuildSeq2ClassMain:
                 path=env.run_folder,
                 prefix=env.prefix_name + "train_",
             )
+
+        # ===========================================================================================
+        # Loading data
+        logging.info("======================================================================")
+        logging.info("Loading Training and Test Data:")
+
+        data_test_input, data_test_target = ds.load_test_data()
 
         logging.info("======================================================================")
         logging.info("Test Results")

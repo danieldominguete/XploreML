@@ -32,7 +32,7 @@ class ModelType(str, Enum):
     neural_recurrent = 'neural_recurrent'
 
 
-class ScaleNumericalVariables(str, Enum):
+class EncodingNumericalVariables(str, Enum):
     '''
         "":
         "min_max":
@@ -52,6 +52,12 @@ class EncodingCategoricalVariables(str, Enum):
     none = ""
     one_hot = "one_hot"
     int = "int"
+
+class EncodingTxtVariables(str, Enum):
+    '''
+
+    '''
+    int = "word2int"
 
 class ClassificationType(str, Enum):
     '''
@@ -84,13 +90,13 @@ class Seq2ClassParameters(BaseModel):
     # mode of loading data
     mode_load: ModeLoad = ModeLoad.random
 
-    # list of numerical variables
+    # list of numerical features. Each feature is a sublist of time steps values.
     numerical_inputs: list
 
-    # list of categorical variables
+    # list of categorical variables. Each feature is a sublist of one value.
     categorical_inputs: list
 
-    # list of txt variables
+    # list of txt variables. Each feature is a sublist of concatenated variables.
     txt_inputs: list
 
     # output target classes - support only one column
@@ -100,16 +106,19 @@ class Seq2ClassParameters(BaseModel):
     classification_type: ClassificationType = None
 
     # scaling numerical inputs
-    scale_numerical_inputs: ScaleNumericalVariables = ''
+    scale_numerical_inputs: EncodingNumericalVariables = ''
 
     # encoding categorical variables
     encode_categorical_inputs: EncodingCategoricalVariables = ''
 
     # encoding txt variables
-    encode_txt_inputs: str = "int"
+    encode_txt_inputs: EncodingTxtVariables = "int"
 
     # max token
     txt_inputs_max_length: int = 10
+
+    # output class encode
+    encode_output: EncodingCategoricalVariables = ''
 
     # type of modeling technique
     model_type: ModelType

@@ -178,29 +178,44 @@ class NLPUtils:
         return txt_data
 
     @staticmethod
-    def encode_word2int(dataframe=None, column=None, max_length=0):
+    def encode_word2int(dataframe=None, columns=None, max_length=0):
 
         from tensorflow.keras.preprocessing.sequence import pad_sequences
+        input_var = []
+        int2word_dict_list = [] 
+        word2int_dict_list = []
+        
+        for var in columns:
+            
+            # Count distinct words
+            dataframe[var] = dataframe[var].apply(lambda x: str(x).lower())
+            words = set()
+            dataframe[var].str.lower().str.split().apply(words.update)
+            unique_words_count = len(words)
+            logging.info("Word2int encode var: " + var + " => unique words: " + str(unique_words_count))
+    
+            int2word_dict = dict((i, w) for i, w in enumerate(words))
+            word2int_dict = dict((w, i) for i, w in enumerate(words))
+    
+    
+            # Hash each word in row
+            dataframe[var + '_int_encoded'] = dataframe[var].apply(NLPUtils.word2int_from_dict, args=(word2int_dict,))
+            encoded_samples = pad_sequences(dataframe[var + '_int_encoded'], maxlen=max_length, padding='post')
+    
+            # Converting to pandas
+            var_list = []
+            for i in range(max_length):
+                var_name = var + "_" + str(i)
+                dataframe[var_name] = encoded_samples[:,i]
+                var_list.append(var_name)
+            
+            input_var.append(var_list)
+            int2word_dict_list.append(int2word_dict)
+            word2int_dict_list.append(word2int_dict)
 
-        # Count distinct words
-        #dataframe[column] = dataframe[column].str.lower().str.split()
-        dataframe[column] = dataframe[column].apply(lambda x: str(x).lower())
-        words = set()
-        dataframe[column].str.lower().str.split().apply(words.update)
-        unique_words_count = len(words)
-
-        int2word_dict = dict((i, w) for i, w in enumerate(words))
-        word2int_dict = dict((w, i) for i, w in enumerate(words))
 
 
-        # Hash each word in row
-        dataframe['txt_encoded'] = dataframe[column].apply(NLPUtils.word2int_from_dict,args=(word2int_dict,))
-        encoded_samples = pad_sequences(dataframe['txt_encoded'], maxlen=max_length, padding='post')
-
-        # Reshape for RNN [samples, time steps, features]
-        encoded_samples = np.reshape(a=encoded_samples,newshape=(dataframe.shape[0],max_length,1))
-
-        return encoded_samples
+        return dataframe, input_var, int2word_dict_list, word2int_dict_list
 
     @staticmethod
     def word2int_from_dict(txt,word2int_dict):
