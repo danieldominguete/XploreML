@@ -19,7 +19,7 @@ class XNeuralRecurrent(XModel):
         # init model
         if self._param.framework == "tensorflow":
             self._model = XTensorFlowModel(param=self._param)
-            self._model.set_topology_id("DNN-DENSE")
+            self._model.set_topology_id(self._param.topology_id)
             self._model.set_run_folder_path(path=self._run_folder_path)
             self._model.set_prefix_name(prefix=self._prefix_name)
             self._model.set_tracking(value=self._tracking)
@@ -38,7 +38,7 @@ class XNeuralRecurrent(XModel):
         Y = self.convert_output_dataframe_to_tensors(dataframe=data_target, output_var_dict=target_var_dict)
 
         # fit model
-        self._model.fit(X, Y)
+        self._model.fit(X=X, Y=Y, input_var_dict=input_var_dict)
 
         # save results
         self.save_results()
@@ -125,7 +125,7 @@ class XNeuralRecurrent(XModel):
             if len(input_feature_list) > 0:
                 for i in range(len(input_feature_list)):
                     tensor_aux = dataframe[input_feature_list[i]].to_numpy()
-                    tensor_aux = np.reshape(a=tensor_aux, newshape=(tensor_aux.shape[0], tensor_aux.shape[1],1))
+                    #tensor_aux = np.reshape(a=tensor_aux, newshape=(tensor_aux.shape[0], tensor_aux.shape[1],1))
                     tensor.append(tensor_aux)
 
             return tensor

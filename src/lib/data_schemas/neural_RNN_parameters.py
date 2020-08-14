@@ -15,6 +15,12 @@ class Frameworks(str, Enum):
     '''
     tensorflow = "tensorflow"
 
+class Topology(str, Enum):
+    '''
+        "":
+    '''
+    rnn_fccX = "RNN-LTSMx-FCCx"
+
 class Optimizers(str, Enum):
     '''
         "":
@@ -45,6 +51,9 @@ class XNeuralRecurrentParameters(BaseModel):
 
     # framework implementation
     framework: Frameworks = "tensorflow"
+
+    # recurrent topology id
+    topology_id: Topology = "RNN-LTSMx-FCCx"
 
     # hidden nodes
     hidden_nodes: list = [1]

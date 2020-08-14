@@ -4,9 +4,9 @@
     "environment_id" : "console_localhost",
     "output_folder": "outputs",
     "logging_level" : "info",
-    "view_plots" : true,
-    "save_plots" : true,
-    "tracking": true
+    "view_plots" : false,
+    "save_plots" : false,
+    "tracking": false
   },
 
   "seq2class_parameters": {
@@ -42,7 +42,7 @@
     "optimizer": "adam",
     "metrics": ["mse", "accuracy"],
     "batch_size": 2,
-    "epochs": 50,
+    "epochs": 3,
     "validation_split": 0.2,
     "verbose": 1,
     "shuffle": true
