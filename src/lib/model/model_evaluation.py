@@ -14,6 +14,7 @@ from sklearn.metrics import r2_score
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import balanced_accuracy_score
+from sklearn.metrics import classification_report
 import logging
 import numpy as np
 import pandas as pd
@@ -101,6 +102,40 @@ class ClassificationModelEvaluation:
         cm = confusion_matrix(y_true=y_true,y_pred=y_pred , normalize='all', labels=labels)
         return cm
 
+    def get_confusion_classes(self):
+
+        # id classes
+        dict_int_to_string = dict((i, c) for i, c in enumerate(self.Y_labels))
+
+        # confusion matrix
+        confusion_matrix = self.get_confusion_matrix()
+
+        # dataframe with classes and their biggest confusion class
+        cm = confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:,np.newaxis]
+        cm[np.isnan(cm)] = 0
+
+        # excluding the right classification
+        np.fill_diagonal(a=cm, val=0)
+
+        # get biggest confusion values
+        cm_max_class = np.argmax(a=cm, axis=1)
+        cm_max_value = np.max(a=cm, axis=1)
+
+        target_int = list(range(0, cm.shape[0], 1))
+        target_class = [dict_int_to_string[i] for i in target_int]
+        confusion_class = [dict_int_to_string[i] for i in cm_max_class]
+
+        df_report = pd.DataFrame()
+        df_report['target'] = target_class
+        df_report['confusion'] = confusion_class
+        df_report['value'] = cm_max_value
+
+        # Zero values represents not exist target in prediction values or classes with no confusion
+        df_report = df_report[df_report['value'] != 0]
+
+        return df_report
+
+
     def plot_evaluation_scores(self, view:bool=False, save:bool=False, path:str=None, prefix:str=None)->bool:
 
         result_train = pd.DataFrame(columns=['Output_Target', 'Output_Pred'])
@@ -181,9 +216,15 @@ class ClassificationModelEvaluation:
 
         return accuracy_list, coverage_list, triggers_list
 
-    def get_f1_score(self):
+    def get_score_by_classes(self):
 
-        return True
+        classes_report = classification_report(y_true=self.Y_target,
+                                               y_pred=self.Y_predict,
+                                               target_names=self.Y_labels,
+                                               output_dict=True)
+        df_classes_report = pd.DataFrame(classes_report).transpose()
+
+        return df_classes_report
 
     def execute(self):
 

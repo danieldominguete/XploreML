@@ -165,9 +165,23 @@ class BuildSeq2ClassMain:
         logging.info("======================================================================")
         logging.info("Saving Training Results:")
 
+        # save model
+
+
         # prediction report
         prediction_report = model_eval_train.get_prediction_report()
         Util.save_dataframe(data=prediction_report,folder_path=env.run_folder, prefix=env.prefix_name+"pred_train_report")
+
+        # classes performance
+        classes_report = model_eval_train.get_score_by_classes()
+        Util.save_dataframe(data=classes_report, folder_path=env.run_folder,
+                            prefix=env.prefix_name + "class_train_report")
+
+        # classes confusion
+        confusion_report = model_eval_train.get_confusion_classes()
+        Util.save_dataframe(data=confusion_report, folder_path=env.run_folder,
+                            prefix=env.prefix_name + "confusion_train_report")
+
 
         # ===========================================================================================
         # Loading data
@@ -178,6 +192,7 @@ class BuildSeq2ClassMain:
         del(data_train_input)
         del(data_train_target)
         del(data_train_predict)
+        del(model_eval_train)
 
         # loading test data
         data_test_input, data_test_target = ds.load_dataset(subset='test')
@@ -253,6 +268,16 @@ class BuildSeq2ClassMain:
         # prediction report
         prediction_report = model_eval_test.get_prediction_report()
         Util.save_dataframe(data=prediction_report, folder_path=env.run_folder, prefix=env.prefix_name + "pred_test_report")
+
+        # classes performance
+        classes_report = model_eval_test.get_score_by_classes()
+        Util.save_dataframe(data=classes_report, folder_path=env.run_folder,
+                            prefix=env.prefix_name + "class_test_report")
+
+        # classes confusion
+        confusion_report = model_eval_test.get_confusion_classes()
+        Util.save_dataframe(data=confusion_report, folder_path=env.run_folder,
+                            prefix=env.prefix_name + "confusion_test_report")
 
         # ===========================================================================================
         # Register tracking info
