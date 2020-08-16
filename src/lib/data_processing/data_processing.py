@@ -1781,7 +1781,7 @@ class DataProcessing:
                     for target_var in self.param.output_target:
                         if self.param.encode_output == 'one_hot':
                             data_test_target = self.encode_bin_categorical_variable(data=data_test_target,
-                                                                                       columns=target_var,
+                                                                                       columns=[target_var],
                                                                                     encoder_bin=categorical_output_encoder_bin_list[i]
                                                                                     )
                         i = i + 1

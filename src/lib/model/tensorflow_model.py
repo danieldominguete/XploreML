@@ -121,7 +121,9 @@ class XTensorFlowModel:
                 for i in range(len(input_feature_list)):
                     in_layer = tf.keras.Input(shape=(inputs[seq].shape[1], inputs[seq].shape[2]))
                     seq_in_layer = tf.keras.layers.LSTM(
-                        units=10, return_sequences=False, dropout=0.1
+                        units=self._model_parameters.seq_hidden_nodes[0],
+                        return_sequences=False,
+                        dropout=self._model_parameters.seq_hidden_dropout[0]
                     )(in_layer)
 
                     input_list.append(in_layer)
@@ -134,7 +136,8 @@ class XTensorFlowModel:
                 for i in range(len(input_feature_list)):
                     in_layer = tf.keras.Input(shape=(inputs[seq].shape[1], inputs[seq].shape[2]))
                     seq_in_layer = tf.keras.layers.LSTM(
-                        units=10, return_sequences=False, dropout=0.1
+                        units=self._model_parameters.seq_hidden_nodes[0],
+                        return_sequences=False, dropout=self._model_parameters.seq_hidden_dropout[0]
                     )(in_layer)
 
                     input_list.append(in_layer)
@@ -152,12 +155,12 @@ class XTensorFlowModel:
                     # input_length = time steps of input
                     in_embedding_layer = tf.keras.layers.Embedding(
                         input_dim=vocab_size,
-                        output_dim=5,
+                        output_dim=int(vocab_size*0.1),
                         input_length=inputs[seq].shape[1],
                         trainable=True,
                     )(in_layer)
                     seq_in_layer = tf.keras.layers.LSTM(
-                        units=1, return_sequences=False, dropout=0.1
+                        units=self._model_parameters.seq_hidden_nodes[0], return_sequences=False, dropout=self._model_parameters.seq_hidden_dropout[0]
                     )(in_embedding_layer)
 
                     input_list.append(in_layer)
@@ -166,7 +169,7 @@ class XTensorFlowModel:
 
             # concatenate all sequences input
             concat_layer = tf.keras.layers.concatenate(seq_in_list, axis=-1)
-            output_layer = tf.keras.layers.Dense(units=outputs[0].shape[1], activation="softmax")(
+            output_layer = tf.keras.layers.Dense(units=outputs[0].shape[1], activation=self._model_parameters.output_func_nodes.value)(
                 concat_layer
             )
             self._model = k.models.Model(inputs=input_list, outputs=output_layer)

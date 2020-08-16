@@ -182,7 +182,7 @@ class BuildStatic2ValueMain:
             if env_param.view_plots:
                 logging.info("Plots will view in window popup")
 
-            model_eval_train.plot_evaluation_scores(
+            model_eval_train.plot_training_results(
                 view=env_param.view_plots,
                 save=env_param.save_plots,
                 path=env.run_folder,
@@ -216,7 +216,7 @@ class BuildStatic2ValueMain:
             if env_param.view_plots:
                 logging.info("Plots will view in window popup")
 
-            model_eval_test.plot_evaluation_scores(
+            model_eval_test.plot_training_results(
                 view=env_param.view_plots,
                 save=env_param.save_plots,
                 path=env.run_folder,

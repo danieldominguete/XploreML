@@ -142,31 +142,10 @@ class BuildSeq2ClassMain:
         # checking metrics
         model_eval_train.execute()
 
-        # saving and ploting results
-        if env_param.view_plots or env_param.save_plots:
-            logging.info("======================================================================")
-            logging.info("Plotting training result graphs")
-
-            if env_param.save_plots:
-                logging.info("Plots will save in " + env.run_folder)
-
-            if env_param.view_plots:
-                logging.info("Plots will view in window popup")
-
-            model_eval_train.plot_evaluation_scores(
-                view=env_param.view_plots,
-                save=env_param.save_plots,
-                path=env.run_folder,
-                prefix=env.prefix_name + "train_",
-            )
-
         # ===========================================================================================
         # Saving files
         logging.info("======================================================================")
         logging.info("Saving Training Results:")
-
-        # save model
-
 
         # prediction report
         prediction_report = model_eval_train.get_prediction_report()
@@ -182,7 +161,30 @@ class BuildSeq2ClassMain:
         Util.save_dataframe(data=confusion_report, folder_path=env.run_folder,
                             prefix=env.prefix_name + "confusion_train_report")
 
+        # Reliability sensitivity
+        reliability_report = model_eval_train.get_reliability_sensitivity()
+        Util.save_dataframe(data=reliability_report, folder_path=env.run_folder,
+                            prefix=env.prefix_name + "reliability_train_report")
 
+        # ===========================================================================================
+        # ploting results
+        if env_param.view_plots or env_param.save_plots:
+            logging.info("======================================================================")
+            logging.info("Plotting training result graphs")
+
+            model_eval_train.plot_training_results(
+                view=env_param.view_plots,
+                save=env_param.save_plots,
+                path=env.run_folder,
+                prefix=env.prefix_name + "train_",
+            )
+
+            logging.info("Plotting reliability sensitivity")
+            model_eval_train.plot_reliability_sensitivity(report=reliability_report, view=env_param.view_plots,save=env_param.save_plots, path=env.run_folder, prefix=env.prefix_name + "reliability_")
+
+
+        # ===========================================================================================
+        # Evaluating test dataset
         # ===========================================================================================
         # Loading data
         logging.info("======================================================================")
@@ -192,7 +194,6 @@ class BuildSeq2ClassMain:
         del(data_train_input)
         del(data_train_target)
         del(data_train_predict)
-        del(model_eval_train)
 
         # loading test data
         data_test_input, data_test_target = ds.load_dataset(subset='test')
@@ -253,12 +254,12 @@ class BuildSeq2ClassMain:
             if env_param.view_plots:
                 logging.info("Plots will view in window popup")
 
-            model_eval_test.plot_evaluation_scores(
-                view=env_param.view_plots,
-                save=env_param.save_plots,
-                path=env.run_folder,
-                prefix=env.prefix_name + "test_",
-            )
+            # model_eval_test.plot_evaluation_scores(
+            #     view=env_param.view_plots,
+            #     save=env_param.save_plots,
+            #     path=env.run_folder,
+            #     prefix=env.prefix_name + "test_",
+            # )
 
         # ===========================================================================================
         # Saving files
@@ -278,6 +279,11 @@ class BuildSeq2ClassMain:
         confusion_report = model_eval_test.get_confusion_classes()
         Util.save_dataframe(data=confusion_report, folder_path=env.run_folder,
                             prefix=env.prefix_name + "confusion_test_report")
+
+        # Reliability sensitivity
+        reliability_report = model_eval_test.get_reliability_sensitivity()
+        Util.save_dataframe(data=reliability_report, folder_path=env.run_folder,
+                            prefix=env.prefix_name + "reliability_test_report")
 
         # ===========================================================================================
         # Register tracking info

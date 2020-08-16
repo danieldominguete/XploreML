@@ -144,7 +144,7 @@ class Util:
     def save_dataframe(data: pd = None, folder_path: str = None, prefix: str = None) -> bool:
 
         file_path = folder_path + prefix + ".tsv"
-        data.to_csv(file_path, index=False, sep="\t", encoding="utf-8")
+        data.to_csv(file_path, index=True, sep="\t", encoding="utf-8")
         logging.info("File saved in: " + file_path)
 
         return file_path

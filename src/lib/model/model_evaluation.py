@@ -136,23 +136,18 @@ class ClassificationModelEvaluation:
         return df_report
 
 
-    def plot_evaluation_scores(self, view:bool=False, save:bool=False, path:str=None, prefix:str=None)->bool:
+    def plot_training_results(self, view:bool=False, save:bool=False, path:str=None, prefix:str=None)->bool:
 
         result_train = pd.DataFrame(columns=['Output_Target', 'Output_Pred'])
 
         result_train['Output_Target'] = self.Y_target.iloc[:,0]
         result_train['Output_Pred'] = self.Y_predict.iloc[:,0]
 
-        title = self.subset_label + " Dataset"
         dv = DataPlotting(dataframe=result_train, view_plots=view, save_plots=save, folder_path=path, prefix=prefix)
 
         # history of training process
         if self.history is not None:
-            dv.plot_history_training(self.history, loss=True, accuracy=True)
-
-        # Scatter plot with target x predicted
-        # dv.plot_scatter_2d(X_name='Output_Target', Y_name='Output_Pred', title=title,
-        #                    marginal_distribution=True)
+            dv.plot_history_training(self.train_history)
 
         if self.classification_type == "binary_category":
             cm = self.get_confusion_matrix()
@@ -167,7 +162,14 @@ class ClassificationModelEvaluation:
             cm = self.get_confusion_matrix()
             dv.plot_confusion_matrix(cm=cm, names=self.Y_labels)
 
-            #dv.plot_roc(pred=result_train['Output_Pred'], y=result_train['Output_Target'])
+        return True
+
+    def plot_reliability_sensitivity(self, report:pd, view:bool=False, save:bool=False, path:str=None, prefix:str=None)->bool:
+
+        dv = DataPlotting(dataframe=report, view_plots=view, save_plots=save, folder_path=path, prefix=prefix)
+        dv.plot_scatter_2d(X_name='coverage', Y_name='accuracy', title='Reliability Sensitivity')
+
+        return True
 
     def include_param_history(self, dict):
         self.history["params"].update(dict)
@@ -192,7 +194,7 @@ class ClassificationModelEvaluation:
 
     def get_reliability_sensitivity(self):
 
-        triggers_list = [0.1, 0.5, 0.9]
+        triggers_list = np.arange(0,1.025,0.025)
         accuracy_list = []
         coverage_list = []
 
@@ -210,11 +212,16 @@ class ClassificationModelEvaluation:
             else:
                 accuracy = 1
 
-            logging.info("Reliability: " + str(value) + " = Coverage: " + str(coverage) + " Accuracy: " + str(accuracy))
+            logging.info("Reliability: {a:.3f}".format(a=value) + " = Coverage: {a:.3f}".format(a=coverage) + " Accuracy: {a:.3f}".format(a=accuracy))
             accuracy_list.append((accuracy))
             coverage_list.append(coverage)
 
-        return accuracy_list, coverage_list, triggers_list
+        df_report = pd.DataFrame()
+        df_report['reliability'] = triggers_list
+        df_report['coverage'] = coverage_list
+        df_report['accuracy'] = accuracy_list
+
+        return df_report
 
     def get_score_by_classes(self):
 
@@ -240,20 +247,6 @@ class ClassificationModelEvaluation:
         logging.info(name + ": {a:.3f}".format(a=value))
         self.include_metric_history({name:[value]})
 
-        # Reliability sensitivity
-        name = self.subset_label + "reliability_sensivity"
-        accuracy, coverage, reliabitily = self.get_reliability_sensitivity()
-        self.include_metric_history({name +"_accuracy": accuracy})
-        self.include_metric_history({name + "_coverage": coverage})
-        self.include_metric_history({name + "_reliability": reliabitily})
-
-        # Confusion matrix
-        if self.classification_type == "binary_category":
-            cm = self.get_confusion_matrix()
-            #print(cm)
-
-        elif self.classification_type == "multi_category_unilabel":
-            cm = self.get_confusion_matrix()
-            #print(cm)
+        return True
 
 

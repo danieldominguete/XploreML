@@ -56,7 +56,10 @@ class XNeuralRecurrentParameters(BaseModel):
     topology_id: Topology = "RNN-LTSMx-FCCx"
 
     # hidden nodes
-    hidden_nodes: list = [1]
+    seq_hidden_nodes: list = [1]
+
+    # hidden nodes
+    seq_hidden_dropout: list = [1]
 
     # nodes functions
     hidden_func_nodes: List[ActivationFunctions] = ["relu"]

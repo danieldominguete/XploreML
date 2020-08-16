@@ -103,7 +103,7 @@ class DataPlotting:
             if marginal_distribution:
                 sns.jointplot(x=X_name, y=Y_name, data=self.data, kind="reg")
             else:
-                sns.lmplot(x=X_name, y=Y_name, data=self.data)
+                sns.lmplot(x=X_name, y=Y_name, data=self.data, fit_reg=False)
 
             plt.title(title)
 
@@ -116,7 +116,7 @@ class DataPlotting:
             if marginal_distribution:
                 sns.jointplot(x=X_name, y=Y_name, data=self.data, kind="reg")
             else:
-                sns.lmplot(x=X_name, y=Y_name, data=self.data)
+                sns.lmplot(x=X_name, y=Y_name, data=self.data, fit_reg=False)
 
             plt.title(title)
 
@@ -288,26 +288,34 @@ class DataPlotting:
 
         return True
 
-    def plot_history_training(self, history=None, loss=True, accuracy=False):
+    def plot_history_training(self, history=None):
 
-        # loss value x epochs
-        if loss:
-            plt.plot(history._history['loss'])
-            plt.plot(history._history['val_loss'])
-            plt.title('Model loss')
-            plt.ylabel('Loss')
-            plt.xlabel('Epoch')
-            plt.legend(['Train', 'Valid'], loc='upper left')
-            plt.show()
+        if self.save_plots:
 
-        if accuracy:
-            plt.plot(history._history['sparse_categorical_accuracy'])
-            plt.plot(history._history['val_sparse_categorical_accuracy'])
-            plt.title('Model accuracy')
-            plt.ylabel('Accuracy')
-            plt.xlabel('Epoch')
-            plt.legend(['Train', 'Valid'], loc='upper left')
-            plt.show()
+            for metric in history['metrics']:
+
+                fig, ax = plt.subplots(figsize=(12, 7))
+                ax = plt.plot(history['metrics'].get(metric))
+                plt.title(metric)
+                plt.ylabel('value')
+                plt.xlabel('epoch')
+
+                filename = self.folder_path + self.prefix + metric + ".png"
+                plt.savefig(filename)
+                plt.close()
+
+        if self.view_plots:
+
+            for metric in history['metrics']:
+                fig, ax = plt.subplots(figsize=(12, 7))
+                ax = plt.plot(history['metrics'].get(metric))
+                plt.title(metric)
+                plt.ylabel('value')
+                plt.xlabel('epoch')
+
+                filename = self.folder_path + self.prefix + metric + ".png"
+                plt.savefig(filename)
+                plt.show()
 
         return True
 

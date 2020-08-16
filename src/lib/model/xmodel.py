@@ -70,11 +70,13 @@ class XModel(ABC):
             # convert coding output to label category
             prediction = []
             prediction_reliability = []
+            value_predict = np.max(data_predict, axis=1)
 
             # getting round between 0 and 1 for label and reliability
-            for value in data_predict:
-                prediction_reliability.append(abs(value-0.5)*2)
-                prediction.append(int_to_cat_dict_target[np.round(value,0)])
+            for value in value_predict:
+                prediction_reliability.append(value)
+                class_bin = int(np.round(value,0))
+                prediction.append(int_to_cat_dict_target.get(class_bin))
 
 
             # convert ndarray to pandas dataframe
