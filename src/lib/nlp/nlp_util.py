@@ -15,7 +15,10 @@ import logging
 import json
 from src.lib.utils.util import Util
 
-TXT_TOKENIZATION_COLUMN = 'TXT_TOKENS'
+#TXT_TOKENIZATION_COLUMN = 'TXT_TOKENS'
+TOKEN_NOT_EXIST = '<UNK>'
+TOKEN_INIT_SENTENCE = '<CLS>'
+TOKEN_SEPARATOR = '<SEP>'
 
 class NLPUtils:
 
@@ -178,7 +181,7 @@ class NLPUtils:
         return txt_data
 
     @staticmethod
-    def encode_word2int(dataframe=None, columns=None, max_length=0):
+    def fit_encode_word2int(dataframe=None, columns=None, max_length=0):
 
         from tensorflow.keras.preprocessing.sequence import pad_sequences
         input_var = []
@@ -194,9 +197,11 @@ class NLPUtils:
             unique_words_count = len(words)
             logging.info("Word2int encode var: " + var + " => unique words: " + str(unique_words_count))
     
-            int2word_dict = dict((i, w) for i, w in enumerate(words))
-            word2int_dict = dict((w, i) for i, w in enumerate(words))
-    
+            int2word_dict = dict((i+1, w) for i, w in enumerate(words))
+            word2int_dict = dict((w, i+1) for i, w in enumerate(words))
+
+            int2word_dict[0] = TOKEN_NOT_EXIST
+            word2int_dict[TOKEN_NOT_EXIST] = 0
     
             # Hash each word in row
             dataframe[var + '_int_encoded'] = dataframe[var].apply(NLPUtils.word2int_from_dict, args=(word2int_dict,))
@@ -218,10 +223,60 @@ class NLPUtils:
         return dataframe, input_var, int2word_dict_list, word2int_dict_list
 
     @staticmethod
+    def encode_word2int(dataframe=None, columns=None, max_length=0, word2int_dict_list=None):
+
+        from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+        j = 0
+        for var in columns:
+
+            # Hash each word in row
+            dataframe[var] = dataframe[var].apply(lambda x: str(x).lower())
+            dataframe[var + '_int_encoded'] = dataframe[var].apply(NLPUtils.word2int_from_dict, args=(word2int_dict_list[j],))
+            encoded_samples = pad_sequences(dataframe[var + '_int_encoded'], maxlen=max_length, padding='post', truncating='post')
+
+            # Converting to pandas
+            var_list = []
+            for i in range(max_length):
+                var_name = var + "_" + str(i)
+                dataframe[var_name] = encoded_samples[:, i]
+                var_list.append(var_name)
+
+            # Report of UNK tokens - unique tokens
+            words = set()
+            dataframe[var].str.lower().str.split().apply(words.update)
+            unique_words_count = len(words)
+            word2int_dict_test = dict((w, i + 1) for i, w in enumerate(words))
+            word2int_dict_test[TOKEN_NOT_EXIST] = 0
+
+            logging.info("----------------------------------------------------------------------")
+            logging.info("Analysis of Word2int encode var: " + var )
+            NLPUtils.compare_tokens_dict(word2int_dict_train=word2int_dict_list[j], word2int_dict_test=word2int_dict_test)
+
+            j = j + 1
+
+        return dataframe
+
+    @staticmethod
+    def compare_tokens_dict(word2int_dict_train:dict=None, word2int_dict_test:dict=None):
+
+        sharedKeys = set(word2int_dict_train.keys()).intersection(word2int_dict_test.keys())
+
+        logging.info('Size of vocabulary - training: ' + str(len(word2int_dict_train)))
+        logging.info('Size of vocabulary - test: ' + str(len(word2int_dict_test)))
+        logging.info('Size of common vocabulary: ' + str(len(sharedKeys)))
+        logging.info('Coverage of test vocabulary: {a:.3f}'.format(a=(len(sharedKeys) / len(word2int_dict_test))))
+
+        return sharedKeys
+
+
+
+
+    @staticmethod
     def word2int_from_dict(txt,word2int_dict):
 
         txt_list = txt.split()
-        encoded = [word2int_dict[word] for word in txt_list]
+        encoded = [word2int_dict[word] if word in word2int_dict else 0 for word in txt_list ]
 
         return encoded
 

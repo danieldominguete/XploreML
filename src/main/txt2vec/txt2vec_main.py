@@ -73,7 +73,7 @@ class BuildTxt2VecMain:
         # Loading data
         logging.info("======================================================================")
         logging.info("Loading Training and Test Data:")
-        data_train_input, data_train_target = ds.load_train_data()
+        data_train_input, data_train_target = ds.load_dataset()
 
         logging.info("======================================================================")
         logging.info("Preprocessing Training Data:")

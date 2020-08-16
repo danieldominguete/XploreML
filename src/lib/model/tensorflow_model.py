@@ -152,12 +152,12 @@ class XTensorFlowModel:
                     # input_length = time steps of input
                     in_embedding_layer = tf.keras.layers.Embedding(
                         input_dim=vocab_size,
-                        output_dim=50,
+                        output_dim=5,
                         input_length=inputs[seq].shape[1],
                         trainable=True,
                     )(in_layer)
                     seq_in_layer = tf.keras.layers.LSTM(
-                        units=10, return_sequences=False, dropout=0.1
+                        units=1, return_sequences=False, dropout=0.1
                     )(in_embedding_layer)
 
                     input_list.append(in_layer)

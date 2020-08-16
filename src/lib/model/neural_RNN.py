@@ -138,14 +138,17 @@ class XNeuralRecurrent(XModel):
 
         return [tensor]
 
-    def eval_predict(self, data_input: pd, int_to_cat_dict_target:dict = None) -> pd:
+    def eval_predict(self, data_input: pd,input_var_dict:dict=None, int_to_cat_dict_target:dict = None) -> pd:
+
+        # convert pandas to numpy input and output
+        X = self.convert_input_dataframe_to_tensors(dataframe=data_input, input_var_dict=input_var_dict, type="seq")
 
         # model evaluation
-        raw_predict = self._model.predict(data_input)
+        raw_predict = self._model.predict(X)
 
         if self._application == "classification":
             data_predict = self.convert_classification_to_xout(data_predict=raw_predict,
-                                                               int_to_cat_dict_target=int_to_cat_dict_target)
+                                                               int_to_cat_dict_target=int_to_cat_dict_target[0])
 
         elif self._application == "regression":
             data_predict = self.convert_regression_to_xout(data_predict=raw_predict.reshape(len(raw_predict), 1))

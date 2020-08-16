@@ -74,7 +74,7 @@ class BuildStatic2ValueMain:
         # Loading data
         logging.info("======================================================================")
         logging.info("Loading Training and Test Data:")
-        data_train_input, _ = ds.load_train_data()
+        data_train_input, _ = ds.load_dataset()
         data_test_input, _ = ds.load_test_data()
 
         logging.info("======================================================================")

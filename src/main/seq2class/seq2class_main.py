@@ -76,8 +76,8 @@ class BuildSeq2ClassMain:
         # ===========================================================================================
         # Loading data
         logging.info("======================================================================")
-        logging.info("Loading Training and Test Data:")
-        data_train_input, data_train_target = ds.load_train_data()
+        logging.info("Loading Training Data:")
+        data_train_input, data_train_target = ds.load_dataset(subset='train')
 
         logging.info("======================================================================")
         logging.info("Fit and Transform Training Data:")
@@ -86,20 +86,20 @@ class BuildSeq2ClassMain:
             data_train_target,
             input_var_dict,
             target_var_dict,
-            numerical_input_encoder,
-            categorical_input_encoder_int,
-            categorical_input_encoder_hot,
-            categorical_input_encoder_bin,
-            categorical_int_to_cat_dict_list_input,
-            categorical_cat_to_int_dict_list_input,
+            numerical_input_encoder_list,
+            categorical_input_encoder_int_list,
+            categorical_input_encoder_hot_list,
+            categorical_input_encoder_bin_list,
+            categorical_input_int_to_cat_dict_list,
+            categorical_input_cat_to_int_dict_list,
             txt_int_to_word_dict_list_input,
             txt_word_to_int_dict_list_input,
-            numerical_output_encoder,
-            categorical_output_encoder_int,
-            categorical_output_encoder_hot,
-            categorical_output_encoder_bin,
-            int_to_cat_dict_list_output,
-            cat_to_int_dict_list_output,
+            numerical_output_encoder_list,
+            categorical_output_encoder_int_list,
+            categorical_output_encoder_hot_list,
+            categorical_output_encoder_bin_list,
+            int_to_cat_dict_list_output_list,
+            cat_to_int_dict_list_output_list,
         ) = ds.fit_transform_train_data(
             data_train_input=data_train_input,
             data_train_target=data_train_target
@@ -121,8 +121,9 @@ class BuildSeq2ClassMain:
         logging.info("Building predictions:")
 
         data_train_predict = model.eval_predict(
-            data_input=data_train_input[variables_input],
-            int_to_cat_dict_target=int_to_cat_dict_list_target[0])
+            data_input=data_train_input,
+            input_var_dict=input_var_dict,
+            int_to_cat_dict_target=int_to_cat_dict_list_output_list[0])
 
         logging.info("======================================================================")
         logging.info("Training Results")
@@ -132,8 +133,8 @@ class BuildSeq2ClassMain:
             Y_predict=data_train_predict[['predict']],
             subset_label="Train",
             classification_type=data_param.classification_type,
-            Y_int_to_cat_labels=int_to_cat_dict_list_target,
-            Y_cat_to_int_labels=cat_to_int_dict_list_target,
+            Y_int_to_cat_labels=int_to_cat_dict_list_output_list[0],
+            Y_cat_to_int_labels=cat_to_int_dict_list_output_list[0],
             history=None,
         )
 
@@ -160,26 +161,60 @@ class BuildSeq2ClassMain:
         # ===========================================================================================
         # Loading data
         logging.info("======================================================================")
-        logging.info("Loading Training and Test Data:")
+        logging.info("Loading Test Data:")
 
-        data_test_input, data_test_target = ds.load_test_data()
+        # exclude data_train for memory optimization
+        del(data_train_input)
+        del(data_train_target)
+        del(data_train_predict)
+
+        # loading test data
+        data_test_input, data_test_target = ds.load_dataset(subset='test')
+
+        logging.info("======================================================================")
+        logging.info("Transform Test Data:")
+        (
+            data_test_input,
+            data_test_target,
+        ) = ds.transform_test_data(
+            data_test_input=data_test_input,
+            data_test_target=data_test_target,
+            input_var_dict = input_var_dict,
+            target_var_dict = input_var_dict,
+            numerical_input_encoder_list = numerical_input_encoder_list,
+            categorical_input_encoder_int_list = categorical_input_encoder_int_list,
+            categorical_input_encoder_hot_list = categorical_input_encoder_hot_list,
+            categorical_input_encoder_bin_list = categorical_input_encoder_bin_list,
+            categorical_int_to_cat_dict_list_input = categorical_input_int_to_cat_dict_list,
+            categorical_cat_to_int_dict_list_input = categorical_input_cat_to_int_dict_list,
+            txt_int_to_word_dict_list_input = txt_int_to_word_dict_list_input,
+            txt_word_to_int_dict_list_input = txt_word_to_int_dict_list_input,
+            numerical_output_encoder_list = numerical_output_encoder_list,
+            categorical_output_encoder_int_list = categorical_output_encoder_int_list,
+            categorical_output_encoder_hot_list = categorical_output_encoder_hot_list,
+            categorical_output_encoder_bin_list = categorical_output_encoder_bin_list,
+            int_to_cat_dict_list_output_list = int_to_cat_dict_list_output_list,
+            cat_to_int_dict_list_output_list = cat_to_int_dict_list_output_list,
+        )
 
         logging.info("======================================================================")
         logging.info("Test Results")
-        data_test_predict = model.eval_predict(data_input=data_test_input[variables_input],int_to_cat_dict_target=int_to_cat_dict_list_target[0])
+        data_test_predict = model.eval_predict(data_input=data_test_input,
+                                               input_var_dict=input_var_dict,
+                                               int_to_cat_dict_target=int_to_cat_dict_list_output_list[0])
 
         model_eval_test = ClassificationModelEvaluation(
             Y_target=data_test_target[data_param.output_target],
             Y_predict=data_test_predict[['predict']],
             subset_label="Test",
             classification_type=data_param.classification_type,
-            Y_int_to_cat_labels=int_to_cat_dict_list_target,
-            Y_cat_to_int_labels=cat_to_int_dict_list_target,
+            Y_int_to_cat_labels=int_to_cat_dict_list_output_list[0],
+            Y_cat_to_int_labels=cat_to_int_dict_list_output_list[0],
             history=None,
         )
 
         model_eval_test.print_evaluation_scores()
-        env.tracking.publish_regression_eval(model_eval=model_eval_test, mode="test")
+        #env.tracking.publish_regression_eval(model_eval=model_eval_test, mode="test")
 
         if env_param.view_plots or env_param.save_plots:
             logging.info("======================================================================")
