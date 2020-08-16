@@ -160,7 +160,7 @@ class XNeuralRecurrent(XModel):
         # hyperparameters (numbers and string)
         self._history["params"] = dict(self._param)
 
-        # metrics (list numbers only)
-        # self._history['metrics'] = {'teste': [100]}
+        # training metrics (list numbers only)
+        self._history['metrics'] = self.model._history.history
 
         return True

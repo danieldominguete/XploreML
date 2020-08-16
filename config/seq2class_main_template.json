@@ -6,7 +6,7 @@
     "logging_level" : "info",
     "view_plots" : false,
     "save_plots" : false,
-    "tracking": false
+    "tracking": true
   },
 
   "seq2class_parameters": {

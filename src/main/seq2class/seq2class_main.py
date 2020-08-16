@@ -131,16 +131,18 @@ class BuildSeq2ClassMain:
         model_eval_train = ClassificationModelEvaluation(
             Y_target=data_train_target[data_param.output_target],
             Y_predict=data_train_predict[['predict']],
-            subset_label="Train",
+            Y_reliability=data_train_predict[['reliability']],
+            subset_label="eval_train_",
             classification_type=data_param.classification_type,
             Y_int_to_cat_labels=int_to_cat_dict_list_output_list[0],
             Y_cat_to_int_labels=cat_to_int_dict_list_output_list[0],
-            history=None,
+            train_history=model.history,
         )
 
-        model_eval_train.print_evaluation_scores()
-        #env.tracking.publish_c_eval(model_eval=model_eval_train, mode="train")
+        # checking metrics
+        model_eval_train.execute()
 
+        # saving and ploting results
         if env_param.view_plots or env_param.save_plots:
             logging.info("======================================================================")
             logging.info("Plotting training result graphs")
@@ -157,6 +159,15 @@ class BuildSeq2ClassMain:
                 path=env.run_folder,
                 prefix=env.prefix_name + "train_",
             )
+
+        # ===========================================================================================
+        # Saving files
+        logging.info("======================================================================")
+        logging.info("Saving Training Results:")
+
+        # prediction report
+        prediction_report = model_eval_train.get_prediction_report()
+        Util.save_dataframe(data=prediction_report,folder_path=env.run_folder, prefix=env.prefix_name+"pred_train_report")
 
         # ===========================================================================================
         # Loading data
@@ -206,15 +217,16 @@ class BuildSeq2ClassMain:
         model_eval_test = ClassificationModelEvaluation(
             Y_target=data_test_target[data_param.output_target],
             Y_predict=data_test_predict[['predict']],
-            subset_label="Test",
+            Y_reliability=data_test_predict[['reliability']],
+            subset_label="eval_test_",
             classification_type=data_param.classification_type,
             Y_int_to_cat_labels=int_to_cat_dict_list_output_list[0],
             Y_cat_to_int_labels=cat_to_int_dict_list_output_list[0],
-            history=None,
+            train_history=None
         )
 
-        model_eval_test.print_evaluation_scores()
-        #env.tracking.publish_regression_eval(model_eval=model_eval_test, mode="test")
+        # checking metrics
+        model_eval_test.execute()
 
         if env_param.view_plots or env_param.save_plots:
             logging.info("======================================================================")
@@ -234,14 +246,21 @@ class BuildSeq2ClassMain:
             )
 
         # ===========================================================================================
-        # Saving model
+        # Saving files
         logging.info("======================================================================")
-        logging.info("Saving Results:")
+        logging.info("Saving Testing Results:")
+
+        # prediction report
+        prediction_report = model_eval_test.get_prediction_report()
+        Util.save_dataframe(data=prediction_report, folder_path=env.run_folder, prefix=env.prefix_name + "pred_test_report")
 
         # ===========================================================================================
         # Register tracking info
         if env.param.tracking:
             env.publish_results(history=ds.history)
+            env.publish_results(history=model.history)
+            env.publish_results(history=model_eval_train.history)
+            env.publish_results(history=model_eval_test.history)
             env.tracking.log_artifacts_folder(local_dir=env.run_folder)
 
         # ===========================================================================================

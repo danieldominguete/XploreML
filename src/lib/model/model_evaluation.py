@@ -13,7 +13,9 @@ from sklearn.metrics import median_absolute_error
 from sklearn.metrics import r2_score
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import balanced_accuracy_score
 import logging
+import numpy as np
 import pandas as pd
 from src.lib.data_visualization.data_plotting import DataPlotting
 
@@ -73,35 +75,24 @@ class RegressionModelEvaluation:
 
 class ClassificationModelEvaluation:
 
-    def __init__(self, Y_target:pd=None, Y_predict:pd=None, subset_label:str=None, classification_type:str=None, Y_int_to_cat_labels:dict=None, Y_cat_to_int_labels:dict=None, history=None):
+    def __init__(self, Y_target:pd=None, Y_predict:pd=None, Y_reliability:pd=None, subset_label:str=None, classification_type:str=None, Y_int_to_cat_labels:dict=None, Y_cat_to_int_labels:dict=None, train_history=None):
         '''Constructor for this class'''
         self.Y_target = Y_target
         self.Y_predict = Y_predict
+        self.Y_reliability = Y_reliability
         self.subset_label = subset_label
         self.classification_type = classification_type
         self.Y_labels = list(Y_int_to_cat_labels[0].values())
         self.Y_int_to_cat_labels = Y_int_to_cat_labels[0]
         self.Y_cat_to_int_labels = Y_cat_to_int_labels[0]
-        self.history = history
+        self.train_history = train_history
+        self.history = {"params": {}, "metrics": {}, "files": {}}
 
     def get_accuracy_score(self):
         return accuracy_score(y_true=self.Y_target, y_pred=self.Y_predict)
 
-    def print_evaluation_scores(self):
-
-        if self.classification_type == "binary_category":
-            cm = self.get_confusion_matrix()
-            #print(cm)
-
-        elif self.classification_type == "multi_category_unilabel":
-            cm = self.get_confusion_matrix()
-            #print(cm)
-
-        else:
-            logging.error("Classification type is not valid")
-
-        logging.info("Accuracy: {a:.3f}".format(a=self.get_accuracy_score()))
-
+    def get_balanced_accuracy_score(self):
+        return balanced_accuracy_score(y_true=self.Y_target, y_pred=self.Y_predict)
 
     def get_confusion_matrix(self):
         y_true = self.Y_target.to_numpy()
@@ -142,3 +133,86 @@ class ClassificationModelEvaluation:
             dv.plot_confusion_matrix(cm=cm, names=self.Y_labels)
 
             #dv.plot_roc(pred=result_train['Output_Pred'], y=result_train['Output_Target'])
+
+    def include_param_history(self, dict):
+        self.history["params"].update(dict)
+        return True
+
+    def include_metric_history(self, dict):
+        self.history["metrics"].update(dict)
+        return True
+
+    def include_files_history(self, dict):
+        self.history["files"].update(dict)
+        return True
+
+    def get_prediction_report(self):
+
+        df_report = pd.DataFrame()
+        df_report["target"] = self.Y_target.iloc[:,0]
+        df_report["predict"] = self.Y_predict.iloc[:,0]
+        df_report["reliability"] = self.Y_reliability.iloc[:,0]
+        df_report["error"] = df_report.apply(lambda x: 0 if x["target"] == x["predict"] else 1, axis=1)
+        return df_report
+
+    def get_reliability_sensitivity(self):
+
+        triggers_list = [0.1, 0.5, 0.9]
+        accuracy_list = []
+        coverage_list = []
+
+        prediction_report = self.get_prediction_report()
+
+        for value in triggers_list:
+            prediction_report['filtered'] = np.where((prediction_report['reliability'] < value), -1, prediction_report['error'])
+            correct_predictions = prediction_report[prediction_report['filtered'] == 0].shape[0]
+            error_predictions = prediction_report[prediction_report['filtered'] == 1].shape[0]
+            nan_predictions = prediction_report[prediction_report['filtered'] == -1].shape[0]
+
+            coverage = (correct_predictions + error_predictions)/(correct_predictions+error_predictions+nan_predictions)
+            if coverage > 0:
+                accuracy = (correct_predictions)/(correct_predictions+error_predictions)
+            else:
+                accuracy = 1
+
+            logging.info("Reliability: " + str(value) + " = Coverage: " + str(coverage) + " Accuracy: " + str(accuracy))
+            accuracy_list.append((accuracy))
+            coverage_list.append(coverage)
+
+        return accuracy_list, coverage_list, triggers_list
+
+    def get_f1_score(self):
+
+        return True
+
+    def execute(self):
+
+        # Accuracy
+        name = self.subset_label + "accuracy"
+        value = self.get_accuracy_score()
+        logging.info(name + ": {a:.3f}".format(a=value))
+        self.include_metric_history({name:[value]})
+
+        # Balanced Accuracy
+        name = self.subset_label + "bal_accuracy"
+        value = self.get_balanced_accuracy_score()
+        logging.info(name + ": {a:.3f}".format(a=value))
+        self.include_metric_history({name:[value]})
+
+        # Reliability sensitivity
+        name = self.subset_label + "reliability_sensivity"
+        accuracy, coverage, reliabitily = self.get_reliability_sensitivity()
+        self.include_metric_history({name +"_accuracy": accuracy})
+        self.include_metric_history({name + "_coverage": coverage})
+        self.include_metric_history({name + "_reliability": reliabitily})
+
+        # Confusion matrix
+        if self.classification_type == "binary_category":
+            cm = self.get_confusion_matrix()
+            #print(cm)
+
+        elif self.classification_type == "multi_category_unilabel":
+            cm = self.get_confusion_matrix()
+            #print(cm)
+
+

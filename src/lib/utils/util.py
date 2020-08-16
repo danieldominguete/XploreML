@@ -139,3 +139,12 @@ class Util:
             for item in row[column]:
                 tks_list.append(item)
         return tks_list
+
+    @staticmethod
+    def save_dataframe(data: pd = None, folder_path: str = None, prefix: str = None) -> bool:
+
+        file_path = folder_path + prefix + ".tsv"
+        data.to_csv(file_path, index=False, sep="\t", encoding="utf-8")
+        logging.info("File saved in: " + file_path)
+
+        return file_path
