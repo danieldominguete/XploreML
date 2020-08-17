@@ -180,7 +180,7 @@ class BuildSeq2ClassMain:
             )
 
             logging.info("Plotting reliability sensitivity")
-            model_eval_train.plot_reliability_sensitivity(report=reliability_report, view=env_param.view_plots,save=env_param.save_plots, path=env.run_folder, prefix=env.prefix_name + "reliability_")
+            model_eval_train.plot_reliability_sensitivity(report=reliability_report, view=env_param.view_plots,save=env_param.save_plots, path=env.run_folder, prefix=env.prefix_name + "reliability_", title='Train Sensitivity')
 
 
         # ===========================================================================================
@@ -248,18 +248,11 @@ class BuildSeq2ClassMain:
             logging.info("======================================================================")
             logging.info("Plotting test result graphs")
 
-            if env_param.save_plots:
-                logging.info("Plots will save in " + env.run_folder)
-
-            if env_param.view_plots:
-                logging.info("Plots will view in window popup")
-
-            # model_eval_test.plot_evaluation_scores(
-            #     view=env_param.view_plots,
-            #     save=env_param.save_plots,
-            #     path=env.run_folder,
-            #     prefix=env.prefix_name + "test_",
-            # )
+            logging.info("Plotting reliability sensitivity")
+            model_eval_train.plot_reliability_sensitivity(report=reliability_report, view=env_param.view_plots,
+                                                          save=env_param.save_plots, path=env.run_folder,
+                                                          prefix=env.prefix_name + "reliability_",
+                                                          title='Test Sensitivity')
 
         # ===========================================================================================
         # Saving files

@@ -126,8 +126,13 @@ class DataProcessing:
                 l3=txt_variables_flat,
             )
         else:
-            columns = txt_variables_flat
+            columns = Util.join_lists(
+                l1=txt_variables_flat,
+                l2=self.param.output_target,
+            )
+
             columns_input = txt_variables_flat
+            
 
         # exclude duplicate variables
         columns = Util.get_unique_list(columns)

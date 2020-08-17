@@ -49,6 +49,38 @@ class DataPlotting:
         plt.close()
         return full_path
 
+    def plot_multiple_lines(self, x_column:str, y_columns:list, title="", xlabel="", ylabel=""):
+
+        full_path = None
+
+        if self.save_plots:
+            fig, ax = plt.subplots(figsize=(12,7))
+            for i in range(len(y_columns)):
+                ax = sns.lineplot(x=self.data[x_column], y=self.data[y_columns[i]])
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel(ylabel)
+            ax.set_title(title)
+            ax.legend(y_columns)
+            plt.tight_layout()
+
+            full_path = self.folder_path + self.prefix + title + '.png'
+            plt.savefig(full_path)
+
+            plt.close()
+
+        if self.view_plots:
+            fig, ax = plt.subplots(figsize=(12, 7))
+            for i in range(len(y_columns)):
+                ax = sns.lineplot(x=self.data[x_column], y=self.data[y_columns[i]])
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel(ylabel)
+            ax.set_title(title)
+            ax.legend(y_columns)
+            plt.tight_layout()
+            plt.show()
+
+        return full_path
+
     def plot_count_cat_histogram(self, y_column):
 
         full_path = None

@@ -167,11 +167,17 @@ class XTensorFlowModel:
                     seq_in_list.append(seq_in_layer)
                     seq = seq + 1
 
-            # concatenate all sequences input
-            concat_layer = tf.keras.layers.concatenate(seq_in_list, axis=-1)
-            output_layer = tf.keras.layers.Dense(units=outputs[0].shape[1], activation=self._model_parameters.output_func_nodes.value)(
-                concat_layer
-            )
+            # concatenate all sequences input - use concatenate for > 1 sequences
+            if len(seq_in_list)>1:
+                concat_layer = tf.keras.layers.concatenate(seq_in_list, axis=-1)
+                output_layer = tf.keras.layers.Dense(units=outputs[0].shape[1], activation=self._model_parameters.output_func_nodes.value)(
+                    concat_layer
+                )
+            else:
+                output_layer = tf.keras.layers.Dense(units=outputs[0].shape[1],
+                                                     activation=self._model_parameters.output_func_nodes.value)(
+                    seq_in_list[0])
+
             self._model = k.models.Model(inputs=input_list, outputs=output_layer)
 
         else:

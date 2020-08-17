@@ -164,10 +164,10 @@ class ClassificationModelEvaluation:
 
         return True
 
-    def plot_reliability_sensitivity(self, report:pd, view:bool=False, save:bool=False, path:str=None, prefix:str=None)->bool:
+    def plot_reliability_sensitivity(self, report:pd, view:bool=False, save:bool=False, path:str=None, prefix:str=None, title:str=None)->bool:
 
         dv = DataPlotting(dataframe=report, view_plots=view, save_plots=save, folder_path=path, prefix=prefix)
-        dv.plot_scatter_2d(X_name='coverage', Y_name='accuracy', title='Reliability Sensitivity')
+        dv.plot_multiple_lines(x_column='reliability', y_columns=['coverage', 'accuracy'], title=title, xlabel='reliability', ylabel='value')
 
         return True
 
@@ -194,7 +194,7 @@ class ClassificationModelEvaluation:
 
     def get_reliability_sensitivity(self):
 
-        triggers_list = np.arange(0,1.025,0.025)
+        triggers_list = np.arange(0.025,1.0,0.025)
         accuracy_list = []
         coverage_list = []
 
