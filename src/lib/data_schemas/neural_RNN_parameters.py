@@ -55,20 +55,10 @@ class XNeuralRecurrentParameters(BaseModel):
     # recurrent topology id
     topology_id: Topology = "RNN-LTSMx-FCCx"
 
-    # hidden nodes
-    seq_hidden_nodes: list = [1]
-
-    # hidden nodes
-    seq_hidden_dropout: list = [1]
-
-    # nodes functions
-    hidden_func_nodes: List[ActivationFunctions] = ["relu"]
-
-    # dropout value for each layer
-    hidden_dropout: list = [0.1]
-
-    # output layer nodes function
-    output_func_nodes: ActivationFunctions = "linear"
+    # recurrent topology details
+    # sublist for each input sequence always in order numerical - categorical - txt
+    # example: [[A,B,C],[X,Y],[E,T]] => 3 sequences input. Seq1 has a stack of A-B-C nodes, seq2 has a stack of X-Y nodes, etc
+    topology_details: dict = None
 
     # reduce learning rate activate
     reduce_lr: bool = True
