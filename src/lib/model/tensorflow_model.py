@@ -8,9 +8,7 @@ Script Reviewed by COGNAS
 
 import os
 import numpy as np
-from tensorflow import keras as k
-import mlflow
-import mlflow.tensorflow
+#from tensorflow import keras as k
 import tensorflow as tf
 import logging
 
@@ -60,6 +58,10 @@ class XTensorFlowModel:
         return True
 
     def fit(self, X, Y, input_var_dict):
+
+        # Logging infos
+        logging.info("TensorFlow version: ", tf.__version__)
+        logging.info("GPU Available: ", tf.test.is_gpu_available())
 
         # Build architeture
         self.set_architeture(inputs=X, outputs=Y, input_var_dict=input_var_dict)
@@ -393,7 +395,7 @@ class XTensorFlowModel:
                             "Application and/or application type is not valid for topolgy "
                             + self._topology_id)
 
-            self._model = k.models.Model(inputs=input_list, outputs=output_layer)
+            self._model = tf.keras.models.Model(inputs=input_list, outputs=output_layer)
 
         else:
             raise ValueError("This topology_id is not valid")
@@ -402,14 +404,16 @@ class XTensorFlowModel:
 
         # Enable tensorboard tracking
         if self._tracking:
-            logdir = "tbruns/scalars/" + self._prefix_name + "log"
-            tensorboard_callback = k.callbacks.TensorBoard(log_dir=logdir)
+            logdir = "tbruns/logs/" + self._prefix_name + "log"
+            tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir,
+                                                                  histogram_freq=1,
+                                                                  write_graph=True)
             self._callbacks.append(tensorboard_callback)
 
         if self._model_parameters.reduce_lr:
             # Learning rate adjustment after patient epochs on constant val_loss (factor * original) return to original
             # value after cooldown epochs
-            reduce_lr = k.callbacks.ReduceLROnPlateau(
+            reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(
                 monitor="val_loss",
                 factor=0.2,
                 patience=3,
@@ -422,7 +426,7 @@ class XTensorFlowModel:
 
         if self._model_parameters.early_stopping:
             # Early stopping with validation perfomance (save best model)
-            earlystopping = k.callbacks.EarlyStopping(
+            earlystopping = tf.keras.callbacks.EarlyStopping(
                 monitor="val_loss", patience=2, verbose=1, mode="min", restore_best_weights=True
             )
             self._callbacks.append(earlystopping)
@@ -434,7 +438,7 @@ class XTensorFlowModel:
                 + self._prefix_name
                 + "ep_{epoch:02d}-val-loss_{val_loss:.2f}.h5"
             )
-            checkpointer = k.callbacks.ModelCheckpoint(
+            checkpointer = tf.keras.callbacks.ModelCheckpoint(
                 filepath=ckp_model_file,
                 verbose=1,
                 save_best_only=True,
