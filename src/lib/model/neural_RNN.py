@@ -32,7 +32,7 @@ class XNeuralRecurrent(XModel):
 
         return True
 
-    def fit(self, data_input, data_target, input_var_dict, target_var_dict):
+    def fit(self, data_input=None, data_target=None, input_var_dict=None, target_var_dict=None, target_cat_dict=None):
 
         # init model
         self.init()
@@ -42,7 +42,7 @@ class XNeuralRecurrent(XModel):
         Y = self.convert_output_dataframe_to_tensors(dataframe=data_target, output_var_dict=target_var_dict)
 
         # fit model
-        self._model.fit(X=X, Y=Y, input_var_dict=input_var_dict)
+        self._model.fit(X=X, Y=Y, input_var_dict=input_var_dict, output_cat_dict=target_cat_dict)
 
         # save results
         self.save_results()

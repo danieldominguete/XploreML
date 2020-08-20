@@ -212,7 +212,7 @@ class ClassificationModelEvaluation:
             else:
                 accuracy = 1
 
-            logging.info("Reliability: {a:.3f}".format(a=value) + " = Coverage: {a:.3f}".format(a=coverage) + " Accuracy: {a:.3f}".format(a=accuracy))
+            #logging.info("Reliability: {a:.3f}".format(a=value) + " = Coverage: {a:.3f}".format(a=coverage) + " Accuracy: {a:.3f}".format(a=accuracy))
             accuracy_list.append((accuracy))
             coverage_list.append(coverage)
 

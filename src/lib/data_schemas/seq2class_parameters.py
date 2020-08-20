@@ -117,8 +117,8 @@ class Seq2ClassParameters(BaseModel):
     # max token
     txt_inputs_max_length: int = 10
 
-    # output class encode
-    encode_output: EncodingCategoricalVariables = ''
-
     # type of modeling technique
     model_type: ModelType
+
+    # output encoding
+    encode_output: str =""

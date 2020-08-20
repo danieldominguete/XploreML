@@ -25,22 +25,24 @@
     "encode_categorical_inputs": "one_hot",
     "encode_txt_inputs": "word2int",
     "txt_inputs_max_length": 10,
-    "encode_output": "one_hot",
     "model_type": "neural_recurrent"
   },
 
   "neural_recurrent_parameters": {
     "framework": "tensorflow",
     "topology_id": "RNN-LTSMx-FCCx",
-    "seq_hidden_nodes": [50],
-    "seq_hidden_dropout": [0.1],
-    "hidden_func_nodes": [],
-    "hidden_dropout": [],
-    "output_func_nodes": "softmax",
+    "topology_details": {
+      "RNN-LTSMx-FCCx": {
+        "seq_hidden_nodes": [[5, 3, 3],[5, 3], [5, 1], [5], [5,2], [10]],
+        "seq_hidden_dropout": [[0.1, 0.1, 0.1], [0.1, 0.1], [0.1, 0.1] ,[0.1], [0.1,0.1], [0.1]],
+        "join_hidden_nodes": [5, 2],
+        "join_hidden_func_nodes": ["relu", "relu"],
+        "join_hidden_dropout": [0.1]
+      }
+    },
     "reduce_lr": true,
     "early_stopping": true,
     "save_checkpoints": true,
-    "loss_optim": "categorical_crossentropy",
     "optimizer": "adam",
     "metrics": ["mse", "accuracy"],
     "batch_size": 2,

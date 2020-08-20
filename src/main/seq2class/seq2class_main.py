@@ -115,6 +115,7 @@ class BuildSeq2ClassMain:
             data_target=data_train_target,
             input_var_dict=input_var_dict,
             target_var_dict=target_var_dict,
+            target_cat_dict=cat_to_int_dict_list_output_list
         )
 
         logging.info("======================================================================")

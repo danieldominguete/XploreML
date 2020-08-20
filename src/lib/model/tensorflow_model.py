@@ -8,10 +8,8 @@ Script Reviewed by COGNAS
 
 import os
 import numpy as np
-#from tensorflow import keras as k
-import tensorflow as tf
 import logging
-
+import tensorflow as tf
 
 class XTensorFlowModel:
     def __init__(self, param=None):
@@ -57,14 +55,14 @@ class XTensorFlowModel:
         self._tracking = value
         return True
 
-    def fit(self, X, Y, input_var_dict):
+    def fit(self, X, Y, input_var_dict, output_cat_dict):
 
         # Logging infos
-        logging.info("TensorFlow version: ", tf.__version__)
-        logging.info("GPU Available: ", tf.test.is_gpu_available())
+        logging.info("TensorFlow version: " + tf.__version__)
+        logging.info("GPU Available: " + str(tf.config.list_physical_devices('GPU')))
 
         # Build architeture
-        self.set_architeture(inputs=X, outputs=Y, input_var_dict=input_var_dict)
+        self.set_architeture(inputs=X, outputs=Y, input_var_dict=input_var_dict, output_cat_dict=output_cat_dict)
 
         self._history = self._model.fit(
             X,
@@ -88,7 +86,7 @@ class XTensorFlowModel:
 
         return Y
 
-    def set_architeture(self, inputs=None, outputs=None, input_var_dict=None) -> bool:
+    def set_architeture(self, inputs=None, outputs=None, input_var_dict=None, output_cat_dict=None) -> bool:
 
         # Check pre-models
         if self._topology_id == "DNN-FCCx":
@@ -293,6 +291,11 @@ class XTensorFlowModel:
                         )(hidden_layer)
 
                 # output layer
+                if self._application_type == "binary_category":
+                    output_num_classes = 1
+                else:
+                    output_num_classes = len(output_cat_dict[0][0])
+
                 if len(self._topology_details.get("join_hidden_nodes")) == 0:
                     # using sigmoid for binary classifier and softmax for multi category
                     if (
@@ -300,14 +303,14 @@ class XTensorFlowModel:
                         and self._application_type == "binary_category"
                     ):
                         output_layer = tf.keras.layers.Dense(
-                            units=outputs[0].shape[1], activation="sigmoid"
+                            units=output_num_classes, activation="sigmoid"
                         )(concat_layer)
                     elif (
                         self._application == "classification"
                         and self._application_type == "multi_category_unilabel"
                     ):
                         output_layer = tf.keras.layers.Dense(
-                            units=outputs[0].shape[1], activation="softmax"
+                            units=output_num_classes, activation="softmax"
                         )(concat_layer)
                     else:
                         logging.error(
@@ -321,14 +324,14 @@ class XTensorFlowModel:
                             and self._application_type == "binary_category"
                     ):
                         output_layer = tf.keras.layers.Dense(
-                            units=outputs[0].shape[1], activation="sigmoid"
+                            units=output_num_classes, activation="sigmoid"
                         )(hidden_layer)
                     elif (
                             self._application == "classification"
                             and self._application_type == "multi_category_unilabel"
                     ):
                         output_layer = tf.keras.layers.Dense(
-                            units=outputs[0].shape[1], activation="softmax"
+                            units=output_num_classes, activation="softmax"
                         )(hidden_layer)
                     else:
                         logging.error(
@@ -353,6 +356,11 @@ class XTensorFlowModel:
                         )(hidden_layer)
 
                 # output layer model
+                if self._application_type == "binary_category":
+                    output_num_classes = 1
+                else:
+                    output_num_classes = len(output_cat_dict[0][0])
+
                 if len(self._topology_details.get("join_hidden_nodes")) == 0:
                     # using sigmoid for binary classifier and softmax for multi category
                     if (
@@ -360,14 +368,14 @@ class XTensorFlowModel:
                             and self._application_type == "binary_category"
                     ):
                         output_layer = tf.keras.layers.Dense(
-                            units=outputs[0].shape[1], activation="sigmoid"
+                            units=output_num_classes, activation="sigmoid"
                         )(seq_in_list[0])
                     elif (
                             self._application == "classification"
                             and self._application_type == "multi_category_unilabel"
                     ):
                         output_layer = tf.keras.layers.Dense(
-                            units=outputs[0].shape[1], activation="softmax"
+                            units=output_num_classes, activation="softmax"
                         )(seq_in_list[0])
                     else:
                         logging.error(
@@ -381,14 +389,14 @@ class XTensorFlowModel:
                             and self._application_type == "binary_category"
                     ):
                         output_layer = tf.keras.layers.Dense(
-                            units=outputs[0].shape[1], activation="sigmoid"
+                            units=output_num_classes, activation="sigmoid"
                         )(hidden_layer)
                     elif (
                             self._application == "classification"
                             and self._application_type == "multi_category_unilabel"
                     ):
                         output_layer = tf.keras.layers.Dense(
-                            units=outputs[0].shape[1], activation="softmax"
+                            units=output_num_classes, activation="softmax"
                         )(hidden_layer)
                     else:
                         logging.error(
@@ -450,8 +458,20 @@ class XTensorFlowModel:
             self._callbacks.append(checkpointer)
 
         # Model compile
+        loss = None
+        if self._application == "classification" and self._application_type == "multi_category_unilabel":
+            loss = "sparse_categorical_crossentropy"
+        elif self._application == "classification" and self._application_type == "binary_category":
+            loss = "binary_crossentropy"
+        elif self._application == "regression":
+            loss = "mean_squared_error"
+        else:
+            logging.error("Loss invalid for model compile")
+    
+        logging.info("Compile error trainning for " + self._application + " auto select to " + loss)
+
         self._model.compile(
-            loss=self._model_parameters.loss_optim.value,
+            loss=loss,
             optimizer=self._model_parameters.optimizer.value,
             metrics=self._model_parameters.metrics,
         )
