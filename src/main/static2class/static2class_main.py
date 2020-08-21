@@ -228,101 +228,110 @@ class BuildStatic2ValueMain:
                                                           prefix=env.prefix_name + "reliability_",
                                                           title='Train Sensitivity')
 
-            # ===========================================================================================
-            # Evaluating test dataset
-            # ===========================================================================================
-            # Loading data
+        # ===========================================================================================
+        # Evaluating test dataset
+        # ===========================================================================================
+        # Loading data
+        logging.info("======================================================================")
+        logging.info("Loading Test Data:")
+
+        # exclude data_train for memory optimization
+        del (data_train_input)
+        del (data_train_target)
+        del (data_train_predict)
+
+        # loading test data
+        data_test_input, data_test_target = ds.load_dataset(subset='test')
+
+        logging.info("======================================================================")
+        logging.info("Transform Test Data:")
+        (
+            data_test_input,
+            data_test_target,
+        ) = ds.transform_test_data(
+            data_test_input=data_test_input,
+            data_test_target=data_test_target,
+            input_var_dict=input_var_dict,
+            target_var_dict=input_var_dict,
+            numerical_input_encoder_list=numerical_input_encoder_list,
+            categorical_input_encoder_int_list=categorical_input_encoder_int_list,
+            categorical_input_encoder_hot_list=categorical_input_encoder_hot_list,
+            categorical_input_encoder_bin_list=categorical_input_encoder_bin_list,
+            categorical_int_to_cat_dict_list_input=categorical_input_int_to_cat_dict_list,
+            categorical_cat_to_int_dict_list_input=categorical_input_cat_to_int_dict_list,
+            txt_int_to_word_dict_list_input=txt_int_to_word_dict_list_input,
+            txt_word_to_int_dict_list_input=txt_word_to_int_dict_list_input,
+            numerical_output_encoder_list=numerical_output_encoder_list,
+            categorical_output_encoder_int_list=categorical_output_encoder_int_list,
+            categorical_output_encoder_hot_list=categorical_output_encoder_hot_list,
+            categorical_output_encoder_bin_list=categorical_output_encoder_bin_list,
+            int_to_cat_dict_list_output_list=int_to_cat_dict_list_output_list,
+            cat_to_int_dict_list_output_list=cat_to_int_dict_list_output_list,
+        )
+
+        logging.info("======================================================================")
+        logging.info("Test Results")
+        data_test_predict = model.eval_predict(data_input=data_test_input,
+                                               input_var_dict=input_var_dict,
+                                               int_to_cat_dict_target=int_to_cat_dict_list_output_list[0])
+
+        model_eval_test = ClassificationModelEvaluation(
+            Y_target=data_test_target[data_param.output_target],
+            Y_predict=data_test_predict[['predict']],
+            Y_reliability=data_test_predict[['reliability']],
+            subset_label="eval_test_",
+            classification_type=data_param.classification_type,
+            Y_int_to_cat_labels=int_to_cat_dict_list_output_list[0],
+            Y_cat_to_int_labels=cat_to_int_dict_list_output_list[0],
+            train_history=None
+        )
+
+        # checking metrics
+        model_eval_test.execute()
+
+        # ===========================================================================================
+        # Saving files
+        logging.info("======================================================================")
+        logging.info("Saving Testing Results:")
+
+        # prediction report
+        prediction_report = model_eval_test.get_prediction_report()
+        Util.save_dataframe(data=prediction_report, folder_path=env.run_folder,
+                            prefix=env.prefix_name + "pred_test_report")
+
+        # classes performance
+        classes_report = model_eval_test.get_score_by_classes()
+        Util.save_dataframe(data=classes_report, folder_path=env.run_folder,
+                            prefix=env.prefix_name + "class_test_report")
+
+        # classes confusion
+        confusion_report = model_eval_test.get_confusion_classes()
+        Util.save_dataframe(data=confusion_report, folder_path=env.run_folder,
+                            prefix=env.prefix_name + "confusion_test_report")
+
+        # Reliability sensitivity
+        reliability_report = model_eval_test.get_reliability_sensitivity()
+        Util.save_dataframe(data=reliability_report, folder_path=env.run_folder,
+                            prefix=env.prefix_name + "reliability_test_report")
+
+        # ===========================================================================================
+        # ploting results
+        if env_param.view_plots or env_param.save_plots:
             logging.info("======================================================================")
-            logging.info("Loading Test Data:")
+            logging.info("Plotting test result graphs")
 
-            # exclude data_train for memory optimization
-            del (data_train_input)
-            del (data_train_target)
-            del (data_train_predict)
-
-            # loading test data
-            data_test_input, data_test_target = ds.load_dataset(subset='test')
-
-            logging.info("======================================================================")
-            logging.info("Transform Test Data:")
-            (
-                data_test_input,
-                data_test_target,
-            ) = ds.transform_test_data(
-                data_test_input=data_test_input,
-                data_test_target=data_test_target,
-                input_var_dict=input_var_dict,
-                target_var_dict=input_var_dict,
-                numerical_input_encoder_list=numerical_input_encoder_list,
-                categorical_input_encoder_int_list=categorical_input_encoder_int_list,
-                categorical_input_encoder_hot_list=categorical_input_encoder_hot_list,
-                categorical_input_encoder_bin_list=categorical_input_encoder_bin_list,
-                categorical_int_to_cat_dict_list_input=categorical_input_int_to_cat_dict_list,
-                categorical_cat_to_int_dict_list_input=categorical_input_cat_to_int_dict_list,
-                txt_int_to_word_dict_list_input=txt_int_to_word_dict_list_input,
-                txt_word_to_int_dict_list_input=txt_word_to_int_dict_list_input,
-                numerical_output_encoder_list=numerical_output_encoder_list,
-                categorical_output_encoder_int_list=categorical_output_encoder_int_list,
-                categorical_output_encoder_hot_list=categorical_output_encoder_hot_list,
-                categorical_output_encoder_bin_list=categorical_output_encoder_bin_list,
-                int_to_cat_dict_list_output_list=int_to_cat_dict_list_output_list,
-                cat_to_int_dict_list_output_list=cat_to_int_dict_list_output_list,
+            model_eval_train.plot_test_results(
+                view=env_param.view_plots,
+                save=env_param.save_plots,
+                path=env.run_folder,
+                prefix=env.prefix_name + "test_",
             )
 
-            logging.info("======================================================================")
-            logging.info("Test Results")
-            data_test_predict = model.eval_predict(data_input=data_test_input,
-                                                   input_var_dict=input_var_dict,
-                                                   int_to_cat_dict_target=int_to_cat_dict_list_output_list[0])
-
-            model_eval_test = ClassificationModelEvaluation(
-                Y_target=data_test_target[data_param.output_target],
-                Y_predict=data_test_predict[['predict']],
-                Y_reliability=data_test_predict[['reliability']],
-                subset_label="eval_test_",
-                classification_type=data_param.classification_type,
-                Y_int_to_cat_labels=int_to_cat_dict_list_output_list[0],
-                Y_cat_to_int_labels=cat_to_int_dict_list_output_list[0],
-                train_history=None
-            )
-
-            # checking metrics
-            model_eval_test.execute()
-
-            if env_param.view_plots or env_param.save_plots:
-                logging.info("======================================================================")
-                logging.info("Plotting test result graphs")
-
-                logging.info("Plotting reliability sensitivity")
-                model_eval_train.plot_reliability_sensitivity(report=reliability_report, view=env_param.view_plots,
-                                                              save=env_param.save_plots, path=env.run_folder,
-                                                              prefix=env.prefix_name + "reliability_",
-                                                              title='Test Sensitivity')
-
-            # ===========================================================================================
-            # Saving files
-            logging.info("======================================================================")
-            logging.info("Saving Testing Results:")
-
-            # prediction report
-            prediction_report = model_eval_test.get_prediction_report()
-            Util.save_dataframe(data=prediction_report, folder_path=env.run_folder,
-                                prefix=env.prefix_name + "pred_test_report")
-
-            # classes performance
-            classes_report = model_eval_test.get_score_by_classes()
-            Util.save_dataframe(data=classes_report, folder_path=env.run_folder,
-                                prefix=env.prefix_name + "class_test_report")
-
-            # classes confusion
-            confusion_report = model_eval_test.get_confusion_classes()
-            Util.save_dataframe(data=confusion_report, folder_path=env.run_folder,
-                                prefix=env.prefix_name + "confusion_test_report")
-
-            # Reliability sensitivity
-            reliability_report = model_eval_test.get_reliability_sensitivity()
-            Util.save_dataframe(data=reliability_report, folder_path=env.run_folder,
-                                prefix=env.prefix_name + "reliability_test_report")
+            logging.info("Plotting reliability sensitivity")
+            model_eval_train.plot_reliability_sensitivity(report=reliability_report, view=env_param.view_plots,
+                                                          save=env_param.save_plots, path=env.run_folder,
+                                                          prefix=env.prefix_name + "reliability_",
+                                                          title='Test Sensitivity')
 
         # ===========================================================================================
         # Register tracking info

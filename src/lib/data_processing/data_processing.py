@@ -1536,7 +1536,7 @@ class DataProcessing:
                             data_train_target[output_target],
                             numerical_output_encoder,
                         ) = self.fit_scale_numerical_variables(
-                            data=data_train_target[output_target],
+                            data=data_train_target[[output_target]],
                             scaler=self.param.scale_output_target,
                         )
 
@@ -1548,7 +1548,7 @@ class DataProcessing:
                         )
 
                     # Outputs
-                    var_target = output_target
+                    var_target = [output_target]
                     int_to_cat_dict_list_target = None
                     cat_to_int_dict_list_target = None
                     numerical_output_encoder_list.append(numerical_output_encoder)
@@ -1785,13 +1785,12 @@ class DataProcessing:
                     if self.param.scale_output_target != "":
                         logging.info("Scale output target with " + self.param.scale_output_target)
                         temp = self.scale_numerical_variables(
-                            data=data_test_target[target_var],
+                            data=data_test_target[[target_var]],
                             encoder=numerical_output_encoder_list[i],
                         )
-                        j = 0
-                        for col in target_var:
-                            data_test_target[col] = temp[:, j]
-                            j = j + 1
+
+                        data_test_target[target_var] = temp[:, 0]
+
                     else:
                         logging.info("No scale for number outputs")
                     i = i + 1

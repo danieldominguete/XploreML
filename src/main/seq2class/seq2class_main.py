@@ -267,19 +267,7 @@ class BuildSeq2ClassMain:
         # checking metrics
         model_eval_test.execute()
 
-        if env_param.view_plots or env_param.save_plots:
-            logging.info("======================================================================")
-            logging.info("Plotting test result graphs")
 
-            logging.info("Plotting reliability sensitivity")
-            model_eval_train.plot_reliability_sensitivity(
-                report=reliability_report,
-                view=env_param.view_plots,
-                save=env_param.save_plots,
-                path=env.run_folder,
-                prefix=env.prefix_name + "reliability_",
-                title="Test Sensitivity",
-            )
 
         # ===========================================================================================
         # Saving files
@@ -317,6 +305,29 @@ class BuildSeq2ClassMain:
             folder_path=env.run_folder,
             prefix=env.prefix_name + "reliability_test_report",
         )
+
+        # ===========================================================================================
+        # ploting results
+        if env_param.view_plots or env_param.save_plots:
+            logging.info("======================================================================")
+            logging.info("Plotting test result graphs")
+
+            model_eval_train.plot_test_results(
+                view=env_param.view_plots,
+                save=env_param.save_plots,
+                path=env.run_folder,
+                prefix=env.prefix_name + "test_",
+            )
+
+            logging.info("Plotting reliability sensitivity")
+            model_eval_train.plot_reliability_sensitivity(
+                report=reliability_report,
+                view=env_param.view_plots,
+                save=env_param.save_plots,
+                path=env.run_folder,
+                prefix=env.prefix_name + "reliability_",
+                title="Test Sensitivity",
+            )
 
         # ===========================================================================================
         # Register tracking info

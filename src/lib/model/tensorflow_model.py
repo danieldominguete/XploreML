@@ -125,10 +125,11 @@ class XTensorFlowModel:
                     )(hidden_layer)
 
             # output layer model
-            if self._application_type == "binary_category":
-                output_num_classes = 1
-            else:
-                output_num_classes = len(output_cat_dict[0][0])
+            if self._application != "regression":
+                if self._application_type == "binary_category":
+                    output_num_classes = 1
+                else:
+                    output_num_classes = len(output_cat_dict[0][0])
 
             # using sigmoid for binary classifier and softmax for multi category
             if (
@@ -144,6 +145,10 @@ class XTensorFlowModel:
             ):
                 output_layer = tf.keras.layers.Dense(
                     units=output_num_classes, activation="softmax"
+                )(hidden_layer)
+            elif self._application == "regression":
+                output_layer = tf.keras.layers.Dense(
+                    units=outputs[0].shape[1], activation="linear"
                 )(hidden_layer)
             else:
                 logging.error(
