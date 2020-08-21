@@ -11,6 +11,7 @@ import numpy as np
 import logging
 import tensorflow as tf
 
+
 class XTensorFlowModel:
     def __init__(self, param=None):
         """Constructor for this class"""
@@ -59,10 +60,12 @@ class XTensorFlowModel:
 
         # Logging infos
         logging.info("TensorFlow version: " + tf.__version__)
-        logging.info("GPU Available: " + str(tf.config.list_physical_devices('GPU')))
+        logging.info("GPU Available: " + str(tf.config.list_physical_devices("GPU")))
 
         # Build architeture
-        self.set_architeture(inputs=X, outputs=Y, input_var_dict=input_var_dict, output_cat_dict=output_cat_dict)
+        self.set_architeture(
+            inputs=X, outputs=Y, input_var_dict=input_var_dict, output_cat_dict=output_cat_dict
+        )
 
         self._history = self._model.fit(
             X,
@@ -86,44 +89,72 @@ class XTensorFlowModel:
 
         return Y
 
-    def set_architeture(self, inputs=None, outputs=None, input_var_dict=None, output_cat_dict=None) -> bool:
+    def set_architeture(
+        self, inputs=None, outputs=None, input_var_dict=None, output_cat_dict=None
+    ) -> bool:
 
         # Check pre-models
-        if self._topology_id == "DNN-FCCx":
+        if self._topology_id == "FFNN-FCCx":
 
-            self._model = k.Sequential()
-            teste = len(self._model_parameters.hidden_nodes)
-            for i in range(len(self._model_parameters.hidden_nodes)):
-                if i == 0:
-                    self._model.add(
-                        k.layers.Dense(
-                            units=self._model_parameters.hidden_nodes[0],
-                            use_bias=True,
-                            bias_initializer="zeros",
-                            kernel_initializer="glorot_uniform",
-                            input_dim=input_shape[1],
-                            activation=self._model_parameters.hidden_func_nodes[0].value,
-                        )
-                    )
-                    self._model.add(k.layers.Dropout(self._model_parameters.hidden_dropout[0]))
+            in_layer = tf.keras.Input(shape=(inputs[0].shape[1],))
+
+            # hidden layer
+            for stack in range(len(self._topology_details.get("hidden_nodes")[0])):
+                # first hidden layer
+                if stack == 0:
+                    hidden_layer = tf.keras.layers.Dense(
+                        units=self._topology_details.get("hidden_nodes")[0][stack],
+                        use_bias=True,
+                        bias_initializer="zeros",
+                        kernel_initializer="glorot_uniform",
+                        activation=self._topology_details.get("hidden_func_nodes")[0][stack]
+                    )(in_layer)
+                    hidden_layer = tf.keras.layers.Dropout(
+                        rate=self._topology_details.get("hidden_dropout")[0][stack]
+                    )(hidden_layer)
                 else:
-                    self._model.add(
-                        k.layers.Dense(
-                            units=self._model_parameters.hidden_nodes[i],
-                            activation=self._model_parameters.hidden_func_nodes[i].value,
-                        )
-                    )
-                    self._model.add(k.layers.Dropout(self._model_parameters.hidden_dropout[i]))
+                    hidden_layer = tf.keras.layers.Dense(
+                        units=self._topology_details.get("hidden_nodes")[0][stack],
+                        use_bias=True,
+                        bias_initializer="zeros",
+                        kernel_initializer="glorot_uniform",
+                        activation=self._topology_details.get("hidden_func_nodes")[0][stack]
+                    )(hidden_layer)
+                    hidden_layer = tf.keras.layers.Dropout(
+                        rate=self._topology_details.get("hidden_dropout")[0][stack]
+                    )(hidden_layer)
 
-            # last layer
-            self._model.add(
-                k.layers.Dense(
-                    units=output_shape[1],
-                    activation=self._model_parameters.output_func_nodes.value,
+            # output layer model
+            if self._application_type == "binary_category":
+                output_num_classes = 1
+            else:
+                output_num_classes = len(output_cat_dict[0][0])
+
+            # using sigmoid for binary classifier and softmax for multi category
+            if (
+                self._application == "classification"
+                and self._application_type == "binary_category"
+            ):
+                output_layer = tf.keras.layers.Dense(
+                    units=output_num_classes, activation="sigmoid"
+                )(hidden_layer)
+            elif (
+                self._application == "classification"
+                and self._application_type == "multi_category_unilabel"
+            ):
+                output_layer = tf.keras.layers.Dense(
+                    units=output_num_classes, activation="softmax"
+                )(hidden_layer)
+            else:
+                logging.error(
+                    "Application and/or application type is not valid for topolgy "
+                    + self._topology_id
                 )
-            )
 
-        if self._topology_id == "RNN-LTSMx-FCCx":
+            self._model = tf.keras.models.Model(inputs=in_layer, outputs=output_layer)
+
+        # ----------------------------------------------------------------------------
+        elif self._topology_id == "RNN-LTSMx-FCCx":
 
             # List of inputs with [samples, time steps, features] matrix
             # sequence of X inputs is number, cat , txt
@@ -142,7 +173,10 @@ class XTensorFlowModel:
                         # first layer sequence encoder
                         if stack == 0:
                             # last layer too
-                            if stack == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1:
+                            if (
+                                stack
+                                == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1
+                            ):
                                 return_sequences = False
                             else:
                                 return_sequences = True
@@ -151,7 +185,9 @@ class XTensorFlowModel:
                             seq_in_layer = tf.keras.layers.LSTM(
                                 units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
                                 return_sequences=return_sequences,
-                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][stack],
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
                             )(in_layer)
 
                         # last layer sequence encoder
@@ -159,7 +195,9 @@ class XTensorFlowModel:
                             seq_in_layer = tf.keras.layers.LSTM(
                                 units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
                                 return_sequences=False,
-                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][stack],
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
                             )(in_layer)
 
                         # intermediate sequence encoder
@@ -167,7 +205,9 @@ class XTensorFlowModel:
                             seq_in_layer = tf.keras.layers.LSTM(
                                 units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
                                 return_sequences=True,
-                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][stack],
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
                             )(in_layer)
 
                     input_list.append(in_layer)
@@ -185,7 +225,10 @@ class XTensorFlowModel:
                         # first layer sequence encoder
                         if stack == 0:
                             # last layer too
-                            if stack == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1:
+                            if (
+                                stack
+                                == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1
+                            ):
                                 return_sequences = False
                             else:
                                 return_sequences = True
@@ -194,7 +237,9 @@ class XTensorFlowModel:
                             seq_in_layer = tf.keras.layers.LSTM(
                                 units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
                                 return_sequences=return_sequences,
-                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][stack],
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
                             )(in_layer)
 
                         # last layer sequence encoder
@@ -202,7 +247,9 @@ class XTensorFlowModel:
                             seq_in_layer = tf.keras.layers.LSTM(
                                 units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
                                 return_sequences=False,
-                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][stack],
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
                             )(in_layer)
 
                         # intermediate sequence encoder
@@ -210,7 +257,9 @@ class XTensorFlowModel:
                             seq_in_layer = tf.keras.layers.LSTM(
                                 units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
                                 return_sequences=True,
-                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][stack],
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
                             )(in_layer)
 
                     input_list.append(in_layer)
@@ -238,7 +287,10 @@ class XTensorFlowModel:
                         # first layer sequence encoder
                         if stack == 0:
                             # last layer too
-                            if stack == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1:
+                            if (
+                                stack
+                                == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1
+                            ):
                                 return_sequences = False
                             else:
                                 return_sequences = True
@@ -247,15 +299,19 @@ class XTensorFlowModel:
                             seq_in_layer = tf.keras.layers.LSTM(
                                 units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
                                 return_sequences=return_sequences,
-                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][stack],
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
                             )(in_embedding_layer)
 
                         # last layer sequence encoder
-                        elif stack == len(self._topology_details.get("seq_hidden_nodes")[seq])-1:
+                        elif stack == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1:
                             seq_in_layer = tf.keras.layers.LSTM(
                                 units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
                                 return_sequences=False,
-                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][stack],
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
                             )(seq_in_layer)
 
                         # intermediate sequence encoder
@@ -263,9 +319,10 @@ class XTensorFlowModel:
                             seq_in_layer = tf.keras.layers.LSTM(
                                 units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
                                 return_sequences=True,
-                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][stack],
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
                             )(seq_in_layer)
-
 
                     input_list.append(in_layer)
                     seq_in_list.append(seq_in_layer)
@@ -320,15 +377,15 @@ class XTensorFlowModel:
                 else:
                     # using sigmoid for binary classifier and softmax for multi category
                     if (
-                            self._application == "classification"
-                            and self._application_type == "binary_category"
+                        self._application == "classification"
+                        and self._application_type == "binary_category"
                     ):
                         output_layer = tf.keras.layers.Dense(
                             units=output_num_classes, activation="sigmoid"
                         )(hidden_layer)
                     elif (
-                            self._application == "classification"
-                            and self._application_type == "multi_category_unilabel"
+                        self._application == "classification"
+                        and self._application_type == "multi_category_unilabel"
                     ):
                         output_layer = tf.keras.layers.Dense(
                             units=output_num_classes, activation="softmax"
@@ -336,7 +393,8 @@ class XTensorFlowModel:
                     else:
                         logging.error(
                             "Application and/or application type is not valid for topolgy "
-                            + self._topology_id)
+                            + self._topology_id
+                        )
 
             # just 1 sequence input
             else:
@@ -364,15 +422,15 @@ class XTensorFlowModel:
                 if len(self._topology_details.get("join_hidden_nodes")) == 0:
                     # using sigmoid for binary classifier and softmax for multi category
                     if (
-                            self._application == "classification"
-                            and self._application_type == "binary_category"
+                        self._application == "classification"
+                        and self._application_type == "binary_category"
                     ):
                         output_layer = tf.keras.layers.Dense(
                             units=output_num_classes, activation="sigmoid"
                         )(seq_in_list[0])
                     elif (
-                            self._application == "classification"
-                            and self._application_type == "multi_category_unilabel"
+                        self._application == "classification"
+                        and self._application_type == "multi_category_unilabel"
                     ):
                         output_layer = tf.keras.layers.Dense(
                             units=output_num_classes, activation="softmax"
@@ -385,15 +443,15 @@ class XTensorFlowModel:
                 else:
                     # using sigmoid for binary classifier and softmax for multi category
                     if (
-                            self._application == "classification"
-                            and self._application_type == "binary_category"
+                        self._application == "classification"
+                        and self._application_type == "binary_category"
                     ):
                         output_layer = tf.keras.layers.Dense(
                             units=output_num_classes, activation="sigmoid"
                         )(hidden_layer)
                     elif (
-                            self._application == "classification"
-                            and self._application_type == "multi_category_unilabel"
+                        self._application == "classification"
+                        and self._application_type == "multi_category_unilabel"
                     ):
                         output_layer = tf.keras.layers.Dense(
                             units=output_num_classes, activation="softmax"
@@ -401,21 +459,24 @@ class XTensorFlowModel:
                     else:
                         logging.error(
                             "Application and/or application type is not valid for topolgy "
-                            + self._topology_id)
+                            + self._topology_id
+                        )
 
             self._model = tf.keras.models.Model(inputs=input_list, outputs=output_layer)
 
         else:
             raise ValueError("This topology_id is not valid")
 
+        # --------------------------------
         # Set callbacks for training
+        # --------------------------------
 
         # Enable tensorboard tracking
         if self._tracking:
             logdir = "tbruns/logs/" + self._prefix_name + "log"
-            tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir,
-                                                                  histogram_freq=1,
-                                                                  write_graph=True)
+            tensorboard_callback = tf.keras.callbacks.TensorBoard(
+                log_dir=logdir, histogram_freq=1, write_graph=True
+            )
             self._callbacks.append(tensorboard_callback)
 
         if self._model_parameters.reduce_lr:
@@ -459,7 +520,10 @@ class XTensorFlowModel:
 
         # Model compile
         loss = None
-        if self._application == "classification" and self._application_type == "multi_category_unilabel":
+        if (
+            self._application == "classification"
+            and self._application_type == "multi_category_unilabel"
+        ):
             loss = "sparse_categorical_crossentropy"
         elif self._application == "classification" and self._application_type == "binary_category":
             loss = "binary_crossentropy"
@@ -467,8 +531,10 @@ class XTensorFlowModel:
             loss = "mean_squared_error"
         else:
             logging.error("Loss invalid for model compile")
-    
-        logging.info("Compile error trainning for " + self._application + " auto select to " + loss)
+
+        logging.info(
+            "Compile error trainning for " + self._application + " auto select to " + loss
+        )
 
         self._model.compile(
             loss=loss,

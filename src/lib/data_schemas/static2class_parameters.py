@@ -36,7 +36,7 @@ class ModelType(str, Enum):
     svm = 'svm'
     decision_tree = 'decision_tree'
     random_forest = 'random_forest'
-    neural_dense = 'neural_dense'
+    neural_dense = 'neural_feedforward'
 
 
 class ScaleNumericalVariables(str, Enum):
@@ -114,3 +114,6 @@ class Static2ClassParameters(BaseModel):
 
     # type of modeling technique
     model_type: ModelType
+
+    # output encoding
+    encode_output: str =""

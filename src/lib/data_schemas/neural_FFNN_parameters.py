@@ -1,6 +1,6 @@
 """
 ===========================================================================================
-Dense Neural Model Building Parameters Class
+Feed Forward Neural Network Model Building Parameters Class
 ===========================================================================================
 Script by COGNAS
 ===========================================================================================
@@ -15,6 +15,12 @@ class Frameworks(str, Enum):
     '''
     tensorflow = "tensorflow"
 
+class Topology(str, Enum):
+    '''
+        "":
+    '''
+    ffnn_fccX = "FFNN-FCCx"
+
 class Optimizers(str, Enum):
     '''
         "":
@@ -22,41 +28,18 @@ class Optimizers(str, Enum):
     rmsprop = "rmsprop"
     adam = "adam"
 
-class LossesOptim(str, Enum):
-    '''
-        "":
-    '''
-    binary_crossentropy = "binary_crossentropy"
-    categorical_crossentropy = "categorical_crossentropy"
-    sparse_categorical_crossentropy = "sparse_categorical_crossentropy"
-    mean_squared_error = "mean_squared_error"
 
-class ActivationFunctions(str, Enum):
-    '''
-        "":
-    '''
-    linear = "linear"
-    sigmoid = "sigmoid"
-    softmax = "softmax"
-    relu = "relu"
-
-
-class XNeuralDenseParameters(BaseModel):
+class XNeuralFeedForwardParameters(BaseModel):
 
     # framework implementation
     framework: Frameworks = "tensorflow"
 
-    # hidden nodes
-    hidden_nodes: list = [1]
+    # recurrent topology id
+    topology_id: Topology = "FFNN-FCCx"
 
-    # nodes functions
-    hidden_func_nodes: List[ActivationFunctions] = ["relu"]
-
-    # dropout value for each layer
-    hidden_dropout: list = [0.1]
-
-    # output layer nodes function
-    output_func_nodes: ActivationFunctions = "linear"
+    # feed forward topology details
+    # sublist for each input vector feature always in order: numerical - categorical - txt (only 1 vector feature)
+    topology_details: dict = None
 
     # reduce learning rate activate
     reduce_lr: bool = True
@@ -66,9 +49,6 @@ class XNeuralDenseParameters(BaseModel):
 
     # save checkpoints during training
     save_checkpoints: bool = True
-
-    # loss
-    loss_optim: LossesOptim = "mean_squared_error"
 
     # optimizer
     optimizer: Optimizers = "rmsprop"

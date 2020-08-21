@@ -4,65 +4,49 @@
     "environment_id" : "console_localhost",
     "output_folder": "outputs",
     "logging_level" : "info",
-    "view_plots" : true,
+    "view_plots" : false,
     "save_plots" : true,
     "tracking": true
   },
 
-  "static2class_parameters": {
+  "seq2class_parameters": {
     "data_source":"localhost_datafile",
     "data_train_file_path":"static/working/example_20-07-22-12-35-19_train.tsv",
     "data_test_file_path":"static/working/example_20-07-22-12-35-19_test.tsv",
     "separator":"\t",
     "perc_load":1.0,
     "mode_load":"sequential",
-    "numerical_inputs":["x_1_num", "y_1_value"],
-    "categorical_inputs":["x_2_cat"],
-    "txt_inputs":[],
+    "numerical_inputs":[["x_1_num"],["x_1_num","x_1_num"]],
+    "categorical_inputs":[["x_2_cat"],["y_2_class"]],
+    "txt_inputs":[["x_3_txt","x_2_cat"], ["x_3_txt"]],
     "output_target":["y_2_class"],
     "classification_type": "multi_category_unilabel",
     "scale_numerical_inputs": "min_max",
     "encode_categorical_inputs": "one_hot",
-    "model_type": "neural_dense"
+    "encode_txt_inputs": "word2int",
+    "txt_inputs_max_length": 10,
+    "model_type": "neural_recurrent"
   },
 
-  "logistic_regression_parameters": {
-    "random_state": 0
-  },
-
-  "k_nearest_neighbors_parameters": {
-    "n_neighbors" : 5,
-    "metric": "minkowski",
-    "metric_power": 2
-  },
-
-  "svm_parameters": {
-    "kernel": "rbf"
-  },
-
-  "decision_tree_parameters": {
-    "random_state": 0
-  },
-
-  "random_forest_parameters": {
-    "random_state": 0,
-    "n_estimators": 5
-  },
-
-  "neural_dense_parameters": {
+  "neural_recurrent_parameters": {
     "framework": "tensorflow",
-    "hidden_nodes": [25, 20],
-    "hidden_func_nodes": ["relu", "relu"],
-    "hidden_dropout": [0.1 , 0.1],
-    "output_func_nodes": "softmax",
+    "topology_id": "RNN-LTSMx-FCCx",
+    "topology_details": {
+      "RNN-LTSMx-FCCx": {
+        "seq_hidden_nodes": [[5, 3, 3],[5, 3], [5, 1], [5], [5,2], [10]],
+        "seq_hidden_dropout": [[0.1, 0.1, 0.1], [0.1, 0.1], [0.1, 0.1] ,[0.1], [0.1,0.1], [0.1]],
+        "join_hidden_nodes": [5, 2],
+        "join_hidden_func_nodes": ["relu", "relu"],
+        "join_hidden_dropout": [0.1]
+      }
+    },
     "reduce_lr": true,
     "early_stopping": true,
     "save_checkpoints": true,
-    "loss_optim": "categorical_crossentropy",
     "optimizer": "adam",
     "metrics": ["mse", "accuracy"],
     "batch_size": 2,
-    "epochs": 50,
+    "epochs": 10,
     "validation_split": 0.2,
     "verbose": 1,
     "shuffle": true

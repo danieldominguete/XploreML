@@ -38,13 +38,15 @@ class BuildSeq2ClassMain:
             model_param = XNeuralRecurrentParameters(
                 **data_config.get("neural_recurrent_parameters")
             )
-            model = XNeuralRecurrent(param=model_param,
-                                 application=data_param.application,
-                                 application_type=data_param.classification_type,
-                                 env=environment)
+            model = XNeuralRecurrent(
+                param=model_param,
+                application=data_param.application,
+                application_type=data_param.classification_type,
+                env=environment,
+            )
 
         else:
-            logging.error('Model type not valid.')
+            logging.error("Model type not valid.")
 
         return model
 
@@ -77,7 +79,7 @@ class BuildSeq2ClassMain:
         # Loading data
         logging.info("======================================================================")
         logging.info("Loading Training Data:")
-        data_train_input, data_train_target = ds.load_dataset(subset='train')
+        data_train_input, data_train_target = ds.load_dataset(subset="train")
 
         logging.info("======================================================================")
         logging.info("Fit and Transform Training Data:")
@@ -101,21 +103,22 @@ class BuildSeq2ClassMain:
             int_to_cat_dict_list_output_list,
             cat_to_int_dict_list_output_list,
         ) = ds.fit_transform_train_data(
-            data_train_input=data_train_input,
-            data_train_target=data_train_target
+            data_train_input=data_train_input, data_train_target=data_train_target
         )
 
         logging.info("======================================================================")
         logging.info("Building Model:")
 
-        model = self.model_selection(data_config=data_config, data_param=data_param, environment=env)
+        model = self.model_selection(
+            data_config=data_config, data_param=data_param, environment=env
+        )
 
         model.fit(
             data_input=data_train_input,
             data_target=data_train_target,
             input_var_dict=input_var_dict,
             target_var_dict=target_var_dict,
-            target_cat_dict=cat_to_int_dict_list_output_list
+            target_cat_dict=cat_to_int_dict_list_output_list,
         )
 
         logging.info("======================================================================")
@@ -124,15 +127,16 @@ class BuildSeq2ClassMain:
         data_train_predict = model.eval_predict(
             data_input=data_train_input,
             input_var_dict=input_var_dict,
-            int_to_cat_dict_target=int_to_cat_dict_list_output_list[0])
+            int_to_cat_dict_target=int_to_cat_dict_list_output_list[0],
+        )
 
         logging.info("======================================================================")
         logging.info("Training Results")
 
         model_eval_train = ClassificationModelEvaluation(
             Y_target=data_train_target[data_param.output_target],
-            Y_predict=data_train_predict[['predict']],
-            Y_reliability=data_train_predict[['reliability']],
+            Y_predict=data_train_predict[["predict"]],
+            Y_reliability=data_train_predict[["reliability"]],
             subset_label="eval_train_",
             classification_type=data_param.classification_type,
             Y_int_to_cat_labels=int_to_cat_dict_list_output_list[0],
@@ -150,22 +154,35 @@ class BuildSeq2ClassMain:
 
         # prediction report
         prediction_report = model_eval_train.get_prediction_report()
-        Util.save_dataframe(data=prediction_report,folder_path=env.run_folder, prefix=env.prefix_name+"pred_train_report")
+        Util.save_dataframe(
+            data=prediction_report,
+            folder_path=env.run_folder,
+            prefix=env.prefix_name + "pred_train_report",
+        )
 
         # classes performance
         classes_report = model_eval_train.get_score_by_classes()
-        Util.save_dataframe(data=classes_report, folder_path=env.run_folder,
-                            prefix=env.prefix_name + "class_train_report")
+        Util.save_dataframe(
+            data=classes_report,
+            folder_path=env.run_folder,
+            prefix=env.prefix_name + "class_train_report",
+        )
 
         # classes confusion
         confusion_report = model_eval_train.get_confusion_classes()
-        Util.save_dataframe(data=confusion_report, folder_path=env.run_folder,
-                            prefix=env.prefix_name + "confusion_train_report")
+        Util.save_dataframe(
+            data=confusion_report,
+            folder_path=env.run_folder,
+            prefix=env.prefix_name + "confusion_train_report",
+        )
 
         # Reliability sensitivity
         reliability_report = model_eval_train.get_reliability_sensitivity()
-        Util.save_dataframe(data=reliability_report, folder_path=env.run_folder,
-                            prefix=env.prefix_name + "reliability_train_report")
+        Util.save_dataframe(
+            data=reliability_report,
+            folder_path=env.run_folder,
+            prefix=env.prefix_name + "reliability_train_report",
+        )
 
         # ===========================================================================================
         # ploting results
@@ -181,8 +198,14 @@ class BuildSeq2ClassMain:
             )
 
             logging.info("Plotting reliability sensitivity")
-            model_eval_train.plot_reliability_sensitivity(report=reliability_report, view=env_param.view_plots,save=env_param.save_plots, path=env.run_folder, prefix=env.prefix_name + "reliability_", title='Train Sensitivity')
-
+            model_eval_train.plot_reliability_sensitivity(
+                report=reliability_report,
+                view=env_param.view_plots,
+                save=env_param.save_plots,
+                path=env.run_folder,
+                prefix=env.prefix_name + "reliability_",
+                title="Train Sensitivity",
+            )
 
         # ===========================================================================================
         # Evaluating test dataset
@@ -192,54 +215,53 @@ class BuildSeq2ClassMain:
         logging.info("Loading Test Data:")
 
         # exclude data_train for memory optimization
-        del(data_train_input)
-        del(data_train_target)
-        del(data_train_predict)
+        del data_train_input
+        del data_train_target
+        del data_train_predict
 
         # loading test data
-        data_test_input, data_test_target = ds.load_dataset(subset='test')
+        data_test_input, data_test_target = ds.load_dataset(subset="test")
 
         logging.info("======================================================================")
         logging.info("Transform Test Data:")
-        (
-            data_test_input,
-            data_test_target,
-        ) = ds.transform_test_data(
+        (data_test_input, data_test_target,) = ds.transform_test_data(
             data_test_input=data_test_input,
             data_test_target=data_test_target,
-            input_var_dict = input_var_dict,
-            target_var_dict = input_var_dict,
-            numerical_input_encoder_list = numerical_input_encoder_list,
-            categorical_input_encoder_int_list = categorical_input_encoder_int_list,
-            categorical_input_encoder_hot_list = categorical_input_encoder_hot_list,
-            categorical_input_encoder_bin_list = categorical_input_encoder_bin_list,
-            categorical_int_to_cat_dict_list_input = categorical_input_int_to_cat_dict_list,
-            categorical_cat_to_int_dict_list_input = categorical_input_cat_to_int_dict_list,
-            txt_int_to_word_dict_list_input = txt_int_to_word_dict_list_input,
-            txt_word_to_int_dict_list_input = txt_word_to_int_dict_list_input,
-            numerical_output_encoder_list = numerical_output_encoder_list,
-            categorical_output_encoder_int_list = categorical_output_encoder_int_list,
-            categorical_output_encoder_hot_list = categorical_output_encoder_hot_list,
-            categorical_output_encoder_bin_list = categorical_output_encoder_bin_list,
-            int_to_cat_dict_list_output_list = int_to_cat_dict_list_output_list,
-            cat_to_int_dict_list_output_list = cat_to_int_dict_list_output_list,
+            input_var_dict=input_var_dict,
+            target_var_dict=input_var_dict,
+            numerical_input_encoder_list=numerical_input_encoder_list,
+            categorical_input_encoder_int_list=categorical_input_encoder_int_list,
+            categorical_input_encoder_hot_list=categorical_input_encoder_hot_list,
+            categorical_input_encoder_bin_list=categorical_input_encoder_bin_list,
+            categorical_int_to_cat_dict_list_input=categorical_input_int_to_cat_dict_list,
+            categorical_cat_to_int_dict_list_input=categorical_input_cat_to_int_dict_list,
+            txt_int_to_word_dict_list_input=txt_int_to_word_dict_list_input,
+            txt_word_to_int_dict_list_input=txt_word_to_int_dict_list_input,
+            numerical_output_encoder_list=numerical_output_encoder_list,
+            categorical_output_encoder_int_list=categorical_output_encoder_int_list,
+            categorical_output_encoder_hot_list=categorical_output_encoder_hot_list,
+            categorical_output_encoder_bin_list=categorical_output_encoder_bin_list,
+            int_to_cat_dict_list_output_list=int_to_cat_dict_list_output_list,
+            cat_to_int_dict_list_output_list=cat_to_int_dict_list_output_list,
         )
 
         logging.info("======================================================================")
         logging.info("Test Results")
-        data_test_predict = model.eval_predict(data_input=data_test_input,
-                                               input_var_dict=input_var_dict,
-                                               int_to_cat_dict_target=int_to_cat_dict_list_output_list[0])
+        data_test_predict = model.eval_predict(
+            data_input=data_test_input,
+            input_var_dict=input_var_dict,
+            int_to_cat_dict_target=int_to_cat_dict_list_output_list[0],
+        )
 
         model_eval_test = ClassificationModelEvaluation(
             Y_target=data_test_target[data_param.output_target],
-            Y_predict=data_test_predict[['predict']],
-            Y_reliability=data_test_predict[['reliability']],
+            Y_predict=data_test_predict[["predict"]],
+            Y_reliability=data_test_predict[["reliability"]],
             subset_label="eval_test_",
             classification_type=data_param.classification_type,
             Y_int_to_cat_labels=int_to_cat_dict_list_output_list[0],
             Y_cat_to_int_labels=cat_to_int_dict_list_output_list[0],
-            train_history=None
+            train_history=None,
         )
 
         # checking metrics
@@ -250,10 +272,14 @@ class BuildSeq2ClassMain:
             logging.info("Plotting test result graphs")
 
             logging.info("Plotting reliability sensitivity")
-            model_eval_train.plot_reliability_sensitivity(report=reliability_report, view=env_param.view_plots,
-                                                          save=env_param.save_plots, path=env.run_folder,
-                                                          prefix=env.prefix_name + "reliability_",
-                                                          title='Test Sensitivity')
+            model_eval_train.plot_reliability_sensitivity(
+                report=reliability_report,
+                view=env_param.view_plots,
+                save=env_param.save_plots,
+                path=env.run_folder,
+                prefix=env.prefix_name + "reliability_",
+                title="Test Sensitivity",
+            )
 
         # ===========================================================================================
         # Saving files
@@ -262,22 +288,35 @@ class BuildSeq2ClassMain:
 
         # prediction report
         prediction_report = model_eval_test.get_prediction_report()
-        Util.save_dataframe(data=prediction_report, folder_path=env.run_folder, prefix=env.prefix_name + "pred_test_report")
+        Util.save_dataframe(
+            data=prediction_report,
+            folder_path=env.run_folder,
+            prefix=env.prefix_name + "pred_test_report",
+        )
 
         # classes performance
         classes_report = model_eval_test.get_score_by_classes()
-        Util.save_dataframe(data=classes_report, folder_path=env.run_folder,
-                            prefix=env.prefix_name + "class_test_report")
+        Util.save_dataframe(
+            data=classes_report,
+            folder_path=env.run_folder,
+            prefix=env.prefix_name + "class_test_report",
+        )
 
         # classes confusion
         confusion_report = model_eval_test.get_confusion_classes()
-        Util.save_dataframe(data=confusion_report, folder_path=env.run_folder,
-                            prefix=env.prefix_name + "confusion_test_report")
+        Util.save_dataframe(
+            data=confusion_report,
+            folder_path=env.run_folder,
+            prefix=env.prefix_name + "confusion_test_report",
+        )
 
         # Reliability sensitivity
         reliability_report = model_eval_test.get_reliability_sensitivity()
-        Util.save_dataframe(data=reliability_report, folder_path=env.run_folder,
-                            prefix=env.prefix_name + "reliability_test_report")
+        Util.save_dataframe(
+            data=reliability_report,
+            folder_path=env.run_folder,
+            prefix=env.prefix_name + "reliability_test_report",
+        )
 
         # ===========================================================================================
         # Register tracking info
@@ -303,9 +342,7 @@ if __name__ == "__main__":
     """
 
     # getting script arguments
-    parser = argparse.ArgumentParser(
-        description="XploreML - Script Main for Dataset Vizualization"
-    )
+    parser = argparse.ArgumentParser(description="XploreML - Script Main")
     parser.add_argument(
         "-f", "--config_file_json", help="Json config file for script execution", required=True
     )

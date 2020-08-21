@@ -1,0 +1,73 @@
+{
+  "environment_parameters": {
+    "app_name" : "example-class",
+    "environment_id" : "console_localhost",
+    "output_folder": "outputs",
+    "logging_level" : "info",
+    "view_plots" : false,
+    "save_plots" : true,
+    "tracking": true
+  },
+
+  "static2class_parameters": {
+    "data_source":"localhost_datafile",
+    "data_train_file_path":"static/working/example_20-07-22-12-35-19_train.tsv",
+    "data_test_file_path":"static/working/example_20-07-22-12-35-19_test.tsv",
+    "separator":"\t",
+    "perc_load":1.0,
+    "mode_load":"sequential",
+    "numerical_inputs":[["x_1_num"],["x_1_num","x_1_num"]],
+    "categorical_inputs":[["x_2_cat"],["y_2_class"]],
+    "txt_inputs":[],
+    "output_target":["y_2_class"],
+    "classification_type": "multi_category_unilabel",
+    "scale_numerical_inputs": "min_max",
+    "encode_categorical_inputs": "one_hot",
+    "model_type": "neural_feedforward"
+  },
+
+  "logistic_regression_parameters": {
+    "random_state": 0
+  },
+
+  "k_nearest_neighbors_parameters": {
+    "n_neighbors" : 5,
+    "metric": "minkowski",
+    "metric_power": 2
+  },
+
+  "svm_parameters": {
+    "kernel": "rbf"
+  },
+
+  "decision_tree_parameters": {
+    "random_state": 0
+  },
+
+  "random_forest_parameters": {
+    "random_state": 0,
+    "n_estimators": 5
+  },
+
+  "neural_feedforward_parameters": {
+    "framework": "tensorflow",
+    "topology_id": "FFNN-FCCx",
+    "topology_details": {
+      "FFNN-FCCx": {
+        "hidden_nodes": [[5, 3, 3]],
+        "hidden_func_nodes": [["relu", "relu", "relu"]],
+        "hidden_dropout": [[0.1, 0.1, 0.1]]
+      }
+    },
+    "reduce_lr": true,
+    "early_stopping": true,
+    "save_checkpoints": true,
+    "optimizer": "adam",
+    "metrics": ["mse", "accuracy"],
+    "batch_size": 2,
+    "epochs": 5,
+    "validation_split": 0.2,
+    "verbose": 1,
+    "shuffle": true
+  }
+}
