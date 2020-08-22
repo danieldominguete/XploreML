@@ -16,6 +16,7 @@ from sklearn.preprocessing import (
     OrdinalEncoder,
     LabelBinarizer,
 )
+
 import logging
 import sys
 from src.lib.nlp.nlp_util import NLPUtils
@@ -82,13 +83,25 @@ class DataProcessing:
 
         return data
 
-    def load_train_data(self) -> pd:
+    def load_dataset(self, subset: str = None) -> pd:
         logging.info("======================================================================")
-        logging.info("Loading training data ...")
+        logging.info("Loading dataset ...")
+
+        # flatting number columns
+        if len(self.param.numerical_inputs) > 0:
+            number_variables_flat = Util.flat_lists(sublist=self.param.numerical_inputs)
+        else:
+            number_variables_flat = []
+
+        # flatting categorical columns
+        if len(self.param.categorical_inputs) > 0:
+            categorical_variables_flat = Util.flat_lists(sublist=self.param.categorical_inputs)
+        else:
+            categorical_variables_flat = []
 
         # flatting txt columns
         if len(self.param.txt_inputs) > 0:
-            txt_variables_flat = Util.flat_lists(sublist=self.param.txt_variables)
+            txt_variables_flat = Util.flat_lists(sublist=self.param.txt_inputs)
         else:
             txt_variables_flat = []
 
@@ -101,19 +114,19 @@ class DataProcessing:
 
         if features > 0:
             columns = Util.join_lists(
-                l1=self.param.numerical_inputs,
-                l2=self.param.categorical_inputs,
+                l1=number_variables_flat,
+                l2=categorical_variables_flat,
                 l3=txt_variables_flat,
                 l4=self.param.output_target,
             )
 
             columns_input = Util.join_lists(
-                l1=self.param.numerical_inputs,
-                l2=self.param.categorical_inputs,
-                l3=txt_variables_flat,
+                l1=number_variables_flat, l2=categorical_variables_flat, l3=txt_variables_flat,
             )
         else:
-            columns = txt_variables_flat
+            columns = Util.join_lists(l1=txt_variables_flat, l2=self.param.output_target,)
+
+            columns_input = txt_variables_flat
 
         # exclude duplicate variables
         columns = Util.get_unique_list(columns)
@@ -121,80 +134,32 @@ class DataProcessing:
 
         # loading input data
         if self.param.data_source == "localhost_datafile":
+            if subset == "train":
+                filepath = self.param.data_train_file_path
+            elif subset == "test":
+                filepath = self.param.data_test_file_path
+            else:
+                logging.error("Invalid subset selection for load dataset")
+
             try:
                 data = self.load_csv_database(
-                    filepath=self.param.data_train_file_path,
+                    filepath=filepath,
                     separator=self.param.separator,
                     selected_columns=columns,
                     perc_sample=self.param.perc_load,
                     select_sample=self.param.mode_load,
                     order="asc",
                 )
-
             except:
                 logging.error("Ops " + str(sys.exc_info()[0]) + " occured!")
                 raise
 
         data_input = data[columns_input]
-        data_target = data[self.param.output_target]
 
-        return data_input, data_target
-
-    def load_test_data(self) -> pd:
-        logging.info("======================================================================")
-        logging.info("Loading test data ...")
-
-        # flatting txt columns
-        if len(self.param.txt_inputs) > 0:
-            txt_variables_flat = Util.flat_lists(sublist=self.param.txt_variables)
+        if len(self.param.output_target) > 0:
+            data_target = data[self.param.output_target]
         else:
-            txt_variables_flat = []
-
-        # checking other variables
-        features = 0
-        if len(self.param.numerical_inputs) > 0:
-            features = features + 1
-        if len(self.param.categorical_inputs) > 0:
-            features = features + 1
-
-        if features > 0:
-            columns = Util.join_lists(
-                l1=self.param.numerical_inputs,
-                l2=self.param.categorical_inputs,
-                l3=txt_variables_flat,
-                l4=self.param.output_target,
-            )
-
-            columns_input = Util.join_lists(
-                l1=self.param.numerical_inputs,
-                l2=self.param.categorical_inputs,
-                l3=txt_variables_flat,
-            )
-        else:
-            columns = txt_variables_flat
-
-        # exclude duplicate variables
-        columns = Util.get_unique_list(columns)
-        columns_input = Util.get_unique_list(columns_input)
-
-        # loading input data
-        if self.param.data_source == "localhost_datafile":
-            try:
-                data = self.load_csv_database(
-                    filepath=self.param.data_test_file_path,
-                    separator=self.param.separator,
-                    selected_columns=columns,
-                    perc_sample=self.param.perc_load,
-                    select_sample=self.param.mode_load,
-                    order="asc",
-                )
-
-            except:
-                logging.error("Ops " + str(sys.exc_info()[0]) + " occured!")
-                raise
-
-        data_input = data[columns_input]
-        data_target = data[self.param.output_target]
+            data_target = None
 
         return data_input, data_target
 
@@ -213,6 +178,14 @@ class DataProcessing:
 
         return data
 
+    def filter_maintain_values(self, data: pd = None, col: str = None, values: list = []):
+        data_filtered = data[data[col].isin(values)]
+        return data_filtered
+
+    def filter_exclude_values(self, data: pd = None, col: str = None, values: list = []):
+        data_filtered = data[~data[col].isin(values)]
+        return data_filtered
+
     def prep_rawdata(self, data: pd) -> pd:
 
         logging.info("======================================================================")
@@ -226,6 +199,80 @@ class DataProcessing:
         # flatting txt columns - concatenated selection cleaning
         input_txt_features_flat = Util.flat_lists(sublist=self.param.txt_variables)
         input_txt_features_flat = Util.get_unique_list(input_txt_features_flat)
+
+        # ========================================
+        # Delete repeated samples
+        # ========================================
+        if self.param.delete_repeated_samples:
+            logging.info("======================================================================")
+            logging.info("Deleting repeated samples")
+            data = self.delete_repeated_rows(data=data)
+            logging.info("Dataframe shape = " + str(data.shape))
+            self.samples_lifecycle.append(data.shape[0])
+
+        # ========================================
+        # Categorical filter samples
+        # ========================================
+        if len(self.param.categorical_variables) > 0:
+            # ========================================
+            # Categorical filter samples (include filter)
+            # ========================================
+            if len(self.param.categorical_variables_include) == len(
+                self.param.categorical_variables
+            ):
+                logging.info(
+                    "======================================================================"
+                )
+                for i in range(len(self.param.categorical_variables_include)):
+                    if self.param.categorical_variables_include[i] != [""]:
+                        logging.info(
+                            "Filter include categorical values of variable: "
+                            + str(self.param.categorical_variables[i])
+                        )
+                        logging.info(
+                            "Valid values to maintain: "
+                            + str(len(self.param.categorical_variables_include[i]))
+                        )
+                        data = self.filter_maintain_values(
+                            data=data,
+                            col=self.param.categorical_variables[i],
+                            values=self.param.categorical_variables_include[i],
+                        )
+                        logging.info("Dataframe shape = " + str(data.shape))
+                    else:
+                        logging.info("Categorical include filter is empty.")
+            else:
+                logging.error("Categorical include filter length is not valid. Filter not applied")
+
+            # ========================================
+            # Categorical filter samples (exclude filter)
+            # ========================================
+            if len(self.param.categorical_variables_exclude) == len(
+                self.param.categorical_variables
+            ):
+                logging.info(
+                    "======================================================================"
+                )
+                for i in range(len(self.param.categorical_variables_exclude)):
+                    if self.param.categorical_variables_exclude[i] != [""]:
+                        logging.info(
+                            "Filter exclude categorical values of variable: "
+                            + str(self.param.categorical_variables[i])
+                        )
+                        logging.info(
+                            "Values to exclude: "
+                            + str(len(self.param.categorical_variables_exclude[i]))
+                        )
+                        data = self.filter_exclude_values(
+                            data=data,
+                            col=self.param.categorical_variables[i],
+                            values=self.param.categorical_variables_exclude[i],
+                        )
+                        logging.info("Dataframe shape = " + str(data.shape))
+                    else:
+                        logging.info("Categorical exclude filter is empty.")
+            else:
+                logging.error("Categorical exclude filter length is not valid. Filter not applied")
 
         # ========================================
         # Missing data processing
@@ -292,16 +339,6 @@ class DataProcessing:
             self.samples_lifecycle.append(data.shape[0])
 
         # ========================================
-        # Delete repeated samples
-        # ========================================
-        if self.param.delete_repeated_samples:
-            logging.info("======================================================================")
-            logging.info("Deleting repeated samples")
-            data = self.delete_repeated_rows(data=data)
-            logging.info("Dataframe shape = " + str(data.shape))
-            self.samples_lifecycle.append(data.shape[0])
-
-        # ========================================
         # Delete outliers samples
         # ========================================
         if self.param.remove_outliers:
@@ -320,6 +357,15 @@ class DataProcessing:
 
             logging.info("Dataframe shape = " + str(data.shape))
             self.samples_lifecycle.append(data.shape[0])
+
+        # ========================================
+        # Processing txt dict fields
+        if len(self.param.txt_dict_processing_variables) > 0:
+            logging.info("======================================================================")
+            logging.info("Processing txt dict variables...")
+            for var in self.param.txt_dict_processing_variables:
+                logging.info("Convert dict variable: " + str(var))
+                data = NLPUtils.convert_json_to_txt(dataframe=data, column=var)
 
         # ========================================
         # Processing txt features
@@ -342,6 +388,12 @@ class DataProcessing:
             # exclude special chars
             logging.info("Excluding special chars...")
             data = NLPUtils.clean_special_char(dataframe=data, columns=input_txt_features_flat)
+
+            # split units from numbers
+            logging.info("Split units from numbers...")
+            data = NLPUtils.split_units_from_numbers(
+                dataframe=data, columns=input_txt_features_flat
+            )
 
         # ========================================
         # Registering infos for tracking
@@ -432,103 +484,352 @@ class DataProcessing:
 
         # ----------------------------------------------------------
         # numerical features analysis
-        num_feat_analysis = pd.DataFrame(
-            index=self.param.numerical_variables, columns=["Mean", "Std", "Min", "Max"]
-        )
-        for feat in self.param.numerical_variables:
-            # average
-            mean = data[feat].mean()
-            logging.info("Var: " + str(feat) + " Mean: " + str(mean))
-            num_feat_analysis["Mean"].loc[feat] = mean
-
-            # std
-            std = data[feat].std()
-            logging.info("Var: " + str(feat) + " Std: " + str(std))
-            num_feat_analysis["Std"].loc[feat] = std
-
-            # min
-            min = data[feat].min()
-            logging.info("Var: " + str(feat) + " Min: " + str(min))
-            num_feat_analysis["Min"].loc[feat] = min
-
-            # max
-            max = data[feat].max()
-            logging.info("Var: " + str(feat) + " Max: " + str(max))
-            num_feat_analysis["Max"].loc[feat] = max
-
-        if save_analysis:
-            filename = prefix + "num_variables.tsv"
-            full_path = folder_path + prefix + "num_variables.tsv"
-            num_feat_analysis.to_csv(full_path, index=True, sep="\t", encoding="utf-8")
-            logging.info(
-                "Numerical descriptive analysis saved in: "
-                + folder_path
-                + prefix
-                + "num_features.tsv"
-            )
-            self.include_files_history({filename: full_path})
-
-        if save_plots:
-            dv = DataPlotting(
-                dataframe=data,
-                view_plots=view_plots,
-                save_plots=save_plots,
-                folder_path=folder_path,
-                prefix=prefix,
+        if len(self.param.numerical_variables) > 0:
+            logging.info("----------------------------------------------------------------------")
+            logging.info("Numerical variables infos")
+            num_feat_analysis = pd.DataFrame(
+                index=self.param.numerical_variables, columns=["Mean", "Std", "Min", "Max"]
             )
             for feat in self.param.numerical_variables:
-                src = dv.plot_line_steps(y_column=feat)
-                self.include_files_history({src: src})
+                # average
+                mean = data[feat].mean()
+                logging.info("Var: " + str(feat) + " Mean: " + str(mean))
+                num_feat_analysis["Mean"].loc[feat] = mean
 
-                src = dv.plot_numerical_histogram(y_column=feat)
-                self.include_files_history({src: src})
+                # std
+                std = data[feat].std()
+                logging.info("Var: " + str(feat) + " Std: " + str(std))
+                num_feat_analysis["Std"].loc[feat] = std
+
+                # min
+                min = data[feat].min()
+                logging.info("Var: " + str(feat) + " Min: " + str(min))
+                num_feat_analysis["Min"].loc[feat] = min
+
+                # max
+                max = data[feat].max()
+                logging.info("Var: " + str(feat) + " Max: " + str(max))
+                num_feat_analysis["Max"].loc[feat] = max
+
+            if save_analysis:
+                filename = prefix + "num_variables.tsv"
+                full_path = folder_path + prefix + "num_variables.tsv"
+                num_feat_analysis.to_csv(full_path, index=True, sep="\t", encoding="utf-8")
+                logging.info(
+                    "Numerical descriptive analysis saved in: "
+                    + folder_path
+                    + prefix
+                    + "num_features.tsv"
+                )
+                self.include_files_history({filename: full_path})
+
+            if save_plots:
+                dv = DataPlotting(
+                    dataframe=data,
+                    view_plots=view_plots,
+                    save_plots=save_plots,
+                    folder_path=folder_path,
+                    prefix=prefix,
+                )
+                for feat in self.param.numerical_variables:
+                    src = dv.plot_line_steps(y_column=feat)
+                    if src is not None:
+                        file = Util.get_filename_from_path(src)
+                        self.include_files_history({file: src})
+
+                    src = dv.plot_numerical_histogram(y_column=feat)
+                    if src is not None:
+                        file = Util.get_filename_from_path(src)
+                        self.include_files_history({file: src})
 
         # ----------------------------------------------------------
         # categorical features
-        cat_feat_analysis = pd.DataFrame(
-            index=self.param.categorical_variables, columns=["Count", "Unique", "Top"]
-        )
-
-        for feat in self.param.categorical_variables:
-            # count
-            count = data[feat].count()
-            logging.info("Var: " + str(feat) + " Count: " + str(count))
-            cat_feat_analysis["Count"].loc[feat] = count
-
-            # unique
-            unique = len(data[feat].unique())
-            logging.info("Var: " + str(feat) + " Unique: " + str(unique))
-            cat_feat_analysis["Unique"].loc[feat] = unique
-
-            # top
-            top = Util.get_top_categorical_feature(data=data, column=feat)
-            logging.info("Var: " + str(feat) + " Top: " + str(top))
-            cat_feat_analysis["Top"].loc[feat] = top
-
-        if save_analysis:
-            filename = prefix + "cat_variables.tsv"
-            full_path = folder_path + prefix + "cat_variables.tsv"
-            cat_feat_analysis.to_csv(full_path, index=True, sep="\t", encoding="utf-8")
-            logging.info(
-                "Categorical descriptive analysis saved in: "
-                + folder_path
-                + prefix
-                + "cat_features.tsv"
+        if len(self.param.categorical_variables) > 0:
+            logging.info("----------------------------------------------------------------------")
+            logging.info("Categorical variables infos")
+            cat_feat_analysis = pd.DataFrame(
+                index=self.param.categorical_variables, columns=["Count", "Unique", "Top"]
             )
-            self.include_files_history({filename: full_path})
 
-        if save_plots:
-            dv = DataPlotting(
-                dataframe=data,
-                view_plots=view_plots,
-                save_plots=save_plots,
-                folder_path=folder_path,
-                prefix=prefix,
-            )
             for feat in self.param.categorical_variables:
-                src = dv.plot_count_cat_histogram(y_column=feat)
-                if src is not False:
-                    self.include_files_history({src: src})
+                # count
+                count = data[feat].count()
+                logging.info("Var: " + str(feat) + " Count: " + str(count))
+                cat_feat_analysis["Count"].loc[feat] = count
+
+                # unique
+                unique = len(data[feat].unique())
+                logging.info("Var: " + str(feat) + " Unique: " + str(unique))
+                cat_feat_analysis["Unique"].loc[feat] = unique
+
+                # top
+                top = Util.get_top_categorical_feature(data=data, column=feat)
+                logging.info("Var: " + str(feat) + " Top: " + str(top))
+                cat_feat_analysis["Top"].loc[feat] = top
+
+            if save_analysis:
+                filename = prefix + "cat_variables.tsv"
+                full_path = folder_path + prefix + "cat_variables.tsv"
+                cat_feat_analysis.to_csv(full_path, index=True, sep="\t", encoding="utf-8")
+                logging.info(
+                    "Categorical descriptive analysis saved in: "
+                    + folder_path
+                    + prefix
+                    + "cat_variables.tsv"
+                )
+                self.include_files_history({filename: full_path})
+
+            if save_plots:
+                dv = DataPlotting(
+                    dataframe=data,
+                    view_plots=view_plots,
+                    save_plots=save_plots,
+                    folder_path=folder_path,
+                    prefix=prefix,
+                )
+                for feat in self.param.categorical_variables:
+                    src = dv.plot_count_cat_histogram(y_column=feat)
+                    if src is not None:
+                        file = Util.get_filename_from_path(src)
+                        self.include_files_history({file: src})
+
+        # ----------------------------------------------------------
+        # txt features
+        if len(self.param.txt_variables) > 0:
+            logging.info("----------------------------------------------------------------------")
+            logging.info("Txt variables infos")
+            txt_feat_analysis = pd.DataFrame(
+                columns=[
+                    "Variable",
+                    "Sentences_Total",
+                    "Sentences_Mean",
+                    "Sentences_Std",
+                    "Sentences_Max",
+                    "Sentences_Min",
+                    "Tokens_Total",
+                    "Tokens_Mean",
+                    "Tokens_Std",
+                    "Tokens_Max",
+                    "Tokens_Min",
+                    "Tokens_Unique",
+                ]
+            )
+
+            for feat in self.param.txt_variables:
+
+                if len(feat) > 1:
+                    name_col = "_".join(feat)
+                    data[name_col] = Util.concatenate_pandas_columns(
+                        dataframe=data, columns=feat, conc_str=" "
+                    )
+                    logging.info(
+                        "Var: " + str(feat) + " Total of documents: " + str(len(data[name_col]))
+                    )
+
+                    # sentences of each document
+                    data, sent_col_name = NLPUtils.build_sentence_tokenizer(
+                        dataframe=data, column=name_col
+                    )
+                    data, count_col_name = Util.count_lists_pandas(
+                        dataframe=data, column=sent_col_name
+                    )
+
+                    value_sentence_sum = data[count_col_name].sum()
+                    logging.info(
+                        "Var: " + str(feat) + " Total of sentences: " + str(value_sentence_sum)
+                    )
+                    value_sentence_mean = data[count_col_name].mean()
+                    logging.info(
+                        "Var: " + str(feat) + " Mean of sentences: " + str(value_sentence_mean)
+                    )
+                    value_sentence_std = data[count_col_name].std()
+                    logging.info(
+                        "Var: " + str(feat) + " Std of sentences: " + str(value_sentence_std)
+                    )
+                    value_sentence_max = data[count_col_name].max()
+                    logging.info(
+                        "Var: " + str(feat) + " Max of sentences: " + str(value_sentence_max)
+                    )
+                    value_sentence_min = data[count_col_name].min()
+                    logging.info(
+                        "Var: " + str(feat) + " Min of sentences: " + str(value_sentence_min)
+                    )
+
+                    # tokens of each document
+                    data, token_col_name = NLPUtils.build_word_tokenizer(
+                        dataframe=data, column=name_col
+                    )
+                    data, tk_count_col_name = Util.count_lists_pandas(
+                        dataframe=data, column=token_col_name
+                    )
+
+                    value_tk_sum = data[tk_count_col_name].sum()
+                    logging.info("Var: " + str(feat) + " Total of tokens: " + str(value_tk_sum))
+                    value_tk_mean = data[tk_count_col_name].mean()
+                    logging.info("Var: " + str(feat) + " Mean of tokens: " + str(value_tk_mean))
+                    value_tk_std = data[tk_count_col_name].std()
+                    logging.info("Var: " + str(feat) + " Std of tokens: " + str(value_tk_std))
+                    value_tk_max = data[tk_count_col_name].max()
+                    logging.info("Var: " + str(feat) + " Max of tokens: " + str(value_tk_max))
+                    value_tk_min = data[tk_count_col_name].min()
+                    logging.info("Var: " + str(feat) + " Min of tokens: " + str(value_tk_min))
+
+                    # tokens of corpus
+                    tk_freq_dist = NLPUtils.build_freqdist_tokens(
+                        dataframe=data, column=token_col_name
+                    )
+                    value_tk_unique = len(tk_freq_dist)
+                    logging.info(
+                        "Var: " + str(feat) + " Total of unique tokens: " + str(value_tk_unique)
+                    )
+
+                    txt_feat_analysis = txt_feat_analysis.append(
+                        {
+                            "Variable": name_col,
+                            "Sentences_Total": value_sentence_sum,
+                            "Sentences_Mean": value_sentence_mean,
+                            "Sentences_Std": value_sentence_std,
+                            "Sentences_Max": value_sentence_max,
+                            "Sentences_Min": value_sentence_min,
+                            "Tokens_Total": value_tk_sum,
+                            "Tokens_Mean": value_tk_mean,
+                            "Tokens_Std": value_tk_std,
+                            "Tokens_Max": value_tk_max,
+                            "Tokens_Min": value_tk_min,
+                            "Tokens_Unique": value_tk_unique,
+                        },
+                        ignore_index=True,
+                    )
+
+                    if save_plots:
+                        dv = DataPlotting(
+                            dataframe=data,
+                            view_plots=view_plots,
+                            save_plots=save_plots,
+                            folder_path=folder_path,
+                            prefix=prefix,
+                        )
+
+                        src = dv.plot_tokens_freq(frequency_dist=tk_freq_dist, var=name_col)
+                        if src is not None:
+                            file = Util.get_filename_from_path(src)
+                            self.include_files_history({file: src})
+
+                        src = dv.plot_tokens_cloud(frequency_dist=tk_freq_dist)
+                        if src is not None:
+                            file = Util.get_filename_from_path(src)
+                            self.include_files_history({file: src})
+
+                else:
+                    logging.info(
+                        "Var: " + str(feat) + " Total of documents: " + str(len(data[feat[0]]))
+                    )
+
+                    # sentences of each document
+                    data, sent_col_name = NLPUtils.build_sentence_tokenizer(
+                        dataframe=data, column=feat[0]
+                    )
+                    data, count_col_name = Util.count_lists_pandas(
+                        dataframe=data, column=sent_col_name
+                    )
+
+                    value_sentence_sum = data[count_col_name].sum()
+                    logging.info(
+                        "Var: " + str(feat) + " Total of sentences: " + str(value_sentence_sum)
+                    )
+                    value_sentence_mean = data[count_col_name].mean()
+                    logging.info(
+                        "Var: " + str(feat) + " Mean of sentences: " + str(value_sentence_mean)
+                    )
+                    value_sentence_std = data[count_col_name].std()
+                    logging.info(
+                        "Var: " + str(feat) + " Std of sentences: " + str(value_sentence_std)
+                    )
+                    value_sentence_max = data[count_col_name].max()
+                    logging.info(
+                        "Var: " + str(feat) + " Max of sentences: " + str(value_sentence_max)
+                    )
+                    value_sentence_min = data[count_col_name].min()
+                    logging.info(
+                        "Var: " + str(feat) + " Min of sentences: " + str(value_sentence_min)
+                    )
+
+                    # tokens of each document
+                    data, token_col_name = NLPUtils.build_word_tokenizer(
+                        dataframe=data, column=feat[0]
+                    )
+                    data, tk_count_col_name = Util.count_lists_pandas(
+                        dataframe=data, column=token_col_name
+                    )
+
+                    value_tk_sum = data[tk_count_col_name].sum()
+                    logging.info("Var: " + str(feat) + " Total of tokens: " + str(value_tk_sum))
+                    value_tk_mean = data[tk_count_col_name].mean()
+                    logging.info("Var: " + str(feat) + " Mean of tokens: " + str(value_tk_mean))
+                    value_tk_std = data[tk_count_col_name].std()
+                    logging.info("Var: " + str(feat) + " Std of tokens: " + str(value_tk_std))
+                    value_tk_max = data[tk_count_col_name].max()
+                    logging.info("Var: " + str(feat) + " Max of tokens: " + str(value_tk_max))
+                    value_tk_min = data[tk_count_col_name].min()
+                    logging.info("Var: " + str(feat) + " Min of tokens: " + str(value_tk_min))
+
+                    # tokens of corpus
+                    tk_freq_dist = NLPUtils.build_freqdist_tokens(
+                        dataframe=data, column=token_col_name
+                    )
+                    value_tk_unique = len(tk_freq_dist)
+                    logging.info(
+                        "Var: " + str(feat) + " Total of unique tokens: " + str(value_tk_unique)
+                    )
+
+                    txt_feat_analysis = txt_feat_analysis.append(
+                        {
+                            "Variable": feat[0],
+                            "Sentences_Total": value_sentence_sum,
+                            "Sentences_Mean": value_sentence_mean,
+                            "Sentences_Std": value_sentence_std,
+                            "Sentences_Max": value_sentence_max,
+                            "Sentences_Min": value_sentence_min,
+                            "Tokens_Total": value_tk_sum,
+                            "Tokens_Mean": value_tk_mean,
+                            "Tokens_Std": value_tk_std,
+                            "Tokens_Max": value_tk_max,
+                            "Tokens_Min": value_tk_min,
+                            "Tokens_Unique": value_tk_unique,
+                        },
+                        ignore_index=True,
+                    )
+
+                    if save_plots:
+                        dv = DataPlotting(
+                            dataframe=data,
+                            view_plots=view_plots,
+                            save_plots=save_plots,
+                            folder_path=folder_path,
+                            prefix=prefix,
+                        )
+
+                        src = dv.plot_tokens_freq(frequency_dist=tk_freq_dist, var=feat[0])
+                        if src is not None:
+                            file = Util.get_filename_from_path(src)
+                            self.include_files_history({file: src})
+
+                        src = dv.plot_tokens_cloud(frequency_dist=tk_freq_dist)
+                        if src is not None:
+                            file = Util.get_filename_from_path(src)
+                            self.include_files_history({file: src})
+
+            if save_analysis:
+                filename = prefix + "txt_variables.tsv"
+                full_path = folder_path + prefix + "txt_variables.tsv"
+                txt_feat_analysis.to_csv(full_path, index=True, sep="\t", encoding="utf-8")
+                logging.info(
+                    "Txt descriptive analysis saved in: "
+                    + folder_path
+                    + prefix
+                    + "txt_variables.tsv"
+                )
+                self.include_files_history({filename: full_path})
 
         return True
 
@@ -577,8 +878,11 @@ class DataProcessing:
                     usecols=selected_columns,
                     skiprows=lines2skip,
                     encoding="utf-8",
+                    quotechar='"',
+                    escapechar="\\",
                     low_memory=True,
-                    quoting=csv.QUOTE_NONE,
+                    # engine='python',
+                    # quoting=csv.QUOTE_NONE,
                     warn_bad_lines=True,
                     skipinitialspace=True,
                 )
@@ -589,8 +893,10 @@ class DataProcessing:
                     sep=separator,
                     skiprows=lines2skip,
                     encoding="utf-8",
+                    quotechar='"',
+                    escapechar="\\",
                     low_memory=True,
-                    quoting=csv.QUOTE_NONE,
+                    # quoting=csv.QUOTE_NONE,
                     warn_bad_lines=True,
                     skipinitialspace=True,
                 )
@@ -603,8 +909,10 @@ class DataProcessing:
                     sep=separator,
                     usecols=selected_columns,
                     encoding="utf-8",
+                    quotechar='"',
+                    escapechar="\\",
                     low_memory=True,
-                    quoting=csv.QUOTE_NONE,
+                    # quoting=csv.QUOTE_NONE,
                     warn_bad_lines=True,
                     skipinitialspace=True,
                 )
@@ -614,8 +922,9 @@ class DataProcessing:
                     header=0,
                     sep=separator,
                     encoding="utf-8",
+                    quotechar='"',
+                    escapechar="\\",
                     low_memory=True,
-                    quoting=csv.QUOTE_NONE,
                     warn_bad_lines=True,
                     skipinitialspace=True,
                 )
@@ -662,17 +971,17 @@ class DataProcessing:
     def fit_scale_numerical_variables(self, data: pd = None, scaler: str = None):
 
         if scaler == "min_max":
-            filter = MinMaxScaler()
+            encoder = MinMaxScaler()
         elif scaler == "mean_std":
-            filter = StandardScaler()
+            encoder = StandardScaler()
 
-        data = filter.fit_transform(data)
+        data = encoder.fit_transform(data)
 
-        return data, filter
+        return data, encoder
 
-    def scale_numerical_variables(self, data: pd = None, filter=None):
+    def scale_numerical_variables(self, data: pd = None, encoder=None):
 
-        data = filter.transform(data)
+        data = encoder.transform(data)
 
         return data
 
@@ -688,7 +997,7 @@ class DataProcessing:
 
         for var in columns:
 
-            if type == "one_hot":
+            if type == "int":
 
                 # variable reference
                 var_list.append(var)
@@ -701,11 +1010,22 @@ class DataProcessing:
                 int_df = pd.DataFrame(transf_int, columns=col_int)
                 data = pd.concat([data, int_df], axis=1)
                 encoders_int.append(encoder_int)
+                val_working.append(var + "_" + "int")
 
-                # Decoding example
-                # test = encoder_int.inverse_transform(int_df)
+                # Creating dictionaries convertion
+                categories = encoder_int.categories_[0]
+                int_to_cat = {i: categories[i] for i in range(0, len(categories))}
+                cat_to_int = {categories[i]: i for i in range(0, len(categories))}
 
-                # Encoding with one hot / dummy vector
+                int_to_cat_dict_list.append(int_to_cat)
+                cat_to_int_dict_list.append(cat_to_int)
+
+            elif type == "one_hot":
+
+                # variable reference
+                var_list.append(var)
+
+                #Encoding with one hot / dummy vector
                 encoder_hot = OneHotEncoder(
                     categories="auto",
                     drop=None,
@@ -732,10 +1052,7 @@ class DataProcessing:
                 int_to_cat_dict_list.append(int_to_cat)
                 cat_to_int_dict_list.append(cat_to_int)
 
-                # decoding one hot code vector
-                # test = encoder_hot.inverse_transform(ohe_df)
-
-            if type == "binarizer":
+            elif type == "binarizer":
 
                 # variable reference
                 var_list.append(var)
@@ -775,8 +1092,8 @@ class DataProcessing:
             cat_to_int_dict_list,
         )
 
-    def encode_one_hot_categorical_variable(
-        self, data: pd, columns: list, encoder_hot, encoder_int
+    def encode_int_categorical_variable(
+        self, data: pd, columns: list, encoder_int
     ) -> pd:
 
         for i in range(len(columns)):
@@ -786,6 +1103,20 @@ class DataProcessing:
             col_temp.append(columns[i] + "_" + "int")
             int_df = pd.DataFrame(transformed, columns=col_temp)
             data = pd.concat([data, int_df], axis=1)
+
+        return data
+
+    def encode_onehot_categorical_variable(
+        self, data: pd, columns: list, encoder_hot
+    ) -> pd:
+
+        for i in range(len(columns)):
+
+            # transformed = encoder_int[i].transform(data[columns[i]].to_numpy().reshape(-1, 1))
+            # col_temp = []
+            # col_temp.append(columns[i] + "_" + "int")
+            # int_df = pd.DataFrame(transformed, columns=col_temp)
+            # data = pd.concat([data, int_df], axis=1)
 
             transformed = encoder_hot[i].transform(data[columns[i]].to_numpy().reshape(-1, 1))
             col_temp = []
@@ -797,9 +1128,7 @@ class DataProcessing:
 
         return data
 
-    def encode_bin_categorical_variable(
-        self, data: pd, columns: list, encoder_bin
-    ) -> pd:
+    def encode_bin_categorical_variable(self, data: pd, columns: list, encoder_bin) -> pd:
 
         for i in range(len(columns)):
 
@@ -813,16 +1142,18 @@ class DataProcessing:
 
     def prepare_train_test_data(
         self,
-        data_train_input: pd,
-        data_train_target: pd,
-        data_test_input: pd,
-        data_test_target: pd,
+        data_train_input: pd = None,
+        data_train_target: pd = None,
+        data_test_input: pd = None,
+        data_test_target: pd = None,
     ) -> pd:
 
         logging.info("======================================================================")
         logging.info("Starting data training processing ...")
         input_var_list = []
         target_var_list = []
+        int_to_cat_dict_list_target = {}
+        cat_to_int_dict_list_target = {}
 
         # ========================================
         # Scale data processing
@@ -844,7 +1175,7 @@ class DataProcessing:
                 logging.info("Scale input features with " + self.param.scale_numerical_inputs)
 
                 data_test_input[self.param.numerical_inputs] = self.scale_numerical_variables(
-                    data=data_test_input[self.param.numerical_inputs], filter=num_scaler
+                    data=data_test_input[self.param.numerical_inputs], encoder=num_scaler
                 )
             else:
                 num_scaler = None
@@ -876,7 +1207,7 @@ class DataProcessing:
                     type=self.param.encode_categorical_inputs,
                 )
 
-                data_test_input = self.encode_one_hot_categorical_variable(
+                data_test_input = self.encode_onehot_categorical_variable(
                     data=data_test_input,
                     columns=self.param.categorical_inputs,
                     encoder_hot=encoders_hot,
@@ -888,31 +1219,37 @@ class DataProcessing:
 
         # ========================================
         # Processing txt features
-        # if len(self.param.input_txt_features) > 0:
-        #     logging.info(
-        #         "======================================================================"
-        #     )
-        #     logging.info("Processing vectorization txt features...")
-        #     nlp = NLPProcessing()
-        #
-        #     # convert tokens to embedding random int values
-        #     if self.param.input_txt_features_embedding == "word2int":
-        #         X_text = nlp.encode_word2int(
-        #             dataframe=self.data_train,
-        #             column=self.param.input_txt_features[0],
-        #             max_length=self.param.input_txt_max_seq,
-        #         )
-        #
-        #     if self.param.input_txt_features_embedding == "word2vec":
-        #         # load word dictionary
-        #         with open(self.param.embedding_word_map_file) as json_file:
-        #             self.embedding_word_map = json.load(json_file)
-        #
-        #         X_text = self.encode_txt2int_sequences_from_pandas(
-        #             dataframe=self.data_train,
-        #             column=self.param.input_txt_features[0],
-        #             max_seq_length=self.param.input_txt_max_seq,
-        #         )
+        if len(self.param.txt_inputs) > 0:
+            logging.info("======================================================================")
+            logging.info("Processing txt inputs...")
+
+            # Concatenated txt inputs
+            if len(self.param.txt_inputs[0]) > 0:
+                name_col = "_".join(self.param.txt_inputs[0])
+                data_train_input[name_col] = Util.concatenate_pandas_columns(
+                    dataframe=data_train_input, columns=self.param.txt_inputs[0]
+                )
+            else:
+                name_col = self.param.txt_inputs[0]
+
+            # convert tokens to embedding random int values
+            if self.param.encode_txt_inputs == "int":
+                X_text = NLPUtils.fit_encode_word2int(
+                    dataframe=data_train_input,
+                    columns=name_col,
+                    max_length=self.param.txt_inputs_max_length,
+                )
+
+            # if self.param.input_txt_features_embedding == "word2vec":
+            #     # load word dictionary
+            #     with open(self.param.embedding_word_map_file) as json_file:
+            #         self.embedding_word_map = json.load(json_file)
+            #
+            #     X_text = self.encode_txt2int_sequences_from_pandas(
+            #         dataframe=self.data_train,
+            #         column=self.param.input_txt_features[0],
+            #         max_seq_length=self.param.input_txt_max_seq,
+            #     )
 
         # "https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html"
         # "https://www.depends-on-the-definition.com/guide-to-word-vectors-with-gensim-and-keras/"
@@ -937,7 +1274,7 @@ class DataProcessing:
                     logging.info("Scale output target with " + self.param.scale_output_target)
 
                     data_test_target[self.param.output_target] = self.scale_numerical_variables(
-                        data=data_test_target[self.param.output_target], filter=output_scaler
+                        data=data_test_target[self.param.output_target], encoder=output_scaler
                     )
 
                 # Outputs
@@ -947,9 +1284,7 @@ class DataProcessing:
 
             elif self.param.application == "classification":
 
-                if (
-                 self.param.classification_type == "multi_category_unilabel"
-                ):
+                if self.param.classification_type == "multi_category_unilabel":
 
                     logging.info(
                         "======================================================================"
@@ -973,16 +1308,14 @@ class DataProcessing:
                             type="one_hot",
                         )
 
-                    data_test_target = self.encode_one_hot_categorical_variable(
+                    data_test_target = self.encode_onehot_categorical_variable(
                         data=data_test_target,
                         columns=self.param.output_target,
                         encoder_hot=encoders_hot,
                         encoder_int=encoders_int,
                     )
 
-                if (
-                        self.param.classification_type == "binary_category"
-                ):
+                if self.param.classification_type == "binary_category":
 
                     logging.info(
                         "======================================================================"
@@ -1009,9 +1342,8 @@ class DataProcessing:
                     data_test_target = self.encode_bin_categorical_variable(
                         data=data_test_target,
                         columns=self.param.output_target,
-                        encoder_bin= encoders_bin,
+                        encoder_bin=encoders_bin,
                     )
-
 
             else:
                 logging.error("Application type is not valid")
@@ -1021,7 +1353,7 @@ class DataProcessing:
                 target_var_list.append(var)
 
         else:
-            logging.error("Output target not valid")
+            logging.info("Output target not valid or not informed")
 
         return (
             data_train_input,
@@ -1033,3 +1365,532 @@ class DataProcessing:
             int_to_cat_dict_list_target,
             cat_to_int_dict_list_target,
         )
+
+    # fit parameters to encode input data
+    def fit_transform_train_data(
+        self, data_train_input: pd = None, data_train_target: pd = None,
+    ) -> pd:
+
+        logging.info("======================================================================")
+        logging.info("Starting data training processing ...")
+
+        # init variables
+        input_var_dict = {}
+        target_var_dict = {}
+        numerical_input_encoder_list = []
+        categorical_input_encoder_int_list = []
+        categorical_input_encoder_hot_list = []
+        categorical_input_encoder_bin_list = []
+        categorical_input_int_to_cat_dict_list = []
+        categorical_input_cat_to_int_dict_list = []
+        txt_int_to_word_dict_list_input = []
+        txt_word_to_int_dict_list_input = []
+        numerical_output_encoder_list = []
+        categorical_output_encoder_int_list = []
+        categorical_output_encoder_hot_list = []
+        categorical_output_encoder_bin_list = []
+        int_to_cat_dict_list_output_list = []
+        cat_to_int_dict_list_output_list = []
+
+        # ========================================
+        # Fit and transform data processing
+        # ========================================
+        # Processing scale for input number features
+        input_var_dict["number_inputs"] = []
+
+        if len(self.param.numerical_inputs) > 0:
+            logging.info("======================================================================")
+            logging.info(
+                "Encode numerical input features with " + self.param.scale_numerical_inputs
+            )
+            for numerical_feature in self.param.numerical_inputs:
+
+                if self.param.scale_numerical_inputs != "":
+                    (
+                        data_train_input[numerical_feature],
+                        numerical_input_encoder,
+                    ) = self.fit_scale_numerical_variables(
+                        data=data_train_input[numerical_feature],
+                        scaler=self.param.scale_numerical_inputs,
+                    )
+                else:
+                    logging.info("No scale for number inputs")
+
+                input_var_list = []
+                for var in numerical_feature:
+                    input_var_list.append(var)
+
+                input_var_dict["number_inputs"].append(input_var_list)
+                numerical_input_encoder_list.append(numerical_input_encoder)
+
+        # ========================================
+        # Encoding categorical inputs
+        input_var_dict["categorical_inputs"] = []
+        if len(self.param.categorical_inputs) > 0:
+            logging.info("======================================================================")
+            logging.info(
+                "Encoding categorical input features with: " + self.param.encode_categorical_inputs
+            )
+            for categorical_feature in self.param.categorical_inputs:
+
+                if self.param.encode_categorical_inputs != "":
+                    (
+                        data_train_input,
+                        var_inputs,
+                        _,
+                        categorical_input_encoder_int,
+                        categorical_input_encoder_hot,
+                        categorical_input_encoder_bin,
+                        categorical_int_to_cat_dict_list_input,
+                        categorical_cat_to_int_dict_list_input,
+                    ) = self.fit_encode_categorical_variable(
+                        data=data_train_input,
+                        columns=categorical_feature,
+                        type=self.param.encode_categorical_inputs,
+                    )
+
+                input_var_list = []
+                for var in var_inputs:
+                    input_var_list.append(var)
+
+                input_var_dict["categorical_inputs"].append(input_var_list)
+                categorical_input_encoder_int_list.append(categorical_input_encoder_int)
+                categorical_input_encoder_hot_list.append(categorical_input_encoder_hot)
+                categorical_input_encoder_bin_list.append(categorical_input_encoder_bin)
+                categorical_input_int_to_cat_dict_list.append(
+                    categorical_int_to_cat_dict_list_input
+                )
+                categorical_input_cat_to_int_dict_list.append(
+                    categorical_cat_to_int_dict_list_input
+                )
+
+        # ========================================
+        # Processing txt features
+        input_var_dict["txt_inputs"] = None
+
+        if len(self.param.txt_inputs) > 0:
+            logging.info("======================================================================")
+            logging.info("Encoding txt input features with: " + self.param.encode_txt_inputs)
+
+            txt_input_var = []
+            for input_vars in self.param.txt_inputs:
+
+                # Concatenated txt inputs for lists
+                if len(input_vars) > 1:
+                    name_col = "_".join(input_vars)
+                    data_train_input[name_col] = Util.concatenate_pandas_columns(
+                        dataframe=data_train_input, columns=input_vars
+                    )
+                else:
+                    name_col = input_vars[0]
+
+                txt_input_var.append(name_col)
+
+            # convert tokens to sequencial int values
+            if self.param.encode_txt_inputs == "word2int":
+                (
+                    data_train_input,
+                    var_inputs,
+                    txt_int_to_word_dict_list_input,
+                    txt_word_to_int_dict_list_input,
+                ) = NLPUtils.fit_encode_word2int(
+                    dataframe=data_train_input,
+                    columns=txt_input_var,
+                    max_length=self.param.txt_inputs_max_length,
+                )
+
+                # if self.param.input_txt_features_embedding == "word2vec":
+                #     # load word dictionary
+                #     with open(self.param.embedding_word_map_file) as json_file:
+                #         self.embedding_word_map = json.load(json_file)
+                #
+                #     X_text = self.encode_txt2int_sequences_from_pandas(
+                #         dataframe=self.data_train,
+                #         column=self.param.input_txt_features[0],
+                #         max_seq_length=self.param.input_txt_max_seq,
+                #     )
+
+                input_var_list = []
+                for var in var_inputs:
+                    input_var_list.append(var)
+
+            input_var_dict["txt_inputs"] = input_var_list
+        # "https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html"
+        # "https://www.depends-on-the-definition.com/guide-to-word-vectors-with-gensim-and-keras/"
+
+        # ========================================
+        # Processing output target
+        int_to_cat_dict_list_target = {}
+        cat_to_int_dict_list_target = {}
+        target_var_dict["target_outputs"] = None
+
+        if len(self.param.output_target) > 0:
+            logging.info("Encoding output features for: " + self.param.application)
+
+            for output_target in self.param.output_target:
+
+                if self.param.application == "regression":
+
+                    if self.param.scale_output_target != "":
+                        (
+                            data_train_target[output_target],
+                            numerical_output_encoder,
+                        ) = self.fit_scale_numerical_variables(
+                            data=data_train_target[[output_target]],
+                            scaler=self.param.scale_output_target,
+                        )
+
+                        logging.info(
+                            "Scale output target "
+                            + output_target
+                            + " with "
+                            + self.param.scale_output_target
+                        )
+
+                    # Outputs
+                    var_target = [output_target]
+                    int_to_cat_dict_list_target = None
+                    cat_to_int_dict_list_target = None
+                    numerical_output_encoder_list.append(numerical_output_encoder)
+
+                elif self.param.application == "classification":
+
+                    if self.param.classification_type == "multi_category_unilabel":
+
+                        logging.info(
+                            "======================================================================"
+                        )
+                        logging.info("Classification problem with categorical output encoded")
+                        logging.info("Encoding output target with: " + "int coding for sparse categorical training")
+                        self.param.encode_output = "int"
+
+                        (
+                            data_train_target,
+                            var_target,
+                            _,
+                            categorical_output_encoder_int,
+                            categorical_output_encoder_hot,
+                            categorical_output_encoder_bin,
+                            int_to_cat_dict_list_output,
+                            cat_to_int_dict_list_output,
+                        ) = self.fit_encode_categorical_variable(
+                            data=data_train_target,
+                            columns=[output_target],
+                            type="int",
+                        )
+
+                        categorical_output_encoder_int_list.append(
+                            categorical_output_encoder_int
+                        )
+                        categorical_output_encoder_hot_list.append(
+                            categorical_output_encoder_hot
+                        )
+                        categorical_output_encoder_bin_list.append(
+                            categorical_output_encoder_bin
+                        )
+                        int_to_cat_dict_list_output_list.append(int_to_cat_dict_list_output)
+                        cat_to_int_dict_list_output_list.append(cat_to_int_dict_list_output)
+
+                    if self.param.classification_type == "binary_category":
+
+                        logging.info(
+                            "======================================================================"
+                        )
+                        logging.info("Classification problem with categorical output encoded")
+                        logging.info("Encoding output target with: " + "binary")
+                        self.param.encode_output = "bin"
+
+
+                        (
+                            data_train_target,
+                            var_target,
+                            _,
+                            categorical_output_encoder_int,
+                            categorical_output_encoder_hot,
+                            categorical_output_encoder_bin,
+                            int_to_cat_dict_list_output,
+                            cat_to_int_dict_list_output,
+                        ) = self.fit_encode_categorical_variable(
+                            data=data_train_target,
+                            columns=self.param.output_target,
+                            type="binarizer",
+                        )
+
+                        categorical_output_encoder_int_list.append(
+                            categorical_output_encoder_int
+                        )
+                        categorical_output_encoder_hot_list.append(
+                            categorical_output_encoder_hot
+                        )
+                        categorical_output_encoder_bin_list.append(
+                            categorical_output_encoder_bin
+                        )
+                        int_to_cat_dict_list_output_list.append(int_to_cat_dict_list_output)
+                        cat_to_int_dict_list_output_list.append(cat_to_int_dict_list_output)
+
+                else:
+                    logging.error("Application type is not valid")
+
+                # preparing working variables
+                target_var_list = []
+                for var in var_target:
+                    target_var_list.append(var)
+
+                target_var_dict["target_outputs"] = target_var_list
+        else:
+            logging.info("Output target not valid or not informed")
+
+        return (
+            data_train_input,
+            data_train_target,
+            input_var_dict,
+            target_var_dict,
+            numerical_input_encoder_list,
+            categorical_input_encoder_int_list,
+            categorical_input_encoder_hot_list,
+            categorical_input_encoder_bin_list,
+            categorical_input_int_to_cat_dict_list,
+            categorical_input_cat_to_int_dict_list,
+            txt_int_to_word_dict_list_input,
+            txt_word_to_int_dict_list_input,
+            numerical_output_encoder_list,
+            categorical_output_encoder_int_list,
+            categorical_output_encoder_hot_list,
+            categorical_output_encoder_bin_list,
+            int_to_cat_dict_list_output_list,
+            cat_to_int_dict_list_output_list,
+        )
+
+        # fit parameters to encode input data
+
+    def transform_test_data(
+        self,
+        data_test_input: pd = None,
+        data_test_target: pd = None,
+        input_var_dict: dict = {},
+        target_var_dict: dict = {},
+        numerical_input_encoder_list: list = [],
+        categorical_input_encoder_int_list: list = [],
+        categorical_input_encoder_hot_list: list = [],
+        categorical_input_encoder_bin_list: list = [],
+        categorical_int_to_cat_dict_list_input: list = [],
+        categorical_cat_to_int_dict_list_input: list = [],
+        txt_int_to_word_dict_list_input: list = [],
+        txt_word_to_int_dict_list_input: list = [],
+        numerical_output_encoder_list=None,
+        categorical_output_encoder_int_list=None,
+        categorical_output_encoder_hot_list=None,
+        categorical_output_encoder_bin_list=None,
+        int_to_cat_dict_list_output_list=None,
+        cat_to_int_dict_list_output_list=None,
+    ) -> pd:
+
+        logging.info("======================================================================")
+        logging.info("Starting data test processing ...")
+
+        # ========================================
+        # Transform data processing
+        # ========================================
+        # Processing scale for input number features
+
+        if len(self.param.numerical_inputs) > 0:
+            logging.info("======================================================================")
+            logging.info(
+                "Encode numerical input features with " + self.param.scale_numerical_inputs
+            )
+            i = 0
+            for numerical_feature in self.param.numerical_inputs:
+                if self.param.scale_numerical_inputs != "":
+                    temp = self.scale_numerical_variables(
+                        data=data_test_input[numerical_feature],
+                        encoder=numerical_input_encoder_list[i],
+                    )
+                    j = 0
+                    for col in numerical_feature:
+                        data_test_input[col] = temp[:, j]
+                        j = j + 1
+                else:
+                    logging.info("No scale for number inputs")
+                i = i + 1
+
+        # ========================================
+        # Encoding categorical inputs
+        if len(self.param.categorical_inputs) > 0:
+            logging.info("======================================================================")
+            logging.info(
+                "Encoding categorical input features with: " + self.param.encode_categorical_inputs
+            )
+            i = 0
+            for categorical_feature in self.param.categorical_inputs:
+                if self.param.encode_categorical_inputs == "one_hot":
+                    data_test_input = self.encode_onehot_categorical_variable(
+                        data=data_test_input,
+                        columns=categorical_feature,
+                        encoder_hot=categorical_input_encoder_hot_list[i]
+                    )
+                elif self.param.encode_categorical_inputs == "int":
+                    data_test_input = self.encode_int_categorical_variable(
+                        data=data_test_input,
+                        columns=categorical_feature,
+                        encoder_int=categorical_input_encoder_int_list[i],
+                    )
+                else:
+                    logging.error("Categorical feature has not valid encode")
+                i = i + 1
+
+        # ========================================
+        # Processing txt features
+        if len(self.param.txt_inputs) > 0:
+            logging.info("======================================================================")
+            logging.info("Encoding txt input features with: " + self.param.encode_txt_inputs)
+
+            txt_input_var = []
+            i = 0
+            for input_vars in self.param.txt_inputs:
+
+                # Concatenated txt inputs for lists
+                if len(input_vars) > 1:
+                    name_col = "_".join(input_vars)
+                    data_test_input[name_col] = Util.concatenate_pandas_columns(
+                        dataframe=data_test_input, columns=input_vars
+                    )
+                else:
+                    name_col = input_vars[0]
+
+                txt_input_var.append(name_col)
+
+            # convert tokens to sequencial int values
+            if self.param.encode_txt_inputs == "word2int":
+                data_test_input = NLPUtils.encode_word2int(
+                    dataframe=data_test_input,
+                    columns=txt_input_var,
+                    max_length=self.param.txt_inputs_max_length,
+                    word2int_dict_list=txt_word_to_int_dict_list_input,
+                )
+
+                i = i + 1
+
+        # "https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html"
+        # "https://www.depends-on-the-definition.com/guide-to-word-vectors-with-gensim-and-keras/"
+
+        # ========================================
+        # Processing output target
+        if len(self.param.output_target) > 0:
+            logging.info("Encoding output features for: " + self.param.application)
+
+            if self.param.application == "regression":
+
+                i = 0
+                for target_var in self.param.output_target:
+                    if self.param.scale_output_target != "":
+                        logging.info("Scale output target with " + self.param.scale_output_target)
+                        temp = self.scale_numerical_variables(
+                            data=data_test_target[[target_var]],
+                            encoder=numerical_output_encoder_list[i],
+                        )
+
+                        data_test_target[target_var] = temp[:, 0]
+
+                    else:
+                        logging.info("No scale for number outputs")
+                    i = i + 1
+
+            elif self.param.application == "classification":
+
+                if self.param.classification_type == "multi_category_unilabel":
+
+                    logging.info(
+                        "======================================================================"
+                    )
+                    logging.info("Classification problem with categorical output encoded")
+
+
+                    i = 0
+                    for target_var in self.param.output_target:
+
+                        if self.param.encode_output == "int":
+                            logging.info("Encoding output target with: " + self.param.encode_output)
+                            data_test_target = self.encode_int_categorical_variable(
+                                data=data_test_target,
+                                columns=[target_var],
+                                encoder_int=categorical_output_encoder_int_list[i],
+                            )
+
+
+                        if self.param.encode_output == "one_hot":
+                            logging.info("Encoding output target with: " + self.param.encode_output)
+                            data_test_target = self.encode_onehot_categorical_variable(
+                                data=data_test_target,
+                                columns=[target_var],
+                                encoder_hot=categorical_output_encoder_hot_list[i],
+                                encoder_int=categorical_output_encoder_int_list[i],
+                            )
+                        i = i + 1
+
+                if self.param.classification_type == "binary_category":
+
+                    logging.info(
+                        "======================================================================"
+                    )
+                    logging.info("Classification problem with categorical output encoded")
+                    logging.info("Encoding output target with: " + "binary")
+
+                    i = 0
+                    for target_var in self.param.output_target:
+                        if self.param.encode_output == "one_hot":
+                            data_test_target = self.encode_bin_categorical_variable(
+                                data=data_test_target,
+                                columns=[target_var],
+                                encoder_bin=categorical_output_encoder_bin_list[i],
+                            )
+                        i = i + 1
+
+            else:
+                logging.error("Application type is not valid")
+
+        else:
+            logging.info("Output target not valid or not informed")
+
+        return (data_test_input, data_test_target)
+
+    def prepare_corpus_data(self, data: pd = None) -> pd:
+
+        logging.info("======================================================================")
+        logging.info("Starting data corpus processing ...")
+        input_var_list = []
+
+        # ========================================
+        # Processing txt features
+        if len(self.param.txt_inputs) > 0:
+            logging.info("======================================================================")
+
+            for feat in self.param.txt_inputs:
+
+                if len(feat) > 1:
+                    name_col = "_".join(feat)
+                    data[name_col] = Util.concatenate_pandas_columns(
+                        dataframe=data, columns=feat, conc_str=" "
+                    )
+
+                    # tokens of each document
+                    data, token_col_name = NLPUtils.build_word_tokenizer(
+                        dataframe=data, column=name_col, return_list=False
+                    )
+
+                    input_var_list.append(token_col_name)
+
+                else:
+                    logging.info(
+                        "Var: " + str(feat) + " Total of documents: " + str(len(data[feat[0]]))
+                    )
+
+                    # tokens of each document
+                    data, token_col_name = NLPUtils.build_word_tokenizer(
+                        dataframe=data, column=feat[0], return_list=False
+                    )
+
+                    input_var_list.append(token_col_name)
+        else:
+            logging.info("Txt inputs not informed ")
+
+        return (data, input_var_list)

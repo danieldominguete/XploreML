@@ -7,11 +7,18 @@ Script Reviewed by COGNAS
 '''
 from bs4 import BeautifulSoup
 import unidecode
+import re
 import numpy as np
 import pandas as pd
+import nltk
 import logging
+import json
+from src.lib.utils.util import Util
 
-TXT_TOKENIZATION_COLUMN = 'TXT_TOKENS'
+#TXT_TOKENIZATION_COLUMN = 'TXT_TOKENS'
+TOKEN_NOT_EXIST = '<UNK>'
+TOKEN_INIT_SENTENCE = '<CLS>'
+TOKEN_SEPARATOR = '<SEP>'
 
 class NLPUtils:
 
@@ -53,6 +60,21 @@ class NLPUtils:
         return txt
 
     @staticmethod
+    def split_units_from_numbers(dataframe: pd = None, columns: list = None) -> pd:
+        for col in columns:
+            dataframe[col] = dataframe[col].apply(NLPUtils.split_units_from_numbers_pandas_apply)
+        return dataframe
+
+    @staticmethod
+    def split_units_from_numbers_pandas_apply(txt: str) -> str:
+        # https://en.wikipedia.org/wiki/Metric_units
+        pattern = re.compile(
+            '(\d+)(litros|ml|l|hz|mhz|ghz|hp|ph|kb|mb|gb|tb|kbps|mbps|bps|bar|mmhg|pa|mwh|kwh|kw|w|va|kva|k|kg|g|gr|pol|km|m|cm|mm|km2|m2|cm2|mm2|km3|m3|cm3|mm3|in|ft|rad|rads|db|v|volts|dpi|h|seg)(?![A-zÀ-ÿ0-9])',
+            re.S)
+        txt = re.sub(pattern, r'\1 \2 ', txt)
+        return txt
+
+    @staticmethod
     def clean_special_char(dataframe:pd =None, columns:list =None) -> pd:
         for col in columns:
             dataframe[col] = dataframe[col].apply(NLPUtils.clean_special_char_pandas_apply)
@@ -69,63 +91,192 @@ class NLPUtils:
 
         return txt
 
-    def build_word_tokenizer(self, dataframe=None, txt_inputs=None):
+    @staticmethod
+    def build_sentence_tokenizer(dataframe:pd = None, column:str = None) -> pd:
 
-        i = 0
-        for txt_feat in txt_inputs:
-            logging.info('Processing txt feature ' +  str(txt_feat))
+        name_col = column + "_sent"
+        dataframe[name_col] = dataframe[column].apply(NLPUtils.build_sentence_tokenizer_pandas_apply)
 
-            #concatenate columns
-            dataframe["_temp"] = dataframe[txt_feat].apply(lambda x: ' '.join(x.astype(str)), axis=1)
+        return dataframe,name_col
 
-            # tokenizate to list
-            dataframe[TXT_TOKENIZATION_COLUMN + '_' + str(i)] = dataframe["_temp"].apply(self.build_word_tokenizer_pandas_apply)
+    @staticmethod
+    def build_sentence_tokenizer_pandas_apply(txt:str) -> list:
+        sentences = nltk.tokenize.sent_tokenize(txt)
+        return sentences
 
-            # excluding temp column
-            dataframe.drop("_temp", axis=1, inplace=True)
-            i = i + 1
+    @staticmethod
+    def build_word_tokenizer(dataframe:pd=None, column:str=None, return_list:bool=True) -> pd:
+
+        # tokenizate to list
+        name_col = column + "_tk"
+        dataframe[name_col] = dataframe[column].apply(NLPUtils.build_word_tokenizer_pandas_apply,args=(return_list,))
             
+        return dataframe, name_col
+
+    @staticmethod
+    def build_word_tokenizer_pandas_apply(txt:str, return_list:bool)->list:
+
+        # tokenizer with whitespace
+        txt = str(txt)
+        tokens = txt.split()
+
+        # Excluding special chars at the ending
+        tokens = [word[:-2] if word.endswith('.,') else word for word in tokens]
+        tokens = [word[:-1] if word.endswith('.') else word for word in tokens]
+        tokens = [word[:-1] if word.endswith(',') else word for word in tokens]
+        #tokens = [word[:-1] if word.endswith('-') else word for word in tokens]
+
+        # change , for . for numbers
+        tokens = [re.sub('(\d+),(\d+)', r'\1.\2', word) for word in tokens]
+
+        # number to digits
+        tokens = [re.sub('(\d)', r' \1 ', word) for word in tokens]
+
+        # ??
+        tokens = [re.sub('^(\d+)$', r' \1 ', word) for word in tokens]
+
+        # joining post processing
+        txt = " ".join(tokens)
+
+        if return_list:
+            # tokenizer refactor to list
+            txt = txt.split()
+
+        return txt
+
+    @staticmethod
+    def build_freqdist_tokens(dataframe:pd=None, column:str=None):
+        tokens_all = Util.get_list_from_pandas_list_rows(dataframe=dataframe, column=column)
+        freqdist = nltk.FreqDist(tokens_all)
+        #freqdist = freqdist.most_common()
+        return freqdist
+
+
+    @staticmethod
+    def convert_json_to_txt(dataframe:pd=None, column:str=None) -> pd:
+        dataframe[column] = dataframe[column].apply(NLPUtils.convert_json_to_txt_pandas_apply)
         return dataframe
 
-    def build_word_tokenizer_pandas_apply(self, txt):
-        tokens = txt.split()
-        tokens = ' '.join(tokens)
-        return tokens
+    @staticmethod
+    def convert_json_to_txt_pandas_apply(txt: str = None):
 
-    def encode_word2int(self, dataframe=None, column=None, max_length=0):
+        txt_data = ""
+        empty_values = ['-', 'nan']
 
-        # Count distinct words
-        dataframe[column].str.lower().str.split()
-        words = set()
-        dataframe[column].str.lower().str.split().swifter.apply(words.update)
-        unique_words_count = len(words)
+        try:
+            data = json.loads(txt)
+            for key in data:
+                value = data.get(key)
 
-        self.int2word_dict = dict((i, w) for i, w in enumerate(words))
-        self.word2int_dict = dict((w, i) for i, w in enumerate(words))
+                # normalize empty values
+                if value in empty_values:
+                    value = ""
 
-        # Create a dictionary
-        #words = list(words)
-        #index = range(0,unique_words_count)
+                # maximum char
+                if len(str(value))<100:
+                    txt_data = txt_data + " " + str(key) + " " + str(value)
+        except:
+            logging.error("Invalid json")
 
-        #zipbObj = zip(words, index)
-        #self.word2int_dict = dict(zipbObj)
+        return txt_data
 
-        #zipbObj = zip(index, words)
-        #self.int2word_dict = dict(zipbObj)
+    @staticmethod
+    def fit_encode_word2int(dataframe=None, columns=None, max_length=0):
 
-        # Hash each word in row
-        dataframe['txt_encoded'] = dataframe[column].swifter.apply(self.word2int_from_dict)
-        encoded_samples = pad_sequences(dataframe['txt_encoded'], maxlen=max_length, padding='post')
+        from tensorflow.keras.preprocessing.sequence import pad_sequences
+        input_var = []
+        int2word_dict_list = [] 
+        word2int_dict_list = []
+        
+        for var in columns:
+            
+            # Count distinct words
+            dataframe[var] = dataframe[var].apply(lambda x: str(x).lower())
+            words = set()
+            dataframe[var].str.lower().str.split().apply(words.update)
+            unique_words_count = len(words)
+            logging.info("Word2int encode var: " + var + " => unique words: " + str(unique_words_count))
+    
+            int2word_dict = dict((i+1, w) for i, w in enumerate(words))
+            word2int_dict = dict((w, i+1) for i, w in enumerate(words))
 
-        # Reshape for RNN [samples, time steps, features]
-        encoded_samples = np.reshape(a=encoded_samples,newshape=(dataframe.shape[0],max_length,1))
+            int2word_dict[0] = TOKEN_NOT_EXIST
+            word2int_dict[TOKEN_NOT_EXIST] = 0
+    
+            # Hash each word in row
+            dataframe[var + '_int_encoded'] = dataframe[var].apply(NLPUtils.word2int_from_dict, args=(word2int_dict,))
+            encoded_samples = pad_sequences(dataframe[var + '_int_encoded'], maxlen=max_length, padding='post')
+    
+            # Converting to pandas
+            var_list = []
+            for i in range(max_length):
+                var_name = var + "_" + str(i)
+                dataframe[var_name] = encoded_samples[:,i]
+                var_list.append(var_name)
+            
+            input_var.append(var_list)
+            int2word_dict_list.append(int2word_dict)
+            word2int_dict_list.append(word2int_dict)
 
-        return encoded_samples
 
-    def word2int_from_dict(self, txt):
+
+        return dataframe, input_var, int2word_dict_list, word2int_dict_list
+
+    @staticmethod
+    def encode_word2int(dataframe=None, columns=None, max_length=0, word2int_dict_list=None):
+
+        from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+        j = 0
+        for var in columns:
+
+            # Hash each word in row
+            dataframe[var] = dataframe[var].apply(lambda x: str(x).lower())
+            dataframe[var + '_int_encoded'] = dataframe[var].apply(NLPUtils.word2int_from_dict, args=(word2int_dict_list[j],))
+            encoded_samples = pad_sequences(dataframe[var + '_int_encoded'], maxlen=max_length, padding='post', truncating='post')
+
+            # Converting to pandas
+            var_list = []
+            for i in range(max_length):
+                var_name = var + "_" + str(i)
+                dataframe[var_name] = encoded_samples[:, i]
+                var_list.append(var_name)
+
+            # Report of UNK tokens - unique tokens
+            words = set()
+            dataframe[var].str.lower().str.split().apply(words.update)
+            unique_words_count = len(words)
+            word2int_dict_test = dict((w, i + 1) for i, w in enumerate(words))
+            word2int_dict_test[TOKEN_NOT_EXIST] = 0
+
+            logging.info("----------------------------------------------------------------------")
+            logging.info("Analysis of Word2int encode var: " + var )
+            NLPUtils.compare_tokens_dict(word2int_dict_train=word2int_dict_list[j], word2int_dict_test=word2int_dict_test)
+
+            j = j + 1
+
+        return dataframe
+
+    @staticmethod
+    def compare_tokens_dict(word2int_dict_train:dict=None, word2int_dict_test:dict=None):
+
+        sharedKeys = set(word2int_dict_train.keys()).intersection(word2int_dict_test.keys())
+
+        logging.info('Size of vocabulary - training: ' + str(len(word2int_dict_train)))
+        logging.info('Size of vocabulary - test: ' + str(len(word2int_dict_test)))
+        logging.info('Size of common vocabulary: ' + str(len(sharedKeys)))
+        logging.info('Coverage of test vocabulary: {a:.3f}'.format(a=(len(sharedKeys) / len(word2int_dict_test))))
+
+        return sharedKeys
+
+
+
+
+    @staticmethod
+    def word2int_from_dict(txt,word2int_dict):
 
         txt_list = txt.split()
-        encoded = [self.word2int_dict[word] for word in txt_list]
+        encoded = [word2int_dict[word] if word in word2int_dict else 0 for word in txt_list ]
 
         return encoded
 

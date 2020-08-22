@@ -10,15 +10,19 @@ from abc import ABC, abstractmethod
 import logging
 import pandas as pd
 import numpy as np
-
+from src.lib.environment.environment import Environment
 
 class XModel(ABC):
-    def __init__(self, param: dict, application: str, application_type: str = None):
+    def __init__(self, param: dict, application: str, application_type: str = None, env: Environment = None):
         self._param = param
         self._application = application
         self._application_type = application_type
+        self._run_folder_path = env.run_folder
+        self._prefix_name = env.prefix_name
+        self._tracking = env.tracking
         self._model = None
         self._history = {}
+
         super().__init__()
 
     @abstractmethod
@@ -26,7 +30,7 @@ class XModel(ABC):
         pass
 
     @abstractmethod
-    def fit(self, data_input: pd, data_target: pd):
+    def fit(self, data_input: pd, data_target: pd, input_var_dict:dict, target_var_dict:dict):
         pass
 
     @abstractmethod
@@ -66,11 +70,13 @@ class XModel(ABC):
             # convert coding output to label category
             prediction = []
             prediction_reliability = []
+            value_predict = np.max(data_predict, axis=1)
 
             # getting round between 0 and 1 for label and reliability
-            for value in data_predict:
-                prediction_reliability.append(abs(value-0.5)*2)
-                prediction.append(int_to_cat_dict_target[np.round(value,0)])
+            for value in value_predict:
+                prediction_reliability.append(value)
+                class_bin = int(np.round(value,0))
+                prediction.append(int_to_cat_dict_target.get(class_bin))
 
 
             # convert ndarray to pandas dataframe
@@ -98,3 +104,96 @@ class XModel(ABC):
                 logging.info(str(key) + " : " + str(value))
 
         return True
+
+    def convert_input_dataframe_to_tensors(self, dataframe: pd, input_var_dict: dict, type: str):
+
+        if type == "static":
+
+            number = False
+            categorical = False
+            txt = False
+
+            # Reshape for list of one matrix [samples, features]
+            input_feature_list = input_var_dict.get("number_inputs")
+            if len(input_feature_list) > 0:
+                number = True
+                for i in range(len(input_feature_list)):
+                    if i == 0:
+                        tensor_number = dataframe[input_feature_list[i]].to_numpy()
+                    else:
+                        tensor_aux = dataframe[input_feature_list[i]].to_numpy()
+                        tensor_number = np.concatenate((tensor_number, tensor_aux), axis=1)
+
+            input_feature_list = input_var_dict.get("categorical_inputs")
+            if len(input_feature_list) > 0:
+                categorical = True
+                for i in range(len(input_feature_list)):
+                    if i == 0:
+                        tensor_categorical = dataframe[input_feature_list[i]].to_numpy()
+                    else:
+                        tensor_aux = dataframe[input_feature_list[i]].to_numpy()
+                        tensor_categorical = np.concatenate((tensor_categorical, tensor_aux), axis=1)
+
+            if input_var_dict.get("txt_inputs") is not None:
+                txt = True
+                txt_in = input_var_dict.get("txt_inputs")
+                for i in range(len(txt_in)):
+                    if i == 0:
+                        tensor_txt = dataframe[txt_in[i]].to_numpy(dtype=np.float32)
+                    else:
+                        tensor_txt_aux = dataframe[txt_in[i]].to_numpy(dtype=np.float32)
+                        tensor_txt = np.concatenate((tensor_txt, tensor_txt_aux), axis=1)
+
+            # concatenate inputs
+            if number:
+                tensor = tensor_number
+                if categorical:
+                    tensor = np.concatenate((tensor, tensor_categorical), axis=1)
+                    if txt:
+                        tensor = np.concatenate((tensor, tensor_txt), axis=1)
+            else:
+                if categorical:
+                    tensor = tensor_categorical
+                    if txt:
+                        tensor = np.concatenate((tensor, tensor_txt), axis=1)
+                else:
+                    tensor = tensor_txt
+
+            return [tensor]
+
+        elif type == "seq":
+            # Reshape for list of inputs with [samples, time steps, features] matrix
+            # tensor = np.reshape(a=dataframe,newshape=(dataframe.shape[0],max_length_seq,1))
+
+            tensor = []
+
+            input_feature_list = input_var_dict.get("number_inputs")
+            if len(input_feature_list) > 0:
+                for i in range(len(input_feature_list)):
+                    tensor_aux = dataframe[input_feature_list[i]].to_numpy()
+                    tensor_aux = np.reshape(a=tensor_aux, newshape=(tensor_aux.shape[0], tensor_aux.shape[1], 1))
+                    tensor.append(tensor_aux)
+
+            input_feature_list = input_var_dict.get("categorical_inputs")
+            if len(input_feature_list) > 0:
+                for i in range(len(input_feature_list)):
+                    tensor_aux = dataframe[input_feature_list[i]].to_numpy()
+                    tensor_aux = np.reshape(a=tensor_aux, newshape=(tensor_aux.shape[0], 1, tensor_aux.shape[1]))
+                    tensor.append(tensor_aux)
+
+            input_feature_list = input_var_dict.get("txt_inputs")
+            if len(input_feature_list) > 0:
+                for i in range(len(input_feature_list)):
+                    tensor_aux = dataframe[input_feature_list[i]].to_numpy()
+                    # tensor_aux = np.reshape(a=tensor_aux, newshape=(tensor_aux.shape[0], tensor_aux.shape[1],1))
+                    tensor.append(tensor_aux)
+
+            return tensor
+
+    def convert_output_dataframe_to_tensors(self, dataframe: pd, output_var_dict: dict):
+
+        # Reshape for TF DNN [samples, features]
+        if output_var_dict.get("target_outputs") is not None:
+            tensor = dataframe[output_var_dict.get("target_outputs")].to_numpy()
+
+        return [tensor]

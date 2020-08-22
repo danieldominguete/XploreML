@@ -34,6 +34,7 @@ class ModelType(str, Enum):
     svm = 'svm'
     decision_tree = 'decision_tree'
     random_forest = 'random_forest'
+    neural_dense = 'neural_feedforward'
 
 
 class ScaleNumericalVariables(str, Enum):
@@ -54,6 +55,13 @@ class EncodingCategoricalVariables(str, Enum):
     '''
     one_hot = "one_hot"
     int = "int"
+
+class RegressionType(str, Enum):
+    '''
+        "":
+    '''
+    regression_category = "regression"
+    prediction_category = "prediction"
 
 
 class Static2ValueParameters(BaseModel):
@@ -90,6 +98,9 @@ class Static2ValueParameters(BaseModel):
 
     # output target number - support only one column
     output_target: list
+
+    # classification type
+    regression_type: RegressionType = RegressionType.regression_category
 
     # scaling numerical inputs
     scale_numerical_inputs: ScaleNumericalVariables = ''

@@ -1,403 +1,582 @@
-'''
+"""
 ===========================================================================================
 Tensor Flow Model Building Package (version:
 ===========================================================================================
 Script Reviewed by COGNAS
 ===========================================================================================
-'''
-from lib_xplore.nlp.word2vec import Word2Vec
+"""
 
 import os
+import numpy as np
+import logging
 import tensorflow as tf
 
 
-class TensorFlowModel:
-
+class XTensorFlowModel:
     def __init__(self, param=None):
-        '''Constructor for this class'''
-        self.model_parameters = param
-        self.callbacks = None
-        self.model = None
-        self.history = None
-        self.statefull = False
+        """Constructor for this class"""
+        self._model_parameters = param
+        self._callbacks = []
+        self._model = None
+        self._history = None
+        self._statefull = False
+        self._topology_id = None
+        self._topology_details = None
+        self._run_folder_path = None
+        self._prefix_name = None
+        self._tracking = False
+        self._application = None
+        self._application_type = None
 
-    def fit(self, X, Y, dataset_param):
+    def set_application(self, value: str) -> bool:
+        self._application = value
+        return True
+
+    def set_application_type(self, value: str) -> bool:
+        self._application_type = value
+        return True
+
+    def set_topology_id(self, topology: str) -> bool:
+        self._topology_id = topology
+        return True
+
+    def set_topology_details(self, topology: dict) -> bool:
+        self._topology_details = topology
+        return True
+
+    def set_run_folder_path(self, path: str) -> bool:
+        self._run_folder_path = path
+        return True
+
+    def set_prefix_name(self, prefix: str) -> bool:
+        self._prefix_name = prefix
+        return True
+
+    def set_tracking(self, value: bool) -> bool:
+        self._tracking = value
+        return True
+
+    def fit(self, X, Y, input_var_dict, output_cat_dict):
+
+        # Logging infos
+        logging.info("TensorFlow version: " + tf.__version__)
+        logging.info("GPU Available: " + str(tf.config.list_physical_devices("GPU")))
 
         # Build architeture
-        self.set_architeture(input=X, output=Y, dataset_param=dataset_param)
+        self.set_architeture(
+            inputs=X, outputs=Y, input_var_dict=input_var_dict, output_cat_dict=output_cat_dict
+        )
 
-        # Go to training
-        if self.statefull:
-            for i in range(self.model_parameters.get("epochs")):
-                self.history = self.model.fit(X, Y,
-                                              batch_size=self.model_parameters.get("batch_size"),
-                                              epochs=1,
-                                              validation_split=self.model_parameters.get("validation_split"),
-                                              callbacks=self.callbacks,
-                                              verbose=self.model_parameters.get("verbose"),
-                                              shuffle=False)
-                self.model.reset_states()
-        else:
-            self.history = self.model.fit(X, Y,
-                                          batch_size=self.model_parameters.batch_size,
-                                          epochs=self.model_parameters.epochs,
-                                          validation_split=self.model_parameters.validation_split,
-                                          callbacks=self.callbacks,
-                                          verbose=self.model_parameters.verbose,
-                                          shuffle=self.model_parameters.shuffle)
+        self._history = self._model.fit(
+            X,
+            Y[0],
+            batch_size=self._model_parameters.batch_size,
+            epochs=self._model_parameters.epochs,
+            validation_split=self._model_parameters.validation_split,
+            callbacks=self._callbacks,
+            verbose=self._model_parameters.verbose,
+            shuffle=self._model_parameters.shuffle,
+        )
 
         return True
 
-    def evaluate(self, X):
-        if self.statefull:
-            Y = self.model.predict(X, batch_size=self.model_parameters.batch_size)
-            self.model.reset_states()
+    def predict(self, X):
+        if self._statefull:
+            Y = self._model.predict(X, batch_size=self._model_parameters.batch_size)
+            self._model.reset_states()
         else:
-            Y = self.model.predict(X)
+            Y = self._model.predict(X)
 
         return Y
 
-    def set_architeture(self, input=None, output=None, dataset_param=None):
+    def set_architeture(
+        self, inputs=None, outputs=None, input_var_dict=None, output_cat_dict=None
+    ) -> bool:
 
         # Check pre-models
-        if self.model_parameters.topology_id == "DNN-DENSE":
-            nodes = self.model_parameters.nodes
-            func = self.model_parameters.func
-            drop = self.model_parameters.dropout
+        if self._topology_id == "FFNN-FCCx":
 
-            self.model = Sequential()
-            self.model.add(Dense(nodes[0], input_shape=(input_shape[1],), activation=func[0]))
-            self.model.add(Dropout(drop))
-            self.model.add(Dense(nodes[1], activation=func[1]))
-            self.model.add(Dropout(drop))
-            self.model.add(Dense(nodes[2], activation=func[2]))
-            self.model.add(Dropout(drop))
-            self.model.add(Dense(output_shape[1], activation=func[3]))
+            in_layer = tf.keras.Input(shape=(inputs[0].shape[1],))
 
-        elif self.model_parameters.topology_id == "DNN-DENSE-DENSE-DENSE-DENSE":
+            # hidden layer
+            for stack in range(len(self._topology_details.get("hidden_nodes")[0])):
+                # first hidden layer
+                if stack == 0:
+                    hidden_layer = tf.keras.layers.Dense(
+                        units=self._topology_details.get("hidden_nodes")[0][stack],
+                        use_bias=True,
+                        bias_initializer="zeros",
+                        kernel_initializer="glorot_uniform",
+                        activation=self._topology_details.get("hidden_func_nodes")[0][stack]
+                    )(in_layer)
+                    hidden_layer = tf.keras.layers.Dropout(
+                        rate=self._topology_details.get("hidden_dropout")[0][stack]
+                    )(hidden_layer)
+                else:
+                    hidden_layer = tf.keras.layers.Dense(
+                        units=self._topology_details.get("hidden_nodes")[0][stack],
+                        use_bias=True,
+                        bias_initializer="zeros",
+                        kernel_initializer="glorot_uniform",
+                        activation=self._topology_details.get("hidden_func_nodes")[0][stack]
+                    )(hidden_layer)
+                    hidden_layer = tf.keras.layers.Dropout(
+                        rate=self._topology_details.get("hidden_dropout")[0][stack]
+                    )(hidden_layer)
 
-            nodes = self.model_parameters.nodes
-            func = self.model_parameters.func
-            drop = self.model_parameters.dropout
+            # output layer model
+            if self._application != "regression":
+                if self._application_type == "binary_category":
+                    output_num_classes = 1
+                else:
+                    output_num_classes = len(output_cat_dict[0][0])
 
-            self.model = Sequential()
-            self.model.add(Dense(nodes[0], input_shape=(input_shape[1],), activation=func[0]))
-            self.model.add(Dropout(drop))
-            self.model.add(Dense(nodes[1], activation=func[1]))
-            self.model.add(Dropout(drop))
-            self.model.add(Dense(nodes[2], activation=func[2]))
-            self.model.add(Dropout(drop))
-            self.model.add(Dense(output_shape[1], activation=func[3]))
+            # using sigmoid for binary classifier and softmax for multi category
+            if (
+                self._application == "classification"
+                and self._application_type == "binary_category"
+            ):
+                output_layer = tf.keras.layers.Dense(
+                    units=output_num_classes, activation="sigmoid"
+                )(hidden_layer)
+            elif (
+                self._application == "classification"
+                and self._application_type == "multi_category_unilabel"
+            ):
+                output_layer = tf.keras.layers.Dense(
+                    units=output_num_classes, activation="softmax"
+                )(hidden_layer)
+            elif self._application == "regression":
+                output_layer = tf.keras.layers.Dense(
+                    units=outputs[0].shape[1], activation="linear"
+                )(hidden_layer)
+            else:
+                logging.error(
+                    "Application and/or application type is not valid for topolgy "
+                    + self._topology_id
+                )
 
-        # elif self.model_parameters.topology_id == "RNN-LSTM-DENSE":
-        #     # Vanilla LSTM with stateless between batches
-        #     # input shape: samples x time_steps x features
-        #
-        #     nodes = self.model_parameters.nodes
-        #     func = self.model_parameters.func
-        #     drop = self.model_parameters.dropout
-        #
-        #     self.model = Sequential()
-        #     self.model.add(LSTM(nodes[0],
-        #                         input_shape=(input_shape[1], input_shape[2]),
-        #                         dropout=drop,
-        #                         recurrent_dropout=drop,
-        #                         activation=func[0],
-        #                         stateful=False))
-        #     self.model.add(Dense(output_shape[1], activation=func[1]))
+            self._model = tf.keras.models.Model(inputs=in_layer, outputs=output_layer)
 
-        elif self.model_parameters.topology_id == 'RNN-EMB-FIX-LSTM-DENSE':
-            # ref: https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html
+        # ----------------------------------------------------------------------------
+        elif self._topology_id == "RNN-LTSMx-FCCx":
 
-            nodes = self.model_parameters.nodes
-            func = self.model_parameters.func
-            drop = self.model_parameters.dropout
-            output_classes = len(set(output))
+            # List of inputs with [samples, time steps, features] matrix
+            # sequence of X inputs is number, cat , txt
+            seq = 0
+            input_list = []
+            seq_in_list = []
 
-            # loading model
-            embedding_model = Word2Vec()
-            embedding_model.load_model(self.model_parameters.embedding_word_model_file)
+            # sequences of number
+            input_feature_list = input_var_dict.get("number_inputs")
+            if len(input_feature_list) > 0:
+                for i in range(len(input_feature_list)):
+                    in_layer = tf.keras.Input(shape=(inputs[seq].shape[1], inputs[seq].shape[2]))
 
-            # matrix from w2v model
-            embedding_matrix = embedding_model.get_embedding_matrix()
+                    # input sequence LSTM stack
+                    for stack in range(len(self._topology_details.get("seq_hidden_nodes")[seq])):
+                        # first layer sequence encoder
+                        if stack == 0:
+                            # last layer too
+                            if (
+                                stack
+                                == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1
+                            ):
+                                return_sequences = False
+                            else:
+                                return_sequences = True
 
-            self.model = tf.keras.models.Sequential()
-            self.model.add(tf.keras.layers.Embedding(embedding_matrix.shape[0],
-                                                     embedding_matrix.shape[1],
-                                                     weights=[embedding_matrix],
-                                                     input_length=dataset_param.input_txt_max_seq,
-                                                     trainable=False))
-            self.model.add(tf.keras.layers.LSTM(nodes[0],
-                                                dropout=drop[0],
-                                                activation=func[0],
-                                                stateful=False))
-            self.model.add(tf.keras.layers.Dense(output_classes, activation=func[1]))
+                            # adjust return sequences
+                            seq_in_layer = tf.keras.layers.LSTM(
+                                units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
+                                return_sequences=return_sequences,
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
+                            )(in_layer)
 
-        elif self.model_parameters.topology_id == 'RNN-EMB-FIX-LSTM-DENSE-ATTENTION':
-            # ref: https://www.analyticsvidhya.com/blog/2019/11/comprehensive-guide-attention-mechanism-deep-learning/
+                        # last layer sequence encoder
+                        elif stack == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1:
+                            seq_in_layer = tf.keras.layers.LSTM(
+                                units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
+                                return_sequences=False,
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
+                            )(in_layer)
 
-            nodes = self.model_parameters.nodes
-            func = self.model_parameters.func
-            drop = self.model_parameters.dropout
+                        # intermediate sequence encoder
+                        else:
+                            seq_in_layer = tf.keras.layers.LSTM(
+                                units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
+                                return_sequences=True,
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
+                            )(in_layer)
 
-            # loading model
-            embedding_model = Word2Vec()
-            embedding_model.load_model(self.model_parameters.embedding_word_model_file)
+                    input_list.append(in_layer)
+                    seq_in_list.append(seq_in_layer)
+                    seq = seq + 1
 
-            # dictionary and matrix from w2v model
-            word_index = {word: vocab.index for word, vocab in embedding_model._model.wv.vocab.items()}
-            embedding_model.word_index = word_index
-            embedding_matrix = embedding_model.get_embedding_matrix()
+            # sequences of categorical
+            input_feature_list = input_var_dict.get("categorical_inputs")
+            if len(input_feature_list) > 0:
+                for i in range(len(input_feature_list)):
+                    in_layer = tf.keras.Input(shape=(inputs[seq].shape[1], inputs[seq].shape[2]))
 
-            inputs = Input(shape=(self.model_parameters.input_txt_max_seq,), dtype='int32')
+                    # input sequence LSTM stack
+                    for stack in range(len(self._topology_details.get("seq_hidden_nodes")[seq])):
+                        # first layer sequence encoder
+                        if stack == 0:
+                            # last layer too
+                            if (
+                                stack
+                                == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1
+                            ):
+                                return_sequences = False
+                            else:
+                                return_sequences = True
 
-            embedded_sequences = Embedding(input_dim=embedding_matrix.shape[0],
-                                           output_dim=embedding_matrix.shape[1],
-                                           input_length=self.model_parameters.input_txt_max_seq,
-                                           weights=[embedding_matrix],
-                                           trainable=False)(inputs)
+                            # adjust return sequences
+                            seq_in_layer = tf.keras.layers.LSTM(
+                                units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
+                                return_sequences=return_sequences,
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
+                            )(in_layer)
 
-            att_in = LSTM(nodes[0], return_sequences=True, dropout=drop[0], recurrent_dropout=drop[0])(
-                embedded_sequences)
-            att_out = Attention()(att_in)
-            outputs = Dense(output_shape[1], activation=func[1], trainable=True)(att_out)
-            self.model = Model(inputs, outputs)
+                        # last layer sequence encoder
+                        elif stack == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1:
+                            seq_in_layer = tf.keras.layers.LSTM(
+                                units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
+                                return_sequences=False,
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
+                            )(in_layer)
 
-            # summarize layers
-            # print(model.summary())
+                        # intermediate sequence encoder
+                        else:
+                            seq_in_layer = tf.keras.layers.LSTM(
+                                units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
+                                return_sequences=True,
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
+                            )(in_layer)
 
-        elif self.model_parameters.topology_id == 'RNN-EMB-FIX-LSTM-DENSE-ATTENTION2':
-            # ref: https://github.com/philipperemy/keras-attention-mechanism
+                    input_list.append(in_layer)
+                    seq_in_list.append(seq_in_layer)
+                    seq = seq + 1
 
-            nodes = self.model_parameters.nodes
-            func = self.model_parameters.func
-            drop = self.model_parameters.dropout
+            # sequences of txt
+            input_feature_list = input_var_dict.get("txt_inputs")
+            if len(input_feature_list) > 0:
+                for i in range(len(input_feature_list)):
+                    in_layer = tf.keras.Input(shape=(inputs[seq].shape[1],))
+                    # input_dim = vocabulary_size
+                    vocab_size = np.max(inputs[seq]) + 1
+                    # output_dim = word embedded vector dim
+                    # input_length = time steps of input
+                    in_embedding_layer = tf.keras.layers.Embedding(
+                        input_dim=vocab_size,
+                        output_dim=int(vocab_size * 0.1),
+                        input_length=inputs[seq].shape[1],
+                        trainable=True,
+                    )(in_layer)
 
-            # loading model
-            embedding_model = Word2Vec()
-            embedding_model.load_model(self.model_parameters.embedding_word_model_file)
+                    # input sequence LSTM stack
+                    for stack in range(len(self._topology_details.get("seq_hidden_nodes")[seq])):
+                        # first layer sequence encoder
+                        if stack == 0:
+                            # last layer too
+                            if (
+                                stack
+                                == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1
+                            ):
+                                return_sequences = False
+                            else:
+                                return_sequences = True
 
-            # dictionary and matrix from w2v model
-            word_index = {word: vocab.index for word, vocab in embedding_model._model.wv.vocab.items()}
-            embedding_model.word_index = word_index
-            embedding_matrix = embedding_model.get_embedding_matrix()
+                            # adjust return sequences
+                            seq_in_layer = tf.keras.layers.LSTM(
+                                units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
+                                return_sequences=return_sequences,
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
+                            )(in_embedding_layer)
 
-            inputs = Input(shape=(self.model_parameters.input_txt_max_seq,), dtype='int32')
+                        # last layer sequence encoder
+                        elif stack == len(self._topology_details.get("seq_hidden_nodes")[seq]) - 1:
+                            seq_in_layer = tf.keras.layers.LSTM(
+                                units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
+                                return_sequences=False,
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
+                            )(seq_in_layer)
 
-            embedded_sequences = Embedding(input_dim=embedding_matrix.shape[0],
-                                           output_dim=embedding_matrix.shape[1],
-                                           input_length=self.model_parameters.input_txt_max_seq,
-                                           weights=[embedding_matrix],
-                                           trainable=False)(inputs)
+                        # intermediate sequence encoder
+                        else:
+                            seq_in_layer = tf.keras.layers.LSTM(
+                                units=self._topology_details.get("seq_hidden_nodes")[seq][stack],
+                                return_sequences=True,
+                                dropout=self._topology_details.get("seq_hidden_dropout")[seq][
+                                    stack
+                                ],
+                            )(seq_in_layer)
 
-            att_in = LSTM(nodes[0], return_sequences=True, dropout=drop[0], recurrent_dropout=drop[0])(
-                embedded_sequences)
-            att_out = self.attention_3d_block(att_in)
-            outputs = Dense(output_shape[1], activation=func[1], trainable=True, name='output')(att_out)
-            self.model = Model(inputs, outputs)
+                    input_list.append(in_layer)
+                    seq_in_list.append(seq_in_layer)
+                    seq = seq + 1
 
-        elif self.model_parameters.topology_id == 'RNN-EMB-FIX-LSTM-DENSE-ATTENTION3':
-            # ref: https://github.com/thushv89/attention_keras
+            # concatenate all sequences input - use concatenate for > 1 sequences
+            if len(seq_in_list) > 1:
+                concat_layer = tf.keras.layers.concatenate(seq_in_list, axis=-1)
 
-            nodes = self.model_parameters.nodes
-            func = self.model_parameters.func
-            drop = self.model_parameters.dropout
+                # hidden layer
+                for stack in range(len(self._topology_details.get("join_hidden_nodes"))):
 
-            # loading model
-            embedding_model = Word2Vec()
-            embedding_model.load_model(self.model_parameters.embedding_word_model_file)
+                    # first hidden layer
+                    if stack == 0:
+                        hidden_layer = tf.keras.layers.Dense(
+                            units=self._topology_details.get("join_hidden_nodes")[stack],
+                            activation=self._topology_details.get("join_hidden_func_nodes")[stack],
+                        )(concat_layer)
+                    else:
+                        hidden_layer = tf.keras.layers.Dense(
+                            units=self._topology_details.get("join_hidden_nodes")[stack],
+                            activation=self._topology_details.get("join_hidden_func_nodes")[stack],
+                        )(hidden_layer)
 
-            # dictionary and matrix from w2v model
-            word_index = {word: vocab.index for word, vocab in embedding_model._model.wv.vocab.items()}
-            embedding_model.word_index = word_index
-            embedding_matrix = embedding_model.get_embedding_matrix()
+                # output layer
+                if self._application_type == "binary_category":
+                    output_num_classes = 1
+                else:
+                    output_num_classes = len(output_cat_dict[0][0])
 
-            inputs = Input(shape=(self.model_parameters.input_txt_max_seq,), dtype='int32')
+                if len(self._topology_details.get("join_hidden_nodes")) == 0:
+                    # using sigmoid for binary classifier and softmax for multi category
+                    if (
+                        self._application == "classification"
+                        and self._application_type == "binary_category"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="sigmoid"
+                        )(concat_layer)
+                    elif (
+                        self._application == "classification"
+                        and self._application_type == "multi_category_unilabel"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="softmax"
+                        )(concat_layer)
+                    else:
+                        logging.error(
+                            "Application and/or application type is not valid for topolgy "
+                            + self._topology_id
+                        )
+                else:
+                    # using sigmoid for binary classifier and softmax for multi category
+                    if (
+                        self._application == "classification"
+                        and self._application_type == "binary_category"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="sigmoid"
+                        )(hidden_layer)
+                    elif (
+                        self._application == "classification"
+                        and self._application_type == "multi_category_unilabel"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="softmax"
+                        )(hidden_layer)
+                    else:
+                        logging.error(
+                            "Application and/or application type is not valid for topolgy "
+                            + self._topology_id
+                        )
 
-            embedded_sequences = Embedding(input_dim=embedding_matrix.shape[0],
-                                           output_dim=embedding_matrix.shape[1],
-                                           input_length=self.model_parameters.input_txt_max_seq,
-                                           weights=[embedding_matrix],
-                                           trainable=False)(inputs)
+            # just 1 sequence input
+            else:
+                # hidden layer
+                for stack in range(len(self._topology_details.get("join_hidden_nodes"))):
 
-            encoder = Bidirectional(
-                LSTM(nodes[0], return_state=True, return_sequences=True, dropout=drop[0], recurrent_dropout=drop[0]))
-            encoder_outputs, forward_h, forward_c, backward_h, backward_c = encoder(embedded_sequences)
+                    # first hidden layer
+                    if stack == 0:
+                        hidden_layer = tf.keras.layers.Dense(
+                            units=self._topology_details.get("join_hidden_nodes")[stack],
+                            activation=self._topology_details.get("join_hidden_func_nodes")[stack],
+                        )(seq_in_list[0])
+                    else:
+                        hidden_layer = tf.keras.layers.Dense(
+                            units=self._topology_details.get("join_hidden_nodes")[stack],
+                            activation=self._topology_details.get("join_hidden_func_nodes")[stack],
+                        )(hidden_layer)
 
-            state_h = Concatenate(axis=-1)([forward_h, backward_h])
-            state_c = Concatenate(axis=-1)([forward_c, backward_c])
-            encoder_states = Concatenate(axis=-1)([state_h, state_c])
+                # output layer model
+                if self._application_type == "binary_category":
+                    output_num_classes = 1
+                else:
+                    output_num_classes = len(output_cat_dict[0][0])
 
-            decoder_outputs = TimeDistributed(Dense(nodes[0] * 2, activation=func[1], trainable=True, name='decoder'))(
-                encoder_outputs)
+                if len(self._topology_details.get("join_hidden_nodes")) == 0:
+                    # using sigmoid for binary classifier and softmax for multi category
+                    if (
+                        self._application == "classification"
+                        and self._application_type == "binary_category"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="sigmoid"
+                        )(seq_in_list[0])
+                    elif (
+                        self._application == "classification"
+                        and self._application_type == "multi_category_unilabel"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="softmax"
+                        )(seq_in_list[0])
+                    else:
+                        logging.error(
+                            "Application and/or application type is not valid for topolgy "
+                            + self._topology_id
+                        )
+                else:
+                    # using sigmoid for binary classifier and softmax for multi category
+                    if (
+                        self._application == "classification"
+                        and self._application_type == "binary_category"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="sigmoid"
+                        )(hidden_layer)
+                    elif (
+                        self._application == "classification"
+                        and self._application_type == "multi_category_unilabel"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="softmax"
+                        )(hidden_layer)
+                    else:
+                        logging.error(
+                            "Application and/or application type is not valid for topolgy "
+                            + self._topology_id
+                        )
 
-            # Attention layer
-            attn_layer = AttentionLayer(name='attention_layer')
-            attn_out, attn_states = attn_layer([encoder_outputs, decoder_outputs])
-
-            # Concat attention output and decoder output
-            decoder_concat_input = Concatenate(axis=-1, name='concat_layer')([decoder_outputs, attn_out])
-
-            decoder_dense = Dense(output_shape[1], activation='softmax')
-            outputs = decoder_dense(decoder_concat_input)
-
-            # Define the model that will turn
-            self.model = Model([inputs, decoder_outputs], outputs)
-
-        elif self.model_parameters.topology_id == 'RNN-EMB-TRAIN-LSTM-DENSE':
-            # ref: https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html
-
-            nodes = self.model_parameters.nodes
-            func = self.model_parameters.func
-            drop = self.model_parameters.dropout
-
-            # loading model
-            embedding_model = Word2Vec()
-            embedding_model.load_model(self.model_parameters.embedding_word_model_file)
-
-            # dictionary and matrix from w2v model
-            word_index = {word: vocab.index for word, vocab in embedding_model._model.wv.vocab.items()}
-            embedding_model.word_index = word_index
-            embedding_matrix = embedding_model.get_embedding_matrix()
-
-            self.model = Sequential()
-            self.model.add(Embedding(embedding_matrix.shape[0],
-                                     embedding_matrix.shape[1],
-                                     weights=[embedding_matrix],
-                                     input_length=self.model_parameters.input_txt_max_seq,
-                                     trainable=True))
-            self.model.add(LSTM(nodes[0],
-                                dropout=drop[0],
-                                activation=func[0],
-                                stateful=False))
-            self.model.add(Dense(output_shape[1], activation=func[1]))
-
-        elif self.model_parameters.topology_id == "RNN-CONV1D-MAXP1D-LSTM-DENSE":
-            # todo: criar uma sequencia especifica pra CNN em multisequencias de LSTM
-            # input shape: samples x time_steps x features
-
-            nodes = self.model_parameters.nodes
-            func = self.model_parameters.func
-            drop = self.model_parameters.dropout
-
-            self.model = Sequential()
-            self.model.add(Convolution1D(input_shape=(input_shape[1], input_shape[2]),
-                                         filters=32,
-                                         kernel_size=3,
-                                         padding='same',
-                                         activation='relu'))
-            self.model.add(MaxPooling1D(pool_size=2))
-            self.model.add(LSTM(nodes[0],
-                                dropout=drop,
-                                recurrent_dropout=drop,
-                                activation=func[0],
-                                stateful=False))
-            self.model.add(Dense(output_shape[1], activation=func[1]))
-
-        elif self.model_parameters.topology_id == "RNN-LSTM-LSTM-DENSE":
-            # Vanilla LSTM with stateless between batches
-            # input shape: samples x time_steps x features
-
-            nodes = self.model_parameters.nodes
-            func = self.model_parameters.func
-            drop = self.model_parameters.get.dropout
-
-            self.model = Sequential()
-            self.model.add(LSTM(nodes[0],
-                                input_shape=(input_shape[1], input_shape[2]),
-                                activation=func[0],
-                                dropout=drop,
-                                recurrent_dropout=drop,
-                                stateful=False,
-                                return_sequences=True))
-            # self.model.add(Dropout(drop))
-            self.model.add(LSTM(nodes[1],
-                                activation=func[1],
-                                dropout=drop,
-                                recurrent_dropout=drop,
-                                stateful=False))
-            self.model.add(Dense(output_shape[1], activation=func[2]))
-
-        elif self.model_parameters.topology_id == "RNN-LSTM-DENSE-Statefull":
-            # Vanilla LSTM with statefull between batches (check that shuffle = False)
-            # input shape: samples x time_steps x features
-
-            self.statefull = True
-            nodes = self.model_parameters.nodes
-            func = self.model_parameters.func
-            drop = self.model_parameters.dropout
-
-            self.model = Sequential()
-            self.model.add(LSTM(nodes[0], dropout=drop,
-                                batch_input_shape=(
-                                    self.model_parameters.batch_size, input_shape[1], input_shape[2]),
-                                activation=func[0], stateful=True))
-            self.model.add(Dense(output_shape[1], activation=func[1]))
+            self._model = tf.keras.models.Model(inputs=input_list, outputs=output_layer)
 
         else:
-            raise ValueError('This topology_id is not valid')
+            raise ValueError("This topology_id is not valid")
 
-        # Learning rate adjustment after patient epochs on constant val_loss (factor * original) return to original
-        # value after cooldown epochs
-        reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss',
-                                                         factor=0.2,
-                                                         patience=3,
-                                                         min_lr=0.001,
-                                                         verbose=1,
-                                                         mode='auto',
-                                                         cooldown=10)
-        self.callbacks = [reduce_lr]
+        # --------------------------------
+        # Set callbacks for training
+        # --------------------------------
 
-        # Early stopping with validation perfomance (save best model)
-        if self.model_parameters.early_stopping:
-            earlystopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss',
-                                                             patience=2,
-                                                             verbose=1,
-                                                             mode='min',
-                                                             restore_best_weights=True)
-            self.callbacks.append(earlystopping)
+        # Enable tensorboard tracking
+        if self._tracking:
+            logdir = "tbruns/logs/" + self._prefix_name + "log"
+            tensorboard_callback = tf.keras.callbacks.TensorBoard(
+                log_dir=logdir, histogram_freq=1, write_graph=True
+            )
+            self._callbacks.append(tensorboard_callback)
+
+        if self._model_parameters.reduce_lr:
+            # Learning rate adjustment after patient epochs on constant val_loss (factor * original) return to original
+            # value after cooldown epochs
+            reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(
+                monitor="val_loss",
+                factor=0.2,
+                patience=3,
+                min_lr=0.001,
+                verbose=1,
+                mode="auto",
+                cooldown=10,
+            )
+            self._callbacks.append(reduce_lr)
+
+        if self._model_parameters.early_stopping:
+            # Early stopping with validation perfomance (save best model)
+            earlystopping = tf.keras.callbacks.EarlyStopping(
+                monitor="val_loss", patience=2, verbose=1, mode="min", restore_best_weights=True
+            )
+            self._callbacks.append(earlystopping)
 
         # Checkpoint models during training
-        if self.model_parameters.save_checkpoints:
-            ckp_model_file = self.model_parameters.working_folder + \
-                             self.model_parameters.prefix_name + "ep_{epoch:02d}-val-loss_{val_loss:.2f}.h5"
-            checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath=ckp_model_file,
-                                                              verbose=1,
-                                                              save_best_only=True,
-                                                              monitor='val_loss',
-                                                              mode='min',
-                                                              save_weights_only=False)
+        if self._model_parameters.save_checkpoints:
+            ckp_model_file = (
+                self._run_folder_path
+                + self._prefix_name
+                + "ep_{epoch:02d}-val-loss_{val_loss:.2f}.h5"
+            )
+            checkpointer = tf.keras.callbacks.ModelCheckpoint(
+                filepath=ckp_model_file,
+                verbose=1,
+                save_best_only=True,
+                monitor="val_loss",
+                mode="min",
+                save_weights_only=False,
+            )
 
-            self.callbacks.append(checkpointer)
+            self._callbacks.append(checkpointer)
 
         # Model compile
-        self.model.compile(loss=self.model_parameters.loss,
-                           optimizer=self.model_parameters.optimizer,
-                           metrics=self.model_parameters.metrics)
+        loss = None
+        if (
+            self._application == "classification"
+            and self._application_type == "multi_category_unilabel"
+        ):
+            loss = "sparse_categorical_crossentropy"
+        elif self._application == "classification" and self._application_type == "binary_category":
+            loss = "binary_crossentropy"
+        elif self._application == "regression":
+            loss = "mean_squared_error"
+        else:
+            logging.error("Loss invalid for model compile")
+
+        logging.info(
+            "Compile error trainning for " + self._application + " auto select to " + loss
+        )
+
+        self._model.compile(
+            loss=loss,
+            optimizer=self._model_parameters.optimizer.value,
+            metrics=self._model_parameters.metrics,
+        )
+
+        # Print model resume
+        self._model.summary()
 
         return True
 
-    def save_model(self, working_folder=None, prefix=None, format='h5'):
+    def save_model(self, working_folder=None, prefix=None, format="h5"):
 
         # Filename
         model_filename_path = working_folder
-        model_filename = prefix + 'best_'
+        model_filename = prefix + "best_"
 
         # Topology without weights in JSON
-        if format == 'json':
-            model_json = self.model.to_json()
-            with open(os.path.join(model_filename_path, model_filename + "model.json"), "w") as json_file:
+        if format == "json":
+            model_json = self._model.to_json()
+            with open(
+                os.path.join(model_filename_path, model_filename + "model.json"), "w"
+            ) as json_file:
                 json_file.write(model_json)
             return os.path.join(model_filename_path, model_filename + "model.json")
 
         # Topology without weights in YAML
-        elif format == 'yaml':
-            model_yaml = self.model.to_yaml()
-            with open(os.path.join(model_filename_path, model_filename + "model.yaml"), "w") as yaml_file:
+        elif format == "yaml":
+            model_yaml = self._model.to_yaml()
+            with open(
+                os.path.join(model_filename_path, model_filename + "model.yaml"), "w"
+            ) as yaml_file:
                 yaml_file.write(model_yaml)
             return os.path.join(model_filename_path, model_filename + "model.yaml")
 
         # Topology with weights in HDF5
-        elif format == 'h5':
-            self.model.save(os.path.join(model_filename_path, model_filename + "model.h5"))
+        elif format == "h5":
+            self._model.save(os.path.join(model_filename_path, model_filename + "model.h5"))
             return os.path.join(model_filename_path, model_filename + "model.h5")

@@ -79,7 +79,7 @@ class MLFlowManagement:
 
         self.log_artifacts(files_dict=files_dict)
 
-    def publish_regression_eval(self, model_eval=None, mode=None):
+    def publish_regression_eval(self, model_eval=None, mode=None)-> bool:
 
         if mode == 'train':
             self.log_metric("train_mae", model_eval.get_mean_absolute_error())
@@ -88,6 +88,14 @@ class MLFlowManagement:
             self.log_metric("train_r2", model_eval.get_r2_score())
             self.log_metric("train_explained_var", model_eval.get_explained_variance_score())
             self.log_metric("train_max_error", model_eval.get_max_error_score())
+
+        return True
+
+    def publish_classification_eval(self, model_eval=None, mode=None)-> bool:
+
+        if mode == 'train':
+            self.log_metric("accuracy: {a:.3f}".format(a=model_eval.get_accuracy_score()))
+        return True
 
     def publish_history(self, history):
 

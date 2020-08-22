@@ -10,6 +10,7 @@ import operator
 from functools import reduce
 import json
 import os
+import pandas as pd
 
 
 class Util:
@@ -50,6 +51,26 @@ class Util:
         return flat_list
 
     @staticmethod
+    def concatenate_pandas_columns(dataframe:pd = None, columns:list = None, conc_str:str = " ") -> pd:
+        for i in range(len(columns)):
+            if i>0:
+                df = dataframe[columns[i-1]] + conc_str + dataframe[columns[i]]
+
+        return df
+
+    @staticmethod
+    def count_lists_pandas(dataframe:pd = None, column:str = None):
+        count_list = []
+        for index, row in dataframe.iterrows():
+            count = len(row[column])
+            count_list.append(count)
+        column_name = column + "_list_count"
+        dataframe[column_name] = count_list
+
+        return dataframe, column_name
+
+
+    @staticmethod
     def load_parameters_from_file(path_file: str) -> dict:
 
         try:
@@ -76,7 +97,10 @@ class Util:
 
     @staticmethod
     def get_unique_list(input_list) -> list:
-        unique_list = reduce(lambda l, x: l.append(x) or l if x not in l else l, input_list, [])
+        if len(input_list)>1:
+            unique_list = reduce(lambda l, x: l.append(x) or l if x not in l else l, input_list, [])
+        else:
+            unique_list = input_list
         return unique_list
 
     @staticmethod
@@ -102,3 +126,25 @@ class Util:
     @staticmethod
     def get_name_and_extension_from_file(filename: str) -> list:
         return os.path.splitext(filename)
+
+    @staticmethod
+    def get_filename_from_path(path:str) -> str:
+        from pathlib import Path
+        return Path(path).name
+
+    @staticmethod
+    def get_list_from_pandas_list_rows(dataframe:pd = None, column:str=None)-> list:
+        tks_list = []
+        for index, row in dataframe.iterrows():
+            for item in row[column]:
+                tks_list.append(item)
+        return tks_list
+
+    @staticmethod
+    def save_dataframe(data: pd = None, folder_path: str = None, prefix: str = None) -> bool:
+
+        file_path = folder_path + prefix + ".tsv"
+        data.to_csv(file_path, index=True, sep="\t", encoding="utf-8")
+        logging.info("File saved in: " + file_path)
+
+        return file_path

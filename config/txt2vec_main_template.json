@@ -1,0 +1,29 @@
+{
+  "environment_parameters": {
+    "app_name" : "example-regress",
+    "environment_id" : "console_localhost",
+    "output_folder": "outputs",
+    "logging_level" : "info",
+    "view_plots" : false,
+    "save_plots" : false,
+    "tracking": false
+  },
+
+  "txt2vec_parameters": {
+    "application_type": "word_embedding",
+    "data_source":"localhost_datafile",
+    "data_train_file_path":"static/working/example_20-07-22-12-35-19_train.tsv",
+    "separator":"\t",
+    "perc_load":1.0,
+    "mode_load":"sequential",
+    "txt_inputs":[["x_3_txt","y_2_class"]],
+    "model_type": "word2vec"
+  },
+
+  "word2vec_parameters": {
+    "topology": "cbow",
+    "encode_dim": 5,
+    "window_max_distance": 2,
+    "epochs": 10
+  }
+}

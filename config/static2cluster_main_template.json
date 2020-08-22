@@ -1,0 +1,33 @@
+{
+  "environment_parameters": {
+    "app_name" : "example-cluster",
+    "environment_id" : "console_localhost",
+    "output_folder": "outputs",
+    "logging_level" : "info",
+    "view_plots" : true,
+    "save_plots" : true,
+    "tracking": true
+  },
+
+  "static2cluster_parameters": {
+    "data_source":"localhost_datafile",
+    "data_train_file_path":"static/working/example_20-07-22-12-35-19_train.tsv",
+    "data_test_file_path":"static/working/example_20-07-22-12-35-19_test.tsv",
+    "separator":"\t",
+    "perc_load":1.0,
+    "mode_load":"sequential",
+    "numerical_inputs":["x_1_num", "y_1_value"],
+    "categorical_inputs":["x_2_cat", "y_2_class", "y_4_bin"],
+    "txt_inputs":[],
+    "scale_numerical_inputs": "min_max",
+    "encode_categorical_inputs": "one_hot",
+    "model_type": "k_means"
+  },
+
+  "k_means_parameters": {
+    "n_clusters" : 2,
+    "init": "k-means++",
+    "random_state": 42
+  }
+
+}

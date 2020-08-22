@@ -30,11 +30,13 @@ class ModelType(str, Enum):
     '''
 
     '''
+    logistic_regression = 'logistic_regression'
     k_nearest_neighbors = 'k_nearest_neighbors'
     naive_bayes = 'naive_bayes'
     svm = 'svm'
     decision_tree = 'decision_tree'
     random_forest = 'random_forest'
+    neural_dense = 'neural_feedforward'
 
 
 class ScaleNumericalVariables(str, Enum):
@@ -112,3 +114,6 @@ class Static2ClassParameters(BaseModel):
 
     # type of modeling technique
     model_type: ModelType
+
+    # output encoding
+    encode_output: str =""

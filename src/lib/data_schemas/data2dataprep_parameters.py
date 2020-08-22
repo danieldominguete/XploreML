@@ -78,6 +78,9 @@ class Data2DataprepParameters(BaseModel):
     # list of txt variables
     txt_variables: list
 
+    # list of txt dict variables
+    txt_dict_processing_variables: list
+
     # output target (categorical ou number) - support only one column
     output_target: list = []
 
@@ -89,6 +92,15 @@ class Data2DataprepParameters(BaseModel):
 
     # delete samples repeated (all columns)
     delete_repeated_samples: bool
+
+    # ==================================
+    # categorical specific preprocessing parameters
+    # ==================================
+    # list of list of variables values to maintain (following the categorical variables sequence)
+    categorical_variables_include: list = []
+
+    # list of list of variables values to exclude (following the categorical variables sequence)
+    categorical_variables_exclude: list = []
 
     # ==================================
     # numerical specific preprocessing parameters

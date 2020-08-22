@@ -49,28 +49,64 @@ class DataPlotting:
         plt.close()
         return full_path
 
-    def plot_count_cat_histogram(self, y_column):
+    def plot_multiple_lines(self, x_column:str, y_columns:list, title="", xlabel="", ylabel=""):
 
-        if self.data[y_column].unique().shape[0] < MAX_CATEGORIES_FOR_PLOT:
-            # fig with single axes
+        full_path = None
+
+        if self.save_plots:
             fig, ax = plt.subplots(figsize=(12,7))
-            ax = sns.catplot(data=self.data, x=y_column, kind="count")
+            for i in range(len(y_columns)):
+                ax = sns.lineplot(x=self.data[x_column], y=self.data[y_columns[i]])
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel(ylabel)
+            ax.set_title(title)
+            ax.legend(y_columns)
             plt.tight_layout()
 
-            # registering results
-            full_path=None
-            if self.save_plots:
-                full_path= self.folder_path + self.prefix + y_column + '_count_cat.png'
-                plt.savefig(full_path)
-
-            if self.view_plots:
-                plt.show()
+            full_path = self.folder_path + self.prefix + title + '.png'
+            plt.savefig(full_path)
 
             plt.close()
-            return full_path
-        else:
-            logging.info('Count categorical histogram to ' + y_column + ' exceed the maximum limit of ' + str(MAX_CATEGORIES_FOR_PLOT) + ' categories.')
-            return False
+
+        if self.view_plots:
+            fig, ax = plt.subplots(figsize=(12, 7))
+            for i in range(len(y_columns)):
+                ax = sns.lineplot(x=self.data[x_column], y=self.data[y_columns[i]])
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel(ylabel)
+            ax.set_title(title)
+            ax.legend(y_columns)
+            plt.tight_layout()
+            plt.show()
+
+        return full_path
+
+    def plot_count_cat_histogram(self, y_column):
+
+        full_path = None
+
+        if self.save_plots:
+            if self.data[y_column].unique().shape[0] < MAX_CATEGORIES_FOR_PLOT:
+                # fig with single axes
+                fig, ax = plt.subplots(figsize=(12,7))
+                ax = sns.catplot(data=self.data, x=y_column, kind="count")
+                plt.tight_layout()
+
+                full_path= self.folder_path + self.prefix + y_column + '_count_cat.png'
+                plt.savefig(full_path)
+                plt.close()
+            else:
+                logging.info('Count categorical histogram to ' + y_column + ' exceed the maximum limit of ' + str(MAX_CATEGORIES_FOR_PLOT) + ' categories.')
+
+        if self.view_plots:
+            if self.data[y_column].unique().shape[0] < MAX_CATEGORIES_FOR_PLOT:
+                # fig with single axes
+                fig, ax = plt.subplots(figsize=(12, 7))
+                ax = sns.catplot(data=self.data, x=y_column, kind="count")
+                plt.tight_layout()
+                plt.show()
+
+        return full_path
 
     def plot_numerical_histogram(self, y_column):
 
@@ -99,7 +135,7 @@ class DataPlotting:
             if marginal_distribution:
                 sns.jointplot(x=X_name, y=Y_name, data=self.data, kind="reg")
             else:
-                sns.lmplot(x=X_name, y=Y_name, data=self.data)
+                sns.lmplot(x=X_name, y=Y_name, data=self.data, fit_reg=False)
 
             plt.title(title)
 
@@ -112,7 +148,7 @@ class DataPlotting:
             if marginal_distribution:
                 sns.jointplot(x=X_name, y=Y_name, data=self.data, kind="reg")
             else:
-                sns.lmplot(x=X_name, y=Y_name, data=self.data)
+                sns.lmplot(x=X_name, y=Y_name, data=self.data, fit_reg=False)
 
             plt.title(title)
 
@@ -284,27 +320,72 @@ class DataPlotting:
 
         return True
 
-    #TODO Plot time x pred x target for forecast (index colum)
+    def plot_history_training(self, history=None):
 
-    def plot_history_training(self, history=None, loss=True, accuracy=False):
+        if self.save_plots:
 
-        # loss value x epochs
-        if loss:
-            plt.plot(history._history['loss'])
-            plt.plot(history._history['val_loss'])
-            plt.title('Model loss')
-            plt.ylabel('Loss')
-            plt.xlabel('Epoch')
-            plt.legend(['Train', 'Valid'], loc='upper left')
-            plt.show()
+            for metric in history['metrics']:
 
-        if accuracy:
-            plt.plot(history._history['sparse_categorical_accuracy'])
-            plt.plot(history._history['val_sparse_categorical_accuracy'])
-            plt.title('Model accuracy')
-            plt.ylabel('Accuracy')
-            plt.xlabel('Epoch')
-            plt.legend(['Train', 'Valid'], loc='upper left')
-            plt.show()
+                fig, ax = plt.subplots(figsize=(12, 7))
+                ax = plt.plot(history['metrics'].get(metric))
+                plt.title(metric)
+                plt.ylabel('value')
+                plt.xlabel('epoch')
+
+                filename = self.folder_path + self.prefix + metric + ".png"
+                plt.savefig(filename)
+                plt.close()
+
+        if self.view_plots:
+
+            for metric in history['metrics']:
+                fig, ax = plt.subplots(figsize=(12, 7))
+                ax = plt.plot(history['metrics'].get(metric))
+                plt.title(metric)
+                plt.ylabel('value')
+                plt.xlabel('epoch')
+
+                filename = self.folder_path + self.prefix + metric + ".png"
+                plt.savefig(filename)
+                plt.show()
 
         return True
+
+    def plot_tokens_freq(self, frequency_dist, var:str=None) -> bool:
+
+        filename = None
+        if self.save_plots:
+            frequency_list = frequency_dist.most_common()
+            # file histogram
+            filename = self.folder_path + self.prefix + var + "_tks_hist.csv"
+            with open(filename, 'w') as f:
+                f.write('token; samples\n')
+                for token, frequency in frequency_list:
+                    f.write("%s;%s\n" % (token, frequency))
+
+        if self.view_plots:
+            frequency_dist.plot(50, cumulative=False)
+
+        return filename
+
+    def plot_tokens_cloud(self, frequency_dist) -> bool:
+        from wordcloud import WordCloud
+        wcloud = WordCloud().generate_from_frequencies(frequencies=frequency_dist)
+        filename = None
+
+        if self.save_plots:
+            plt.figure()
+            plt.imshow(wcloud, interpolation='bilinear')
+            plt.axis("off")
+
+            filename = self.folder_path + self.prefix + "tk_cloud.png"
+            plt.savefig(filename)
+            plt.close()
+
+        if self.view_plots:
+            plt.figure()
+            plt.imshow(wcloud, interpolation='bilinear')
+            plt.axis("off")
+            plt.show()
+
+        return filename

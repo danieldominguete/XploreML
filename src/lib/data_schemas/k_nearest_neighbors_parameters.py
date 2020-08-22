@@ -16,6 +16,6 @@ class Metrics(str, Enum):
     minkowski = "minkowski"
 
 class XKNearestNeighborsParameters(BaseModel):
-    n_neighbors: int = 5,
-    metric:Metrics = "minkowski",
+    n_neighbors: int = 5
+    metric:Metrics = "minkowski"
     metric_power: int = 2

@@ -20,7 +20,7 @@ from src.lib.data_schemas.data2view_parameters import Data2ViewParameters
 from src.lib.data_processing.data_processing import DataProcessing
 from src.lib.data_schemas.environment_parameters import EnvironmentParameters
 from src.lib.environment.environment import Environment
-from src.lib.data_visualization.data_visualization import DataVisualization
+from src.lib.data_visualization.data_streamlit_visualization import DataVisualization
 
 class ViewDataMain:
 
