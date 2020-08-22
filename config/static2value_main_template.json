@@ -23,7 +23,7 @@
     "scale_numerical_inputs": "min_max",
     "encode_categorical_inputs": "one_hot",
     "scale_output_target": "min_max",
-    "model_type": "neural_feedforward"
+    "model_type": "random_forest"
   },
 
   "linear_regression_parameters": {

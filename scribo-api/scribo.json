@@ -1,0 +1,15 @@
+{
+  "specificationUrl": "scribo-api/openapi.json",
+  "sidebar": [
+    {
+      "type": "category",
+      "label": "Documentation",
+      "items": [
+        {
+          "label": "Commands",
+          "href": "api-commands"
+        }
+      ]
+    }
+  ]
+}

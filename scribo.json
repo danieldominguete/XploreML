@@ -1,0 +1,34 @@
+{
+  "name": "Scribo",
+  "logoImg": "logo.png",
+  "bannerTitle": "Cognas Documents",
+  "bannerDescription": "Its rocks!.",
+  "theme": {
+    "primaryColor": "#111a2b",
+    "headerFontColor": "#fff"
+  },
+  "menus": [
+    {
+      "label": "About",
+      "href": "https://scribo.dev"
+    },
+    {
+      "label": "Carrer",
+      "href": "https://scribo.dev"
+    }
+  ],
+  "docs": [
+    {
+      "name": "Tutorial",
+      "description": "Gettting Started with Scribo Platform",
+      "href": "tutorial"
+    },
+    {
+      "name": "Scribo Private Doc",
+      "description": "Scribo Private Doc",
+      "private": true,
+      "href": "scribo-docs",
+      "repo": "https://github.com/relferreira/scribo-docs"
+    }
+  ]
+}
