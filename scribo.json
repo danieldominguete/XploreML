@@ -1,27 +1,27 @@
 {
   "name": "Scribo",
-  "logoImg": "logo.png",
-  "bannerTitle": "Cognas Documents",
-  "bannerDescription": "Its rocks!.",
+  "logoImg": "dominguete_logo.png",
+  "bannerTitle": "Dominguete XploreML Project",
+  "bannerDescription": "Personal projects documentation for users.",
   "theme": {
-    "primaryColor": "#111a2b",
+    "primaryColor": "#26246b",
     "headerFontColor": "#fff"
   },
   "menus": [
     {
-      "label": "About",
-      "href": "https://scribo.dev"
+      "label": "About me",
+      "href": "https://danieldominguete.github.io/"
     },
     {
-      "label": "Carrer",
-      "href": "https://scribo.dev"
+      "label": "Contact",
+      "href": "mailto:daniel.dominguete@gmail.com"
     }
   ],
   "docs": [
     {
-      "name": "Tutorial",
-      "description": "Gettting Started with Scribo Platform",
-      "href": "tutorial"
+      "name": "Overview",
+      "description": "Getting Started with XploreML",
+      "href": "docs_overview"
     },
     {
       "name": "Scribo Private Doc",
