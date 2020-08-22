@@ -215,6 +215,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Scribo docummentation 
 - Linear regression for static2value problems
 - Split training and test datasets for model building (dataprep2dataset)
 - Essential preprocessing tasks for numerical, categorical and textual data (data2dataprep)
