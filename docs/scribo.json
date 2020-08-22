@@ -1,0 +1,81 @@
+{
+  "specificationUrl": "scribo-api/openapi.json",
+  "sidebar": [
+    {
+      "type": "category",
+      "label": "Getting Started",
+      "items": [
+        {
+          "label": "Configuration",
+          "href": "getting-started"
+        },
+        {
+          "label": "Updating",
+          "href": "updating"
+        },
+        {
+          "label": "Theming",
+          "href": "theming"
+        },
+        {
+          "label": "Docs",
+          "href": "docs"
+        },
+        {
+          "label": "Folders",
+          "href": "folders"
+        },
+        {
+          "label": "Sidebar",
+          "href": "sidebar"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "API Specifications",
+      "items": [
+        {
+          "label": "Overview",
+          "href": "api-overview"
+        },
+        {
+          "label": "OpenAPI/Swagger",
+          "href": "api-format"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Versions",
+      "items": [
+        {
+          "label": "Best Practices",
+          "href": "version-best-practices"
+        },
+        {
+          "label": "Development",
+          "href": "version-development"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Private Docs",
+      "items": [
+        {
+          "label": "Repositories",
+          "href": "repositories"
+        },
+        {
+          "label": "Inviting users",
+          "href": "inviting-users"
+        },
+        {
+          "label": "Permissions",
+          "href": "permissions"
+        }
+      ]
+    }
+  ]
+}
