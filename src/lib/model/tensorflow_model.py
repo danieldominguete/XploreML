@@ -10,6 +10,8 @@ import os
 import numpy as np
 import logging
 import tensorflow as tf
+from src.lib.model.token_position_embedding import TokenAndPositionEmbedding
+from src.lib.model.transformer_layer import TransformerBlock
 
 
 class XTensorFlowModel:
@@ -94,6 +96,8 @@ class XTensorFlowModel:
     ) -> bool:
 
         # Check pre-models
+        # ----------------------------------------------------------------------------
+        # FEED FORWARD NEURAL NETWORKS
         if self._topology_id == "FFNN-FCCx":
 
             in_layer = tf.keras.Input(shape=(inputs[0].shape[1],))
@@ -107,7 +111,7 @@ class XTensorFlowModel:
                         use_bias=True,
                         bias_initializer="zeros",
                         kernel_initializer="glorot_uniform",
-                        activation=self._topology_details.get("hidden_func_nodes")[0][stack]
+                        activation=self._topology_details.get("hidden_func_nodes")[0][stack],
                     )(in_layer)
                     hidden_layer = tf.keras.layers.Dropout(
                         rate=self._topology_details.get("hidden_dropout")[0][stack]
@@ -118,7 +122,7 @@ class XTensorFlowModel:
                         use_bias=True,
                         bias_initializer="zeros",
                         kernel_initializer="glorot_uniform",
-                        activation=self._topology_details.get("hidden_func_nodes")[0][stack]
+                        activation=self._topology_details.get("hidden_func_nodes")[0][stack],
                     )(hidden_layer)
                     hidden_layer = tf.keras.layers.Dropout(
                         rate=self._topology_details.get("hidden_dropout")[0][stack]
@@ -159,6 +163,7 @@ class XTensorFlowModel:
             self._model = tf.keras.models.Model(inputs=in_layer, outputs=output_layer)
 
         # ----------------------------------------------------------------------------
+        # RECURRENT NEURAL NETWORKS
         elif self._topology_id == "RNN-LTSMx-FCCx":
 
             # List of inputs with [samples, time steps, features] matrix
@@ -203,7 +208,7 @@ class XTensorFlowModel:
                                 dropout=self._topology_details.get("seq_hidden_dropout")[seq][
                                     stack
                                 ],
-                            )(in_layer)
+                            )(seq_in_layer)
 
                         # intermediate sequence encoder
                         else:
@@ -213,7 +218,7 @@ class XTensorFlowModel:
                                 dropout=self._topology_details.get("seq_hidden_dropout")[seq][
                                     stack
                                 ],
-                            )(in_layer)
+                            )(seq_in_layer)
 
                     input_list.append(in_layer)
                     seq_in_list.append(seq_in_layer)
@@ -255,7 +260,7 @@ class XTensorFlowModel:
                                 dropout=self._topology_details.get("seq_hidden_dropout")[seq][
                                     stack
                                 ],
-                            )(in_layer)
+                            )(seq_in_layer)
 
                         # intermediate sequence encoder
                         else:
@@ -265,7 +270,7 @@ class XTensorFlowModel:
                                 dropout=self._topology_details.get("seq_hidden_dropout")[seq][
                                     stack
                                 ],
-                            )(in_layer)
+                            )(seq_in_layer)
 
                     input_list.append(in_layer)
                     seq_in_list.append(seq_in_layer)
@@ -328,6 +333,324 @@ class XTensorFlowModel:
                                     stack
                                 ],
                             )(seq_in_layer)
+
+                    input_list.append(in_layer)
+                    seq_in_list.append(seq_in_layer)
+                    seq = seq + 1
+
+            # concatenate all sequences input - use concatenate for > 1 sequences
+            if len(seq_in_list) > 1:
+                concat_layer = tf.keras.layers.concatenate(seq_in_list, axis=-1)
+
+                # hidden layer
+                for stack in range(len(self._topology_details.get("join_hidden_nodes"))):
+
+                    # first hidden layer
+                    if stack == 0:
+                        hidden_layer = tf.keras.layers.Dense(
+                            units=self._topology_details.get("join_hidden_nodes")[stack],
+                            activation=self._topology_details.get("join_hidden_func_nodes")[stack],
+                        )(concat_layer)
+                    else:
+                        hidden_layer = tf.keras.layers.Dense(
+                            units=self._topology_details.get("join_hidden_nodes")[stack],
+                            activation=self._topology_details.get("join_hidden_func_nodes")[stack],
+                        )(hidden_layer)
+
+                # output layer
+                if self._application_type == "binary_category":
+                    output_num_classes = 1
+                else:
+                    output_num_classes = len(output_cat_dict[0][0])
+
+                if len(self._topology_details.get("join_hidden_nodes")) == 0:
+                    # using sigmoid for binary classifier and softmax for multi category
+                    if (
+                        self._application == "classification"
+                        and self._application_type == "binary_category"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="sigmoid"
+                        )(concat_layer)
+                    elif (
+                        self._application == "classification"
+                        and self._application_type == "multi_category_unilabel"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="softmax"
+                        )(concat_layer)
+                    else:
+                        logging.error(
+                            "Application and/or application type is not valid for topolgy "
+                            + self._topology_id
+                        )
+                else:
+                    # using sigmoid for binary classifier and softmax for multi category
+                    if (
+                        self._application == "classification"
+                        and self._application_type == "binary_category"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="sigmoid"
+                        )(hidden_layer)
+                    elif (
+                        self._application == "classification"
+                        and self._application_type == "multi_category_unilabel"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="softmax"
+                        )(hidden_layer)
+                    else:
+                        logging.error(
+                            "Application and/or application type is not valid for topolgy "
+                            + self._topology_id
+                        )
+
+            # just 1 sequence input
+            else:
+                # hidden layer
+                for stack in range(len(self._topology_details.get("join_hidden_nodes"))):
+
+                    # first hidden layer
+                    if stack == 0:
+                        hidden_layer = tf.keras.layers.Dense(
+                            units=self._topology_details.get("join_hidden_nodes")[stack],
+                            activation=self._topology_details.get("join_hidden_func_nodes")[stack],
+                        )(seq_in_list[0])
+                    else:
+                        hidden_layer = tf.keras.layers.Dense(
+                            units=self._topology_details.get("join_hidden_nodes")[stack],
+                            activation=self._topology_details.get("join_hidden_func_nodes")[stack],
+                        )(hidden_layer)
+
+                # output layer model
+                if self._application_type == "binary_category":
+                    output_num_classes = 1
+                else:
+                    output_num_classes = len(output_cat_dict[0][0])
+
+                if len(self._topology_details.get("join_hidden_nodes")) == 0:
+                    # using sigmoid for binary classifier and softmax for multi category
+                    if (
+                        self._application == "classification"
+                        and self._application_type == "binary_category"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="sigmoid"
+                        )(seq_in_list[0])
+                    elif (
+                        self._application == "classification"
+                        and self._application_type == "multi_category_unilabel"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="softmax"
+                        )(seq_in_list[0])
+                    else:
+                        logging.error(
+                            "Application and/or application type is not valid for topolgy "
+                            + self._topology_id
+                        )
+                else:
+                    # using sigmoid for binary classifier and softmax for multi category
+                    if (
+                        self._application == "classification"
+                        and self._application_type == "binary_category"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="sigmoid"
+                        )(hidden_layer)
+                    elif (
+                        self._application == "classification"
+                        and self._application_type == "multi_category_unilabel"
+                    ):
+                        output_layer = tf.keras.layers.Dense(
+                            units=output_num_classes, activation="softmax"
+                        )(hidden_layer)
+                    else:
+                        logging.error(
+                            "Application and/or application type is not valid for topolgy "
+                            + self._topology_id
+                        )
+
+            self._model = tf.keras.models.Model(inputs=input_list, outputs=output_layer)
+
+        # ----------------------------------------------------------------------------
+        # TRANSFORMER NEURAL NETWORKS
+        elif self._topology_id == "TNN-TRANSx-FCCx":
+
+            # List of inputs with [samples, time steps, features] matrix
+            # sequence of X inputs is number, cat , txt
+            seq = 0
+            input_list = []
+            seq_in_list = []
+
+            # sequences of number
+            input_feature_list = input_var_dict.get("number_inputs")
+            if len(input_feature_list) > 0:
+                for i in range(len(input_feature_list)):
+                    in_layer = tf.keras.Input(shape=(inputs[seq].shape[1], inputs[seq].shape[2]))
+
+                    # input sequence TRANSFORMER stack
+                    for stack in range(len(self._topology_details.get("seq_hidden_heads")[seq])):
+
+                        # transformer block stacks
+                        if stack == 0:
+
+                            transformer_block = TransformerBlock(
+                                inputs[seq].shape[2],
+                                self._topology_details.get("seq_hidden_heads")[seq][stack],
+                                self._topology_details.get("seq_hidden_ff_nodes")[seq][stack],
+                            )
+                            seq_in_layer = transformer_block(in_layer)
+
+                            # last layer too
+                            if (
+                                stack
+                                == len(self._topology_details.get("seq_hidden_heads")[seq]) - 1
+                            ):
+                                # converting time steps seq tensors to one step vector (mean)
+                                seq_in_layer = tf.keras.layers.GlobalAveragePooling1D()(
+                                    seq_in_layer
+                                )
+
+                        # last layer sequence encoder
+                        elif stack == len(self._topology_details.get("seq_hidden_heads")[seq]) - 1:
+
+                            transformer_block = TransformerBlock(
+                                inputs[seq].shape[2],
+                                self._topology_details.get("seq_hidden_heads")[seq][stack],
+                                self._topology_details.get("seq_hidden_ff_nodes")[seq][stack],
+                            )
+                            seq_in_layer = transformer_block(seq_in_layer)
+
+                            # converting time steps seq tensors to one step vector (mean)
+                            seq_in_layer = tf.keras.layers.GlobalAveragePooling1D()(seq_in_layer)
+
+                        # intermediate sequence encoder
+                        else:
+                            transformer_block = TransformerBlock(
+                                inputs[seq].shape[2],
+                                self._topology_details.get("seq_hidden_heads")[seq][stack],
+                                self._topology_details.get("seq_hidden_ff_nodes")[seq][stack],
+                            )
+                            seq_in_layer = transformer_block(seq_in_layer)
+
+                    input_list.append(in_layer)
+                    seq_in_list.append(seq_in_layer)
+                    seq = seq + 1
+
+            # sequences of categorical
+            input_feature_list = input_var_dict.get("categorical_inputs")
+            if len(input_feature_list) > 0:
+                for i in range(len(input_feature_list)):
+                    in_layer = tf.keras.Input(shape=(inputs[seq].shape[1], inputs[seq].shape[2]))
+
+                    # input sequence TRANSFORMER stack
+                    for stack in range(len(self._topology_details.get("seq_hidden_heads")[seq])):
+                        # first layer sequence encoder
+                        if stack == 0:
+
+                            transformer_block = TransformerBlock(
+                                inputs[seq].shape[2],
+                                self._topology_details.get("seq_hidden_heads")[seq][stack],
+                                self._topology_details.get("seq_hidden_ff_nodes")[seq][stack],
+                            )
+                            seq_in_layer = transformer_block(in_layer)
+
+                            # last layer too
+                            if (
+                                stack
+                                == len(self._topology_details.get("seq_hidden_heads")[seq]) - 1
+                            ):
+                                # converting time steps seq tensors to one step vector (mean)
+                                seq_in_layer = tf.keras.layers.GlobalAveragePooling1D()(
+                                    seq_in_layer
+                                )
+
+                        # last layer sequence encoder
+                        elif stack == len(self._topology_details.get("seq_hidden_heads")[seq]) - 1:
+                            transformer_block = TransformerBlock(
+                                inputs[seq].shape[2],
+                                self._topology_details.get("seq_hidden_heads")[seq][stack],
+                                self._topology_details.get("seq_hidden_ff_nodes")[seq][stack],
+                            )
+                            seq_in_layer = transformer_block(seq_in_layer)
+
+                            # converting time steps seq tensors to one step vector (mean)
+                            seq_in_layer = tf.keras.layers.GlobalAveragePooling1D()(seq_in_layer)
+
+                        # intermediate sequence encoder
+                        else:
+                            transformer_block = TransformerBlock(
+                                inputs[seq].shape[2],
+                                self._topology_details.get("seq_hidden_heads")[seq][stack],
+                                self._topology_details.get("seq_hidden_ff_nodes")[seq][stack],
+                            )
+                            seq_in_layer = transformer_block(seq_in_layer)
+
+                    input_list.append(in_layer)
+                    seq_in_list.append(seq_in_layer)
+                    seq = seq + 1
+
+            # sequences of txt
+            input_feature_list = input_var_dict.get("txt_inputs")
+            if len(input_feature_list) > 0:
+                for i in range(len(input_feature_list)):
+
+                    in_layer = tf.keras.Input(shape=(inputs[seq].shape[1],))
+                    # input_dim = vocabulary_size
+                    vocab_size = np.max(inputs[seq]) + 1
+                    # output_dim = word embedded vector dim (embed_dim) - should be divisible by number of heads
+                    embed_dim = 5 * self._topology_details.get("seq_hidden_heads")[seq][0]
+                    # input_length = time steps of input
+                    embedding_layer = TokenAndPositionEmbedding(
+                        inputs[seq].shape[1], vocab_size, embed_dim
+                    )
+                    in_embedding_layer = embedding_layer(in_layer)
+
+                    # input sequence TRANSFORMER stack
+                    for stack in range(len(self._topology_details.get("seq_hidden_heads")[seq])):
+
+                        # first layer sequence encoder
+                        if stack == 0:
+
+                            transformer_block = TransformerBlock(
+                                embed_dim,
+                                self._topology_details.get("seq_hidden_heads")[seq][stack],
+                                self._topology_details.get("seq_hidden_ff_nodes")[seq][stack],
+                            )
+                            seq_in_layer = transformer_block(in_embedding_layer)
+
+                            # last layer too
+                            if (
+                                stack
+                                == len(self._topology_details.get("seq_hidden_heads")[seq]) - 1
+                            ):
+                                # converting time steps seq tensors to one step vector (mean)
+                                seq_in_layer = tf.keras.layers.GlobalAveragePooling1D()(
+                                    seq_in_layer
+                                )
+
+                        # last layer sequence encoder
+                        elif stack == len(self._topology_details.get("seq_hidden_heads")[seq]) - 1:
+                            transformer_block = TransformerBlock(
+                                embed_dim,
+                                self._topology_details.get("seq_hidden_heads")[seq][stack],
+                                self._topology_details.get("seq_hidden_ff_nodes")[seq][stack],
+                            )
+                            seq_in_layer = transformer_block(seq_in_layer)
+
+                            # converting time steps seq tensors to one step vector
+                            seq_in_layer = tf.keras.layers.GlobalAveragePooling1D()(seq_in_layer)
+
+                        # intermediate sequence encoder
+                        else:
+                            transformer_block = TransformerBlock(
+                                embed_dim,
+                                self._topology_details.get("seq_hidden_heads")[seq][stack],
+                                self._topology_details.get("seq_hidden_ff_nodes")[seq][stack],
+                            )
+                            seq_in_layer = transformer_block(seq_in_layer)
 
                     input_list.append(in_layer)
                     seq_in_list.append(seq_in_layer)

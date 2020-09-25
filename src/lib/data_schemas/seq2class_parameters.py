@@ -30,6 +30,7 @@ class ModelType(str, Enum):
 
     '''
     neural_recurrent = 'neural_recurrent'
+    neural_transformer = 'neural_transformer'
 
 
 class EncodingNumericalVariables(str, Enum):

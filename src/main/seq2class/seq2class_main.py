@@ -22,7 +22,9 @@ from src.lib.data_processing.data_processing import DataProcessing
 from src.lib.environment.environment import Environment
 from src.lib.model.model_evaluation import ClassificationModelEvaluation
 from src.lib.data_schemas.neural_RNN_parameters import XNeuralRecurrentParameters
+from src.lib.data_schemas.neural_TNN_parameters import XNeuralTransformerParameters
 from src.lib.model.neural_RNN import XNeuralRecurrent
+from src.lib.model.neural_TNN import XNeuralTransformer
 
 
 class BuildSeq2ClassMain:
@@ -39,6 +41,17 @@ class BuildSeq2ClassMain:
                 **data_config.get("neural_recurrent_parameters")
             )
             model = XNeuralRecurrent(
+                param=model_param,
+                application=data_param.application,
+                application_type=data_param.classification_type,
+                env=environment,
+            )
+
+        elif data_param.model_type == "neural_transformer":
+            model_param = XNeuralTransformerParameters(
+                **data_config.get("neural_transformer_parameters")
+            )
+            model = XNeuralTransformer(
                 param=model_param,
                 application=data_param.application,
                 application_type=data_param.classification_type,

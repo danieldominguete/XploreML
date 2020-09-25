@@ -43,11 +43,21 @@ class Environment:
             self.script_name = script_name
 
             log = Util.get_logging_level(level=self.param.logging_level)
-            logging.basicConfig(level=log,
-                                format='%(asctime)s: %(levelname)s - %(message)s',
-                                datefmt='%y-%m-%d %H:%M')
 
-            # Supress warnings
+            # ----------------------------------------------------------
+            # app logging configuration - only terminal
+            logger = logging.getLogger()
+            logger.setLevel(log)
+
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(logging.INFO)
+
+            logger.addHandler(console_handler)
+            formatter = logging.Formatter("%(asctime)s: %(levelname)s - %(message)s", datefmt="%y-%m-%d %H:%M")
+            console_handler.setFormatter(formatter)
+
+            # ----------------------------------------------------------
+            # Suppress warnings
             warnings.filterwarnings(warnings_level)
 
             logging.info("======================================================================")
